@@ -27,6 +27,9 @@
     ]
   },
   "projects": {
+    "database": {
+      "tags": []
+    },
     "server": {
       "tags": []
     }

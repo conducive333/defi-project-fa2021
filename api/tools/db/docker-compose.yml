@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+  tok_eng_db:
+    container_name: tok_eng_local_db
+    image: tok_eng_local_db
+    build: .
+    ports:
+      - '5431:5432'
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pg12
+      - POSTGRES_DB=dev
+      - POSTGRES_USER=rootuser
+      - POSTGRES_PASSWORD=password
