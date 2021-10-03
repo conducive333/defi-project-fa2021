@@ -23,6 +23,189 @@
         }
       }
     },
+    "flow-flow-auth": {
+      "root": "libs/flow/flow-auth",
+      "sourceRoot": "libs/flow/flow-auth/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/flow/flow-auth/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/flow/flow-auth"],
+          "options": {
+            "jestConfig": "libs/flow/flow-auth/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "flow-flow-events": {
+      "root": "libs/flow/flow-events",
+      "sourceRoot": "libs/flow/flow-events/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/flow/flow-events/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/flow/flow-events"],
+          "options": {
+            "jestConfig": "libs/flow/flow-events/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "flow-flow-key-cycler": {
+      "root": "libs/flow/flow-key-cycler",
+      "sourceRoot": "libs/flow/flow-key-cycler/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/flow/flow-key-cycler/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/flow/flow-key-cycler"],
+          "options": {
+            "jestConfig": "libs/flow/flow-key-cycler/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "flow-flow-nft": {
+      "root": "libs/flow/flow-nft",
+      "sourceRoot": "libs/flow/flow-nft/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/flow/flow-nft/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/flow/flow-nft"],
+          "options": {
+            "jestConfig": "libs/flow/flow-nft/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "flow-flow-service": {
+      "root": "libs/flow/flow-service",
+      "sourceRoot": "libs/flow/flow-service/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/flow/flow-service/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/flow/flow-service"],
+          "options": {
+            "jestConfig": "libs/flow/flow-service/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "flow-flow-storefront": {
+      "root": "libs/flow/flow-storefront",
+      "sourceRoot": "libs/flow/flow-storefront/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/flow/flow-storefront/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/flow/flow-storefront"],
+          "options": {
+            "jestConfig": "libs/flow/flow-storefront/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "flow-listener": {
+      "root": "apps/flow-listener",
+      "sourceRoot": "apps/flow-listener/src",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/flow-listener",
+            "main": "apps/flow-listener/src/main.ts",
+            "tsConfig": "apps/flow-listener/tsconfig.app.json",
+            "assets": []
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/flow-listener/src/environments/environment.ts",
+                  "with": "apps/flow-listener/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "executor": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "flow-listener:build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["apps/flow-listener/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/flow-listener"],
+          "options": {
+            "jestConfig": "apps/flow-listener/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "server": {
       "root": "apps/server",
       "sourceRoot": "apps/server/src",
@@ -35,7 +218,7 @@
             "outputPath": "dist/apps/server",
             "main": "apps/server/src/main.ts",
             "tsConfig": "apps/server/tsconfig.app.json",
-            "assets": ["apps/server/src/assets"]
+            "assets": []
           },
           "configurations": {
             "production": {

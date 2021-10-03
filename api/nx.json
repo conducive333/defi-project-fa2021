@@ -30,6 +30,27 @@
     "database": {
       "tags": []
     },
+    "flow-flow-auth": {
+      "tags": []
+    },
+    "flow-flow-events": {
+      "tags": []
+    },
+    "flow-flow-key-cycler": {
+      "tags": []
+    },
+    "flow-flow-nft": {
+      "tags": []
+    },
+    "flow-flow-service": {
+      "tags": []
+    },
+    "flow-flow-storefront": {
+      "tags": []
+    },
+    "flow-listener": {
+      "tags": []
+    },
     "server": {
       "tags": []
     }
