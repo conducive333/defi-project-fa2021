@@ -1,4 +1,4 @@
-import { BaseEventHandler } from './base.event.handler'
+import { BaseEventListener } from './base.event.listener'
 
 describe('Flow Events', () => {
   it('should work', () => {

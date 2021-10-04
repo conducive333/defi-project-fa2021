@@ -120,7 +120,7 @@ export abstract class BaseEventListener {
           })
         )
       } else if (cursors.length !== this.eventNames.length) {
-        const existingEvents = new Set<String>(cursors.map((c) => c.eventName))
+        const existingEvents = new Set<string>(cursors.map((c) => c.eventName))
         const currentHeight = cursors[0].currentBlockHeight
         const newCursors: BlockCursor[] = []
         for (const ev of this.eventNames) {

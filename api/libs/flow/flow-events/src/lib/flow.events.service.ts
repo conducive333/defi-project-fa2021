@@ -1,4 +1,4 @@
-import { MintedCardEvent, MintedCardEventType } from '@api/database'
+import { NftEvent, NftEventType } from '@api/database'
 import { Injectable } from '@nestjs/common'
 import { getConnection } from 'typeorm'
 
@@ -8,9 +8,9 @@ export class FlowEventsService {
   async mintedCardIdToMintEvent(mintedCardId: string) {
     // The mint event contains the mapping from NFT ID to minted card ID
     return await getConnection().transaction(async (tx) => {
-      return await tx.findOne(MintedCardEvent, {
+      return await tx.findOne(NftEvent, {
         where: {
-          eventType: MintedCardEventType.minted,
+          eventType: NftEventType.minted,
           mintedCardId: mintedCardId,
         },
       })
@@ -21,9 +21,9 @@ export class FlowEventsService {
   async currentOwner(nftId: string) {
     // The latest deposit event for this NFT ID contains the address of the current owner
     return await getConnection().transaction(async (tx) => {
-      return await tx.findOne(MintedCardEvent, {
+      return await tx.findOne(NftEvent, {
         where: {
-          eventType: MintedCardEventType.deposit,
+          eventType: NftEventType.deposit,
           nftId: nftId,
         },
         order: {

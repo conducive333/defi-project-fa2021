@@ -5,7 +5,7 @@ import { FlowTypes } from '@api/flow/flow-service'
 import { EntityManager, getConnection, IsNull, Not } from 'typeorm'
 import {
   FlowTransaction,
-  MintedCardEvent,
+  NftEvent,
   SaleOfferAvailableEvent,
   SaleOfferCompletedEvent,
 } from '@api/database'
@@ -108,8 +108,8 @@ export class StorefrontListener extends BaseEventListener {
       } else if (field.name === 'nftType') {
         saleOfferAvailableEvent.nftType = field?.value?.value?.staticType
       } else if (field.name === 'nftID') {
-        const mintedCard = await this.nftIdToMintedCard(tx, field?.value?.value)
-        saleOfferAvailableEvent.mintedCardId = mintedCard.id
+        const marketItem = await this.nftIdToMarketItem(tx, field?.value?.value)
+        saleOfferAvailableEvent.marketItemId = marketItem.id
       } else if (field.name === 'ftVaultType') {
         saleOfferAvailableEvent.ftVaultType = field?.value?.value?.staticType
       } else if (field.name === 'price') {
@@ -119,11 +119,11 @@ export class StorefrontListener extends BaseEventListener {
     return saleOfferAvailableEvent
   }
 
-  private async nftIdToMintedCard(tx: EntityManager, nftId: string) {
-    return await tx.findOne(MintedCardEvent, {
+  private async nftIdToMarketItem(tx: EntityManager, nftId: string) {
+    return await tx.findOne(NftEvent, {
       where: {
         nftId: nftId,
-        mintedCardId: Not(IsNull()),
+        marketItemId: Not(IsNull()),
       },
     })
   }
