@@ -47,7 +47,7 @@ import { ViewColumn, ViewEntity } from 'typeorm'
     INNER JOIN market_item ON market_item.id = mint_event.market_item_id
   `,
 })
-export class SimpleMintedCardTransfer {
+export class SimpleNftTransfer {
   @ViewColumn({ name: 'flow_transaction_id' })
   flowTransactionId: string
 
