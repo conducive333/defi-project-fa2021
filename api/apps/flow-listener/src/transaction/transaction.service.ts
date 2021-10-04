@@ -1,5 +1,5 @@
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity'
-import { FlowTransaction } from '@doosan/database'
+import { FlowTransaction } from '@api/database'
 import { Injectable } from '@nestjs/common'
 import { EntityManager } from 'typeorm'
 

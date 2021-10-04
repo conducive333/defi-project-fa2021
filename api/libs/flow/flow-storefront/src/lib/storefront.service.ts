@@ -1,11 +1,11 @@
-import { FlowAuthService } from '@doosan/flow/flow-auth'
+import { FlowAuthService } from '@api/flow/flow-auth'
 import { ConfigService } from '@nestjs/config'
 import { Injectable } from '@nestjs/common'
 import * as transactions from './transactions'
 import * as scripts from './scripts'
 import * as cdcTypes from '@onflow/types'
 import * as fcl from '@onflow/fcl'
-import { FlowTypes, FlowService } from '@doosan/flow/flow-service'
+import { FlowTypes, FlowService } from '@api/flow/flow-service'
 import { SaleOffer } from './storefront.types'
 
 @Injectable()

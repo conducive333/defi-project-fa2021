@@ -17,11 +17,11 @@ import {
   User,
   MintToken,
   IpAddress,
-} from '@doosan/database'
+} from '@api/database'
 import { Module } from '@nestjs/common'
 import * as path from 'path'
 import * as Joi from 'joi'
-import { clientConfigSchema, flowConfigSchema } from '@doosan/utils'
+import { clientConfigSchema, flowConfigSchema } from '@api/utils'
 import { NFTModule } from '../nft/nft.module'
 import { StorefrontModule } from '../storefront/storefront.module'
 

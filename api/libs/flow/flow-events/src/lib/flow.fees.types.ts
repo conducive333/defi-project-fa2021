@@ -1,4 +1,4 @@
-import { FlowTypes } from '@doosan/flow/flow-service'
+import { FlowTypes } from '@api/flow/flow-service'
 
 export interface TokenFeesData {
   amount: number

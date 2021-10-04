@@ -1,13 +1,13 @@
-import { BaseEventListener } from '@doosan/flow/flow-events'
+import { BaseEventListener } from '@api/flow/flow-events'
 import { ConfigService } from '@nestjs/config'
 import { Injectable } from '@nestjs/common'
-import { FlowService, FlowTypes } from '@doosan/flow/flow-service'
+import { FlowService, FlowTypes } from '@api/flow/flow-service'
 import {
   FlowTransaction,
   MintedCardEvent,
   MintedCardEventType,
   Notification,
-} from '@doosan/database'
+} from '@api/database'
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity'
 import { FlowTransactionService } from '../transaction/transaction.service'
 import { EntityManager, getConnection } from 'typeorm'

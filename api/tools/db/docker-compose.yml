@@ -1,10 +1,12 @@
 version: '3.7'
 
 services:
-  tok_eng_db:
-    container_name: tok_eng_local_db
-    image: tok_eng_local_db
+  defi-dev-db:
+    container_name: defi-dev-db
+    image: defi-dev-db-image
     build: .
+    networks:
+      - defi-network
     ports:
       - '5431:5432'
     environment:
@@ -12,3 +14,5 @@ services:
       - POSTGRES_DB=dev
       - POSTGRES_USER=rootuser
       - POSTGRES_PASSWORD=password
+networks:
+  defi-network:

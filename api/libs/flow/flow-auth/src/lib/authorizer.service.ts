@@ -1,4 +1,4 @@
-import { FlowTypes } from '@doosan/flow/flow-service'
+import { FlowTypes } from '@api/flow/flow-service'
 import { Injectable } from '@nestjs/common'
 import * as fcl from '@onflow/fcl'
 import { ec as EC } from 'elliptic'

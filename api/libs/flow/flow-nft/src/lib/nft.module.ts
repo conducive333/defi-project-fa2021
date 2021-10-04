@@ -1,5 +1,5 @@
 import { NftService } from './nft.service'
-import { FlowAuthModule } from '@doosan/flow/flow-auth'
+import { FlowAuthModule } from '@api/flow/flow-auth'
 import { Module } from '@nestjs/common'
 
 @Module({

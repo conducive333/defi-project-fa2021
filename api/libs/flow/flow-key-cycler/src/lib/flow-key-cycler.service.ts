@@ -4,9 +4,9 @@ import {
   OnApplicationBootstrap,
   ServiceUnavailableException,
 } from '@nestjs/common'
-import { FlowService } from '@doosan/flow/flow-service'
+import { FlowService } from '@api/flow/flow-service'
 import { ConfigService } from '@nestjs/config'
-import { FlowKey } from '@doosan/database'
+import { FlowKey } from '@api/database'
 import { EntityManager, getConnection, LessThanOrEqual } from 'typeorm'
 
 @Injectable()

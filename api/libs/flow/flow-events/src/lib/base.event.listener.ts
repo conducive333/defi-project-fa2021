@@ -1,5 +1,5 @@
-import { FlowTypes, FlowService } from '@doosan/flow/flow-service'
-import { BlockCursor, FlowTransaction } from '@doosan/database'
+import { FlowTypes, FlowService } from '@api/flow/flow-service'
+import { BlockCursor, FlowTransaction } from '@api/database'
 import { EntityManager, getConnection, In } from 'typeorm'
 import * as fcl from '@onflow/fcl'
 

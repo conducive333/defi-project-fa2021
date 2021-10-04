@@ -51,6 +51,9 @@
     "flow-listener": {
       "tags": []
     },
+    "logger": {
+      "tags": []
+    },
     "server": {
       "tags": []
     }

@@ -1,4 +1,4 @@
-import { MintedCardEvent, MintedCardEventType } from '@doosan/database'
+import { MintedCardEvent, MintedCardEventType } from '@api/database'
 import { Injectable } from '@nestjs/common'
 import { getConnection } from 'typeorm'
 

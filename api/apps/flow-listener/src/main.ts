@@ -1,6 +1,6 @@
 import { AppModule } from './app/app.module'
 import { NestFactory } from '@nestjs/core'
-import { FlowService } from '@doosan/flow/flow-service'
+import { FlowService } from '@api/flow/flow-service'
 import { ConfigService } from '@nestjs/config'
 import { NFTListener } from './nft/nft.listener'
 import { StorefrontListener } from './storefront/storefront.listener'

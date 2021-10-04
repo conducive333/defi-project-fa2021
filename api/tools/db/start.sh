@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-docker-compose up -d --build
+cd "$(dirname "$0")" && COMPOSE_PROJECT_NAME=defi-project docker-compose up -d --build
