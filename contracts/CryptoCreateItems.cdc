@@ -24,50 +24,37 @@ pub contract CryptoCreateItems: NonFungibleToken {
     pub event ContractInitialized()
     pub event Withdraw(id: UInt64, from: Address?)
     pub event Deposit(id: UInt64, to: Address?)
-    pub event Minted(id: UInt64, initMeta: {
-        String: String
-    })
+    pub event Minted(id: UInt64, initMeta: {String: String})
 
     // Named Paths
     //
-    pub
-    let CollectionStoragePath: StoragePath
-    pub
-    let CollectionPublicPath: PublicPath
-    pub
-    let MinterStoragePath: StoragePath
+    pub let CollectionStoragePath: StoragePath
+    pub let CollectionPublicPath: PublicPath
+    pub let MinterStoragePath: StoragePath
 
     // totalSupply
     // The total number of CryptoCreateItems that have been minted
     //
-    pub
-    var totalSupply: UInt64
+    pub var totalSupply: UInt64
 
     // NFT
     // A Crypto Gnome as an NFT
     //
     pub resource NFT: NonFungibleToken.INFT {
         // The token's ID
-        pub
-        let id: UInt64
+        pub let id: UInt64
 
         // The token's metadata in dict format
-        access(self) let metadata: {
-            String: String
-        }
+        access(self) let metadata: {String: String}
 
         // initializer
         //
-        init(initID: UInt64, initMeta: {
-            String: String
-        }) {
+        init(initID: UInt64, initMeta: {String: String}) {
             self.id = initID
             self.metadata = initMeta
         }
 
-        pub fun getMetadata(): {
-            String: String
-        } {
+        pub fun getMetadata(): {String: String} {
             return self.metadata
         }
     }
@@ -97,10 +84,7 @@ pub contract CryptoCreateItems: NonFungibleToken {
         // dictionary of NFT conforming tokens
         // NFT is a resource type with an 'UInt64' ID field
         //
-        pub
-        var ownedNFTs: @ {
-            UInt64: NonFungibleToken.NFT
-        }
+        pub var ownedNFTs: @ {UInt64: NonFungibleToken.NFT}
 
         // withdraw
         // Removes an NFT from the collection and moves it to the caller
@@ -194,11 +178,7 @@ pub contract CryptoCreateItems: NonFungibleToken {
         // Mints a new NFT with a new ID
         // and deposit it in the recipients collection using their collection reference
         //
-        pub fun mintNFT(recipient: & {
-            NonFungibleToken.CollectionPublic
-        }, initMetadata: {
-            String: String
-        }) {
+        pub fun mintNFT(recipient: & {NonFungibleToken.CollectionPublic}, initMetadata: {String: String}) {
             let nftID = CryptoCreateItems.totalSupply
             emit Minted(id: nftID, initMeta: initMetadata)
             CryptoCreateItems.totalSupply = nftID + (1 as UInt64)

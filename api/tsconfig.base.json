@@ -16,6 +16,9 @@
     "baseUrl": ".",
     "paths": {
       "@api/database": ["libs/database/src/index.ts"],
+      "@api/flow/flow-admin-storefront": [
+        "libs/flow/flow-admin-storefront/src/index.ts"
+      ],
       "@api/flow/flow-auth": ["libs/flow/flow-auth/src/index.ts"],
       "@api/flow/flow-events": ["libs/flow/flow-events/src/index.ts"],
       "@api/flow/flow-key-cycler": ["libs/flow/flow-key-cycler/src/index.ts"],

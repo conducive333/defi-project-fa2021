@@ -1,3 +1,4 @@
+// TODO: fix
 export interface SaleOffer {
   uuid: number
   details: {

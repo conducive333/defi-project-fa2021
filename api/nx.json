@@ -30,6 +30,9 @@
     "database": {
       "tags": []
     },
+    "flow-flow-admin-storefront": {
+      "tags": []
+    },
     "flow-flow-auth": {
       "tags": []
     },

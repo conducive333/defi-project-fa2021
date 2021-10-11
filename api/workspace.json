@@ -23,6 +23,28 @@
         }
       }
     },
+    "flow-flow-admin-storefront": {
+      "root": "libs/flow/flow-admin-storefront",
+      "sourceRoot": "libs/flow/flow-admin-storefront/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/flow/flow-admin-storefront/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/flow/flow-admin-storefront"],
+          "options": {
+            "jestConfig": "libs/flow/flow-admin-storefront/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "flow-flow-auth": {
       "root": "libs/flow/flow-auth",
       "sourceRoot": "libs/flow/flow-auth/src",
