@@ -1,8 +1,18 @@
-import { StorefrontService } from './storefront.service'
+import { Test, TestingModule } from '@nestjs/testing'
+import { FlowStorefrontService } from './storefront.service'
 
-// TODO:
-describe('Flow Storefront Service', () => {
-  it('should work', () => {
-    expect(true).toBeTruthy()
+describe('FlowStorefrontService', () => {
+  let service: FlowStorefrontService
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [FlowStorefrontService],
+    }).compile()
+
+    service = module.get<FlowStorefrontService>(FlowStorefrontService)
+  })
+
+  it('should be defined', () => {
+    expect(service).toBeDefined()
   })
 })

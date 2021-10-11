@@ -1,23 +1,22 @@
-export default (address: string) =>
+export default (flowStorefrontAddress: string) =>
   `
-import DBNFTStorefront from ${address}
+import NFTStorefront from ${flowStorefrontAddress}
 
-transaction(saleOfferResourceID: UInt64, storefrontAddress: Address) {
-    let storefront: &DBNFTStorefront.Storefront{DBNFTStorefront.StorefrontPublic}
+transaction(listingResourceID: UInt64, storefrontAddress: Address) {
+    let storefront: &NFTStorefront.Storefront{NFTStorefront.StorefrontPublic}
 
     prepare(acct: AuthAccount) {
         self.storefront = getAccount(storefrontAddress)
-            .getCapability<&DBNFTStorefront.Storefront{DBNFTStorefront.StorefrontPublic}>(
-                DBNFTStorefront.StorefrontPublicPath
+            .getCapability<&NFTStorefront.Storefront{NFTStorefront.StorefrontPublic}>(
+                NFTStorefront.StorefrontPublicPath
             )!
             .borrow()
-            ?? panic("Cannot borrow Storefront from provided address")
+            ?? panic("Could not borrow Storefront from provided address")
     }
 
     execute {
-        
         // Be kind and recycle
-        self.storefront.cleanup(saleOfferResourceID: saleOfferResourceID)
+        self.storefront.cleanup(listingResourceID: listingResourceID)
     }
 }
 `

@@ -1,53 +1,52 @@
 export default (
   devAddress: string,
+  nftAddress: string,
   fungibleTokenAddress: string,
-  flowTokenAddress: string
+  flowTokenAddress: string,
+  flowStorefrontAddress: string
 ) =>
   `
 import FungibleToken from ${fungibleTokenAddress}
-import DBNonFungibleToken from ${devAddress}
+import NonFungibleToken from ${nftAddress}
 import FlowToken from ${flowTokenAddress}
-import DBCollectable from ${devAddress}
-import DBNFTStorefront from ${devAddress}
+import CryptoCreateItems from ${devAddress}
+import NFTStorefront from ${flowStorefrontAddress}
 
-transaction(saleItemID: UInt64, saleItemPrice: UFix64, saleOfferAvailableMeta: {String: String}) {
+transaction(saleItemID: UInt64, saleItemPrice: UFix64) {
 
-    let flowTokenReceiver: Capability<&FlowToken.Vault{FungibleToken.Receiver}>
-    let dbCollectableProvider: Capability<&DBCollectable.Collection{DBNonFungibleToken.Provider, DBNonFungibleToken.CollectionPublic}>
-    let storefront: &DBNFTStorefront.Storefront
+    let flowReceiver: Capability<&FlowToken.Vault{FungibleToken.Receiver}>
+    let nftProvider: Capability<&CryptoCreateItems.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>
+    let storefront: &NFTStorefront.Storefront
 
-    prepare(account: AuthAccount) {
+    prepare(acct: AuthAccount) {
         // We need a provider capability, but one is not provided by default so we create one if needed.
-        let DBCollectableCollectionProviderPrivatePath = /private/DBCollectableCollectionProvider
+        let nftCollectionProviderPrivatePath = /private/nftCollectionProviderForNFTStorefront
 
-        self.flowTokenReceiver = account.getCapability<&FlowToken.Vault{FungibleToken.Receiver}>(/public/flowTokenReceiver)!
-        
-        assert(self.flowTokenReceiver.borrow() != nil, message: "Missing or mis-typed FlowToken receiver")
+        self.flowReceiver = acct.getCapability<&FlowToken.Vault{FungibleToken.Receiver}>(/public/flowTokenReceiver)!
+        assert(self.flowReceiver.borrow() != nil, message: "Missing or mis-typed FlowToken receiver")
 
-        if !account.getCapability<&DBCollectable.Collection{DBNonFungibleToken.Provider, DBNonFungibleToken.CollectionPublic}>(DBCollectableCollectionProviderPrivatePath)!.check() {
-            account.link<&DBCollectable.Collection{DBNonFungibleToken.Provider, DBNonFungibleToken.CollectionPublic}>(DBCollectableCollectionProviderPrivatePath, target: DBCollectable.CollectionStoragePath)
+        if !acct.getCapability<&CryptoCreateItems.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>(nftCollectionProviderPrivatePath)!.check() {
+            acct.link<&CryptoCreateItems.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>(nftCollectionProviderPrivatePath, target: CryptoCreateItems.CollectionStoragePath)
         }
 
-        self.dbCollectableProvider = account.getCapability<&DBCollectable.Collection{DBNonFungibleToken.Provider, DBNonFungibleToken.CollectionPublic}>(DBCollectableCollectionProviderPrivatePath)!
-        assert(self.dbCollectableProvider.borrow() != nil, message: "Missing or mis-typed DBCollectable.Collection provider")
+        self.nftProvider = acct.getCapability<&CryptoCreateItems.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>(nftCollectionProviderPrivatePath)!
+        assert(self.nftProvider.borrow() != nil, message: "Missing or mis-typed CryptoCreateItems.Collection provider")
 
-        // If this panics, make sure you have a storefront setup on the account
-        self.storefront = account.borrow<&DBNFTStorefront.Storefront>(from: DBNFTStorefront.StorefrontStoragePath)
-            ?? panic("Missing or mis-typed DBNFTStorefront Storefront")
+        self.storefront = acct.borrow<&NFTStorefront.Storefront>(from: NFTStorefront.StorefrontStoragePath)
+            ?? panic("Missing or mis-typed NFTStorefront Storefront")
     }
 
     execute {
-        let saleCut = DBNFTStorefront.SaleCut(
-            receiver: self.flowTokenReceiver,
+        let saleCut = NFTStorefront.SaleCut(
+            receiver: self.flowReceiver,
             amount: saleItemPrice
         )
-        self.storefront.createSaleOffer(
-            nftProviderCapability: self.dbCollectableProvider,
-            nftType: Type<@DBCollectable.NFT>(),
+        self.storefront.createListing(
+            nftProviderCapability: self.nftProvider,
+            nftType: Type<@CryptoCreateItems.NFT>(),
             nftID: saleItemID,
             salePaymentVaultType: Type<@FlowToken.Vault>(),
-            saleCuts: [saleCut],
-            sftrxMeta: saleOfferAvailableMeta
+            saleCuts: [saleCut]
         )
     }
 }

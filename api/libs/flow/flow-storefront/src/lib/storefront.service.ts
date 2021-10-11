@@ -1,3 +1,4 @@
+import { FlowTypes, FlowService } from '@api/flow/flow-service'
 import { FlowAuthService } from '@api/flow/flow-auth'
 import { ConfigService } from '@nestjs/config'
 import { Injectable } from '@nestjs/common'
@@ -5,12 +6,14 @@ import * as transactions from './transactions'
 import * as scripts from './scripts'
 import * as cdcTypes from '@onflow/types'
 import * as fcl from '@onflow/fcl'
-import { FlowTypes, FlowService } from '@api/flow/flow-service'
+
 import { SaleOffer } from './storefront.types'
 
 @Injectable()
-export class StorefrontService {
+export class FlowStorefrontService {
+  protected readonly nonFungibleTokenAddress: string
   protected readonly fungibleTokenAddress: string
+  protected readonly storefrontAddress: string
   protected readonly flowTokenAddress: string
   protected readonly devAddress: string
 
@@ -19,15 +22,20 @@ export class StorefrontService {
     private readonly configService: ConfigService
   ) {
     this.devAddress = this.configService.get<string>('FLOW_DEV_ADDRESS')
+    this.storefrontAddress = this.configService.get<string>(
+      'FLOW_STOREFRONT_ADDRESS'
+    )
     this.fungibleTokenAddress =
       this.configService.get<string>('FLOW_FT_ADDRESS')
+    this.nonFungibleTokenAddress =
+      this.configService.get<string>('FLOW_NFT_ADDRESS')
     this.flowTokenAddress = this.configService.get<string>('FLOW_TOKEN_ADDRESS')
   }
 
-  async setup(index: number) {
-    const devAuth = await this.flowAuthorizer.developerAuthenticate(index)
+  async setup() {
+    const devAuth = await this.flowAuthorizer.developerAuthenticate(0)
     const trsAuth = await this.flowAuthorizer.treasuryAuthenticate()
-    const cadenceCode = transactions.setup(this.devAddress)
+    const cadenceCode = transactions.setup(this.storefrontAddress)
     const transaction = await FlowService.sendTx({
       transaction: cadenceCode,
       args: [],
@@ -39,33 +47,23 @@ export class StorefrontService {
   }
 
   async buy(
-    index: number,
-    saleOfferResourceId: string,
-    storefrontAddress: string,
-    withdrawMeta: FlowTypes.SimpleDictionary,
-    depositMeta: FlowTypes.SimpleDictionary,
-    saleOfferCompletedMeta: FlowTypes.SimpleDictionary
+    listingResourceId: string,
+    storefrontAddress: string
   ): Promise<FlowTypes.TransactionStatus> {
-    const devAuth = await this.flowAuthorizer.developerAuthenticate(index)
+    const devAuth = await this.flowAuthorizer.developerAuthenticate(0)
     const trsAuth = await this.flowAuthorizer.treasuryAuthenticate()
     const cadenceCode = transactions.buy(
       this.devAddress,
+      this.nonFungibleTokenAddress,
       this.fungibleTokenAddress,
-      this.flowTokenAddress
+      this.flowTokenAddress,
+      this.storefrontAddress
     )
-    const [completed, completedTypes] = FlowService.convertObject(
-      saleOfferCompletedMeta
-    )
-    const [withdraw, withdrawTypes] = FlowService.convertObject(withdrawMeta)
-    const [deposit, depositTypes] = FlowService.convertObject(depositMeta)
     const transaction = await FlowService.sendTx({
       transaction: cadenceCode,
       args: [
-        fcl.arg(parseInt(saleOfferResourceId), cdcTypes.UInt64),
+        fcl.arg(parseInt(listingResourceId), cdcTypes.UInt64),
         fcl.arg(storefrontAddress, cdcTypes.Address),
-        fcl.arg(withdraw, withdrawTypes),
-        fcl.arg(deposit, depositTypes),
-        fcl.arg(completed, completedTypes),
       ],
       authorizations: [devAuth],
       payer: trsAuth,
@@ -75,27 +73,23 @@ export class StorefrontService {
   }
 
   async sell(
-    index: number,
     saleItemId: string,
-    saleItemPrice: string,
-    saleOfferAvailableMeta: FlowTypes.SimpleDictionary
+    saleItemPrice: string
   ): Promise<FlowTypes.TransactionStatus> {
-    const devAuth = await this.flowAuthorizer.developerAuthenticate(index)
+    const devAuth = await this.flowAuthorizer.developerAuthenticate(0)
     const trsAuth = await this.flowAuthorizer.treasuryAuthenticate()
     const cadenceCode = transactions.sell(
       this.devAddress,
+      this.nonFungibleTokenAddress,
       this.fungibleTokenAddress,
-      this.flowTokenAddress
-    )
-    const [available, availableTypes] = FlowService.convertObject(
-      saleOfferAvailableMeta
+      this.flowTokenAddress,
+      this.storefrontAddress
     )
     const transaction = await FlowService.sendTx({
       transaction: cadenceCode,
       args: [
         fcl.arg(parseInt(saleItemId), cdcTypes.UInt64),
         fcl.arg(Number(saleItemPrice).toFixed(8).toString(), cdcTypes.UFix64),
-        fcl.arg(available, availableTypes),
       ],
       authorizations: [devAuth],
       payer: trsAuth,
@@ -105,15 +99,14 @@ export class StorefrontService {
   }
 
   async remove(
-    index: number,
-    saleOfferResourceId: string
+    listingResourceId: string
   ): Promise<FlowTypes.TransactionStatus> {
-    const devAuth = await this.flowAuthorizer.developerAuthenticate(index)
+    const devAuth = await this.flowAuthorizer.developerAuthenticate(0)
     const trsAuth = await this.flowAuthorizer.treasuryAuthenticate()
-    const cadenceCode = transactions.remove(this.devAddress)
+    const cadenceCode = transactions.remove(this.storefrontAddress)
     const transaction = await FlowService.sendTx({
       transaction: cadenceCode,
-      args: [fcl.arg(parseInt(saleOfferResourceId), cdcTypes.UInt64)],
+      args: [fcl.arg(parseInt(listingResourceId), cdcTypes.UInt64)],
       authorizations: [devAuth],
       payer: trsAuth,
       proposer: devAuth,
@@ -122,17 +115,16 @@ export class StorefrontService {
   }
 
   async clean(
-    index: number,
-    saleOfferResourceId: string,
+    listingResourceId: string,
     storefrontAddress: string
   ): Promise<FlowTypes.TransactionStatus> {
-    const devAuth = await this.flowAuthorizer.developerAuthenticate(index)
+    const devAuth = await this.flowAuthorizer.developerAuthenticate(0)
     const trsAuth = await this.flowAuthorizer.treasuryAuthenticate()
-    const cadenceCode = transactions.clean(this.devAddress)
+    const cadenceCode = transactions.clean(this.storefrontAddress)
     const transaction = await FlowService.sendTx({
       transaction: cadenceCode,
       args: [
-        fcl.arg(parseInt(saleOfferResourceId), cdcTypes.UInt64),
+        fcl.arg(parseInt(listingResourceId), cdcTypes.UInt64),
         fcl.arg(storefrontAddress, cdcTypes.Address),
       ],
       authorizations: [devAuth],
@@ -152,7 +144,7 @@ export class StorefrontService {
     if (!Number.isInteger(offset) || offset < 0)
       throw new Error('offset must be a nonnegative integer.')
     return await FlowService.executeScript({
-      script: scripts.getSaleOffers(this.devAddress),
+      script: scripts.getSaleOffers(this.storefrontAddress),
       args: [
         fcl.arg(address, cdcTypes.Address),
         fcl.arg(limit, cdcTypes.Int),
@@ -163,22 +155,22 @@ export class StorefrontService {
 
   async getSaleOffer(
     address: string,
-    saleOfferResourceID: number
+    listingResourceID: number
   ): Promise<SaleOffer> {
-    if (!Number.isInteger(saleOfferResourceID))
-      throw new Error('saleOfferResourceID must be an integer.')
+    if (!Number.isInteger(listingResourceID))
+      throw new Error('listingResourceID must be an integer.')
     return await FlowService.executeScript({
-      script: scripts.getSaleOffer(this.devAddress),
+      script: scripts.getSaleOffer(this.storefrontAddress),
       args: [
         fcl.arg(address, cdcTypes.Address),
-        fcl.arg(saleOfferResourceID, cdcTypes.UInt64),
+        fcl.arg(listingResourceID, cdcTypes.UInt64),
       ],
     })
   }
 
   async hasStorefront(address: string): Promise<boolean> {
     return await FlowService.executeScript({
-      script: scripts.hasStorefront(this.devAddress),
+      script: scripts.hasStorefront(this.storefrontAddress),
       args: [fcl.arg(address, cdcTypes.Address)],
     })
   }

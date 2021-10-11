@@ -1,17 +1,17 @@
-export default (address: string) =>
+export default (flowStorefrontAddress: string) =>
   `
-import DBNFTStorefront from ${address}
+import NFTStorefront from ${flowStorefrontAddress}
 
-transaction(saleOfferResourceID: UInt64) {
-    let storefront: &DBNFTStorefront.Storefront{DBNFTStorefront.StorefrontManager}
+transaction(listingResourceID: UInt64) {
+    let storefront: &NFTStorefront.Storefront{NFTStorefront.StorefrontManager}
 
     prepare(acct: AuthAccount) {
-        self.storefront = acct.borrow<&DBNFTStorefront.Storefront{DBNFTStorefront.StorefrontManager}>(from: DBNFTStorefront.StorefrontStoragePath)
-            ?? panic("Missing or mis-typed DBNFTStorefront.Storefront")
+        self.storefront = acct.borrow<&NFTStorefront.Storefront{NFTStorefront.StorefrontManager}>(from: NFTStorefront.StorefrontStoragePath)
+            ?? panic("Missing or mis-typed NFTStorefront.Storefront")
     }
 
     execute {
-        self.storefront.removeSaleOffer(saleOfferResourceID: saleOfferResourceID)
+        self.storefront.removeListing(listingResourceID: listingResourceID)
     }
 }
 `

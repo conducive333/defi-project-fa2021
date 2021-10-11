@@ -1,56 +1,50 @@
 export default (
   devAddress: string,
+  nftAddress: string,
   fungibleTokenAddress: string,
-  flowTokenAddress: string
+  flowTokenAddress: string,
+  flowStorefrontAddress: string
 ) =>
   `
 import FungibleToken from ${fungibleTokenAddress}
-import DBNonFungibleToken from ${devAddress}
+import NonFungibleToken from ${nftAddress}
 import FlowToken from ${flowTokenAddress}
-import DBCollectable from ${devAddress}
-import DBNFTStorefront from ${devAddress}
+import CryptoCreateItems from ${devAddress}
+import NFTStorefront from ${flowStorefrontAddress}
 
 
-transaction(saleOfferResourceID: UInt64, storefrontAddress: Address, withdrawMeta: {String: String}, depositMeta: {String: String}, saleOfferCompletedMeta: {String: String}) {
+transaction(listingResourceID: UInt64, storefrontAddress: Address) {
 
     let paymentVault: @FungibleToken.Vault
-    let DBCollectableCollection: &DBCollectable.Collection{DBNonFungibleToken.Receiver}
-    let storefront: &DBNFTStorefront.Storefront{DBNFTStorefront.StorefrontPublic}
-    let saleOffer: &DBNFTStorefront.SaleOffer{DBNFTStorefront.SaleOfferPublic}
+    let nftCollection: &CryptoCreateItems.Collection{NonFungibleToken.Receiver}
+    let storefront: &NFTStorefront.Storefront{NFTStorefront.StorefrontPublic}
+    let listing: &NFTStorefront.Listing{NFTStorefront.ListingPublic}
 
-    prepare(account: AuthAccount) {
+    prepare(acct: AuthAccount) {
         self.storefront = getAccount(storefrontAddress)
-            .getCapability<&DBNFTStorefront.Storefront{DBNFTStorefront.StorefrontPublic}>(
-                DBNFTStorefront.StorefrontPublicPath
+            .getCapability<&NFTStorefront.Storefront{NFTStorefront.StorefrontPublic}>(
+                NFTStorefront.StorefrontPublicPath
             )!
             .borrow()
-            ?? panic("Cannot borrow Storefront from provided address")
+            ?? panic("Could not borrow Storefront from provided address")
 
-        self.saleOffer = self.storefront.borrowSaleOffer(saleOfferResourceID: saleOfferResourceID)
-            ?? panic("No offer with that ID in Storefront")
-        
-        let price = self.saleOffer.getDetails().salePrice
+        self.listing = self.storefront.borrowListing(listingResourceID: listingResourceID)
+            ?? panic("No Offer with that ID in Storefront")
+        let price = self.listing.getDetails().salePrice
 
-        let mainFlowTokenVault = account.borrow<&FlowToken.Vault>(from: /storage/flowTokenVault)
-            ?? panic("Cannot borrow FlowToken vault from account storage")
-        
-        self.paymentVault <- mainFlowTokenVault.withdraw(amount: price)
+        let mainFlowVault = acct.borrow<&FlowToken.Vault>(from: /storage/flowTokenVault)
+            ?? panic("Cannot borrow FlowToken vault from acct storage")
+        self.paymentVault <- mainFlowVault.withdraw(amount: price)
 
-        self.DBCollectableCollection = account.borrow<&DBCollectable.Collection{DBNonFungibleToken.Receiver}>(
-            from: DBCollectable.CollectionStoragePath
-        ) ?? panic("Cannot borrow DBCollectable collection receiver from account")
+        self.nftCollection = acct.borrow<&CryptoCreateItems.Collection{NonFungibleToken.Receiver}>(
+            from: CryptoCreateItems.CollectionStoragePath
+        ) ?? panic("Cannot borrow NFT collection receiver from account")
     }
 
     execute {
-        let item <- self.saleOffer.accept(
-            payment: <-self.paymentVault,
-            trxMeta: withdrawMeta,
-            sftrxMeta: saleOfferCompletedMeta
-        )
-
-        self.DBCollectableCollection.deposit(token: <-item, trxMeta: depositMeta)
-
-        self.storefront.cleanup(saleOfferResourceID: saleOfferResourceID)
+        let item <- self.listing.purchase(payment: <-self.paymentVault)
+        self.nftCollection.deposit(token: <-item)
+        self.storefront.cleanup(listingResourceID: listingResourceID)
     }
 }
 `

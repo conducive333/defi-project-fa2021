@@ -1,11 +1,11 @@
-export default (devAddress: string) =>
+export default (flowStorefrontAddress: string) =>
   `
-import DBNonFungibleToken from ${devAddress}
-import DBNFTStorefront from ${devAddress}
+import NFTStorefront from ${flowStorefrontAddress}
+
 
 pub fun main(address: Address): Bool {
   let account = getAccount(address)
-  if let storefrontRef = account.getCapability<&DBNFTStorefront.Storefront{DBNFTStorefront.StorefrontPublic}>(DBNFTStorefront.StorefrontPublicPath).borrow() {
+  if let storefrontRef = account.getCapability<&NFTStorefront.Storefront{NFTStorefront.StorefrontPublic}>(NFTStorefront.StorefrontPublicPath).borrow() {
     return true
   }
   return false

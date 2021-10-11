@@ -1,20 +1,20 @@
 export default (address: string, nftAddress: string) =>
   `
 import NonFungibleToken from ${nftAddress}
-import DooverseItems from ${address}
+import CryptoCreateItems from ${address}
 
-pub fun main(address: Address, limit: Int, offset: Int): [&DooverseItems.NFT?] {
+pub fun main(address: Address, limit: Int, offset: Int): [&CryptoCreateItems.NFT?] {
 
   let account = getAccount(address)
 
-  let collection = account.getCapability<&DooverseItems.Collection{NonFungibleToken.CollectionPublic, DooverseItems.DooverseItemsCollectionPublic}>(DooverseItems.CollectionPublicPath).borrow()
+  let collection = account.getCapability<&CryptoCreateItems.Collection{NonFungibleToken.CollectionPublic, CryptoCreateItems.CryptoCreateItemsCollectionPublic}>(CryptoCreateItems.CollectionPublicPath).borrow()
     ?? panic("Could not borrow capability from collection")
 
-  let collectionRef = account.getCapability(DooverseItems.CollectionPublicPath)!.borrow<&{NonFungibleToken.CollectionPublic}>()
+  let collectionRef = account.getCapability(CryptoCreateItems.CollectionPublicPath)!.borrow<&{NonFungibleToken.CollectionPublic}>()
     ?? panic("Could not borrow capability from public collection")
 
   let ids = collectionRef.getIDs()
-  let items: [&DooverseItems.NFT?] = []
+  let items: [&CryptoCreateItems.NFT?] = []
 
   var index = 0
   while ((index + offset) < ids.length && index < limit) {

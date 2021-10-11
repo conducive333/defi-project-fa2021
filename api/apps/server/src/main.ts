@@ -15,7 +15,6 @@ async function bootstrap() {
   const env = process.env['NODE' + '_ENV']
   const { httpAdapter } = app.get(HttpAdapterHost)
   const conf = app.get(ConfigService)
-  const maxCookieAge = 3600000 // 1 hour in milliseconds
   const globalPrefix = 'v1'
 
   // Special configs

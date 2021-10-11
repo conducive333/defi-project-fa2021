@@ -1,10 +1,10 @@
-import { StorefrontService } from './storefront.service'
-import { FlowAuthModule } from '@api/flow/flow-auth'
 import { Module } from '@nestjs/common'
+import { FlowStorefrontService } from './storefront.service'
+import { FlowAuthModule } from '@api/flow/flow-auth'
 
 @Module({
   imports: [FlowAuthModule],
-  providers: [StorefrontService],
-  exports: [StorefrontService],
+  providers: [FlowStorefrontService],
+  exports: [FlowStorefrontService],
 })
-export class StorefrontModule {}
+export class FlowStorefrontModule {}
