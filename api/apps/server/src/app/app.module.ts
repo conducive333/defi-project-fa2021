@@ -1,22 +1,17 @@
 import { ConfigModule, ConfigService } from '@nestjs/config'
+import { PassportModule } from '@nestjs/passport'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import {
-  SaleOfferAvailableEvent,
-  SaleOfferCompletedEvent,
-  SimpleNftTransfer,
-  FlowTransaction,
-  MarketItem,
-  NftEvent,
-  FlowKey,
-} from '@api/database'
+import { registry } from '@api/database'
 import { Module } from '@nestjs/common'
+import { AuthModule } from '@api/auth'
+import { UserModule } from '@api/user'
 import * as path from 'path'
 import * as Joi from 'joi'
 import {
-  awsConfigSchema,
   serverConfigSchema,
   flowConfigSchema,
   miscConfigSchema,
+  googleConfigSchema,
 } from '@api/utils'
 
 // https://stackoverflow.com/questions/58090082/process-env-node-env-always-development-when-building-nestjs-app-with-nrwl-nx
@@ -37,25 +32,23 @@ const env = path.join(
         path.join(env, '.env.server'),
         path.join(env, '.env.misc'),
         path.join(env, '.env.flow'),
-        path.join(env, '.env.aws'),
+        path.join(env, '.env.google'),
       ],
       validationSchema: Joi.object({
         ...serverConfigSchema,
         ...miscConfigSchema,
         ...flowConfigSchema,
-        ...awsConfigSchema,
+        ...googleConfigSchema,
       }),
       validationOptions: {
         abortEarly: true,
       },
     }),
-    TypeOrmModule.forFeature([SaleOfferAvailableEvent]),
-    TypeOrmModule.forFeature([SaleOfferCompletedEvent]),
-    TypeOrmModule.forFeature([SimpleNftTransfer]),
-    TypeOrmModule.forFeature([FlowTransaction]),
-    TypeOrmModule.forFeature([MarketItem]),
-    TypeOrmModule.forFeature([NftEvent]),
-    TypeOrmModule.forFeature([FlowKey]),
+    ...registry,
+    PassportModule.register({
+      defaultStrategy: 'local',
+      session: true,
+    }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -69,6 +62,8 @@ const env = path.join(
         autoLoadEntities: true,
       }),
     }),
+    AuthModule,
+    UserModule,
   ],
 })
 export class AppModule {}

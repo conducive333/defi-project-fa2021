@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@api/auth": ["libs/auth/src/index.ts"],
       "@api/database": ["libs/database/src/index.ts"],
       "@api/flow/flow-admin-storefront": [
         "libs/flow/flow-admin-storefront/src/index.ts"
@@ -26,6 +27,10 @@
       "@api/flow/flow-service": ["libs/flow/flow-service/src/index.ts"],
       "@api/flow/flow-storefront": ["libs/flow/flow-storefront/src/index.ts"],
       "@api/logger": ["libs/logger/src/index.ts"],
+      "@api/market": ["libs/market/src/index.ts"],
+      "@api/rate-limiter": ["libs/rate-limiter/src/index.ts"],
+      "@api/submission": ["libs/submission/src/index.ts"],
+      "@api/user": ["libs/user/src/index.ts"],
       "@api/utils": ["libs/utils/src/index.ts"]
     }
   },

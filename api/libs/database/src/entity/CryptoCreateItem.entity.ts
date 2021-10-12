@@ -9,7 +9,7 @@ import {
 } from 'typeorm'
 
 @Entity()
-export class MarketItem {
+export class CryptoCreateItem {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
@@ -25,9 +25,9 @@ export class MarketItem {
   @Column({ type: 'text', nullable: false })
   image: string
 
-  @OneToMany(() => NftEvent, (event) => event.marketItem)
+  @OneToMany(() => NftEvent, (event) => event.cryptoCreateItem)
   events: NftEvent[]
 
-  @OneToMany(() => SaleOfferAvailableEvent, (event) => event.marketItem)
+  @OneToMany(() => SaleOfferAvailableEvent, (event) => event.cryptoCreateItem)
   saleOfferAvailableEvent: SaleOfferAvailableEvent[]
 }

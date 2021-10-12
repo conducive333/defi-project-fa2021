@@ -9,7 +9,7 @@ import {
 } from 'typeorm'
 import { SaleOfferCompletedEvent } from './SaleOfferCompletedEvent.entity'
 import { FlowTransaction } from './FlowTransaction.entity'
-import { MarketItem } from './MarketItem.entity'
+import { CryptoCreateItem } from './CryptoCreateItem.entity'
 
 @Entity()
 export class SaleOfferAvailableEvent {
@@ -29,17 +29,17 @@ export class SaleOfferAvailableEvent {
   nftType: string
 
   @ManyToOne(
-    () => MarketItem,
-    (marketItem) => marketItem.saleOfferAvailableEvent,
+    () => CryptoCreateItem,
+    (cryptoCreateItem) => cryptoCreateItem.saleOfferAvailableEvent,
     {
       nullable: false,
     }
   )
-  @JoinColumn({ name: 'market_item_id' })
-  marketItem: MarketItem
+  @JoinColumn({ name: 'crypto_create_item_id' })
+  cryptoCreateItem: CryptoCreateItem
 
-  @Column({ name: 'market_item_id', type: 'uuid', nullable: false })
-  marketItemId: string
+  @Column({ name: 'crypto_create_item_id', type: 'uuid', nullable: false })
+  cryptoCreateItemId: string
 
   @Column({ name: 'ft_vault_type', type: 'text', nullable: false })
   ftVaultType: string

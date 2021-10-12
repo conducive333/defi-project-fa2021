@@ -27,6 +27,9 @@
     ]
   },
   "projects": {
+    "auth": {
+      "tags": []
+    },
     "database": {
       "tags": []
     },
@@ -57,7 +60,19 @@
     "logger": {
       "tags": []
     },
+    "market": {
+      "tags": []
+    },
+    "rate-limiter": {
+      "tags": []
+    },
     "server": {
+      "tags": []
+    },
+    "submission": {
+      "tags": []
+    },
+    "user": {
       "tags": []
     },
     "utils": {

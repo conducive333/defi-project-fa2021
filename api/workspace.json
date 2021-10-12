@@ -1,6 +1,28 @@
 {
   "version": 2,
   "projects": {
+    "auth": {
+      "root": "libs/auth",
+      "sourceRoot": "libs/auth/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/auth/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/auth"],
+          "options": {
+            "jestConfig": "libs/auth/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "database": {
       "root": "libs/database",
       "sourceRoot": "libs/database/src",
@@ -250,6 +272,50 @@
         }
       }
     },
+    "market": {
+      "root": "libs/market",
+      "sourceRoot": "libs/market/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/market/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/market"],
+          "options": {
+            "jestConfig": "libs/market/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "rate-limiter": {
+      "root": "libs/rate-limiter",
+      "sourceRoot": "libs/rate-limiter/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/rate-limiter/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/rate-limiter"],
+          "options": {
+            "jestConfig": "libs/rate-limiter/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "server": {
       "root": "apps/server",
       "sourceRoot": "apps/server/src",
@@ -296,6 +362,50 @@
           "outputs": ["coverage/apps/server"],
           "options": {
             "jestConfig": "apps/server/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "submission": {
+      "root": "libs/submission",
+      "sourceRoot": "libs/submission/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/submission/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/submission"],
+          "options": {
+            "jestConfig": "libs/submission/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "user": {
+      "root": "libs/user",
+      "sourceRoot": "libs/user/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/user/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/user"],
+          "options": {
+            "jestConfig": "libs/user/jest.config.js",
             "passWithNoTests": true
           }
         }

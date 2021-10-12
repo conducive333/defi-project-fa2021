@@ -25,7 +25,7 @@ import { ViewColumn, ViewEntity } from 'typeorm'
     )
     SELECT
       history.*, 
-      mint_event.market_item_id AS market_item_id
+      mint_event.crypto_create_item_id AS crypto_create_item_id
     FROM (
       SELECT
         simple_withdraw.created_at AS created_at,
@@ -39,12 +39,12 @@ import { ViewColumn, ViewEntity } from 'typeorm'
     ) AS history
     INNER JOIN (
       SELECT
-        nft_event.market_item_id, 
+        nft_event.crypto_create_item_id, 
         nft_event.nft_id 
       FROM nft_event
       WHERE nft_id IS NOT NULL
     ) AS mint_event ON history.nft_id = mint_event.nft_id
-    INNER JOIN market_item ON market_item.id = mint_event.market_item_id
+    INNER JOIN crypto_create_item ON crypto_create_item.id = mint_event.crypto_create_item_id
   `,
 })
 export class SimpleNftTransfer {
@@ -63,6 +63,6 @@ export class SimpleNftTransfer {
   @ViewColumn({ name: 'receiver' })
   receiver: string
 
-  @ViewColumn({ name: 'market_item_id' })
-  marketItemId: string
+  @ViewColumn({ name: 'crypto_create_item_id' })
+  cryptoCreateItemId: string
 }

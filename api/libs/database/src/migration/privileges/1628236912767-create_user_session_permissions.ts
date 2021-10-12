@@ -2,15 +2,15 @@ import { MigrationInterface, QueryRunner } from 'typeorm'
 import { resetPermissions } from '../../utils/permissions'
 import { clientRole } from '../../utils/roles'
 
-export class createMarketItemPermissions1628120404233
+export class createUserSessionPermissions1628236912767
   implements MigrationInterface
 {
-  private readonly TABLE = 'market_item'
+  private readonly TABLE = 'user_session'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     const { CLIENT_DB_USER } = clientRole
     await queryRunner.query(
-      `GRANT SELECT ON TABLE "${this.TABLE}" TO "${CLIENT_DB_USER}"`
+      `GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE "${this.TABLE}" TO "${CLIENT_DB_USER}"`
     )
   }
 

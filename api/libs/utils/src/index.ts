@@ -1,5 +1,5 @@
 export * from './lib/config/misc.config'
 export * from './lib/config/server.config'
 export * from './lib/config/flow.config'
-export * from './lib/config/aws.config'
+export * from './lib/config/google.config'
 export * from './lib/config/db.config'
