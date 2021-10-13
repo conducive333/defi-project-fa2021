@@ -35,6 +35,9 @@ export class createTables1627860201306 implements MigrationInterface {
       `CREATE TABLE "flow_key" ("id" integer NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "is_in_use" boolean NOT NULL DEFAULT false, CONSTRAINT "PK_4ddc07d5b7cabacb45ce362492e" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
+      `CREATE TABLE "rate_limit_record" ("key" character varying(255) NOT NULL, "points" integer NOT NULL DEFAULT '0', "expire" bigint NOT NULL, CONSTRAINT "PK_65620a37d4ad3289eef76c73e1f" PRIMARY KEY ("key"))`
+    )
+    await queryRunner.query(
       `CREATE TABLE "user_session" ("id" character varying NOT NULL, "expires_at" integer NOT NULL, "data" character varying NOT NULL, CONSTRAINT "PK_adf3b49590842ac3cf54cac451a" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
@@ -146,6 +149,7 @@ INNER JOIN crypto_create_item ON crypto_create_item.id = mint_event.crypto_creat
       `ALTER TABLE "nft_event" DROP CONSTRAINT "FK_fe471d2f439fa69a7f9acbf0655"`
     )
     await queryRunner.query(`DROP TABLE "user_session"`)
+    await queryRunner.query(`DROP TABLE "rate_limit_record"`)
     await queryRunner.query(`DROP TABLE "flow_key"`)
     await queryRunner.query(`DROP TABLE "drawing_pool"`)
     await queryRunner.query(`DROP TABLE "nft_submission"`)
