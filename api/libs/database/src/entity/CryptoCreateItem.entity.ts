@@ -13,7 +13,11 @@ export class CryptoCreateItem {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
-  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamptz',
+    nullable: false,
+  })
   createdAt: Date
 
   @Column({ type: 'text', nullable: false })

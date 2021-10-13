@@ -23,7 +23,11 @@ export class NftEvent {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
-  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamptz',
+    nullable: false,
+  })
   createdAt: Date
 
   @Column({ name: 'event_type', enum: NftEventType, nullable: false })

@@ -17,7 +17,11 @@ export class FlowTransaction {
   })
   id: string
 
-  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamptz',
+    nullable: false,
+  })
   createdAt: Date
 
   @Column({ name: 'block_id', type: 'text', nullable: false })

@@ -30,5 +30,4 @@ export class UserController {
     await this.userService.update(user, updateUserDto.username)
     return { data: 'SUCCESS' }
   }
-
 }

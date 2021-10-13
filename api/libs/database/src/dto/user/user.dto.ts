@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { User } from '@api/database'
 
-export class UserDto implements User {
+export class UserDto implements Omit<User, 'drawingPool' | 'submissions'> {
   @ApiProperty({ type: 'string', format: 'uuid' })
   id: string
 
@@ -13,4 +13,7 @@ export class UserDto implements User {
 
   @ApiProperty({ type: 'string' })
   username: string
+
+  @ApiProperty({ type: 'string', format: 'uuid' })
+  drawingPoolId: string
 }

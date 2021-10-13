@@ -17,9 +17,17 @@ export class BlockCursor {
   @Column({ name: 'current_block_height', type: 'bigint', nullable: false })
   currentBlockHeight: string
 
-  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamptz',
+    nullable: false,
+  })
   createdAt: Date
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn({
+    name: 'updated_at',
+    type: 'timestamptz',
+    nullable: false,
+  })
   updatedAt: Date
 }

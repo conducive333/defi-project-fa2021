@@ -22,7 +22,9 @@ export class AuthController {
   }
 
   // TODO: redirect to front end (directly) OR use res.redirect here.
-  @ApiOperation({ summary: 'The endpoint Google will call once authentication is complete.' })
+  @ApiOperation({
+    summary: 'The endpoint Google will call once authentication is complete.',
+  })
   @ApiResponse({ status: 200, type: UserDto })
   @UseGuards(GoogleLoginGuard)
   @Get('redirect')
@@ -33,5 +35,4 @@ export class AuthController {
       throw new NotFoundException('User not found.')
     }
   }
-
 }
