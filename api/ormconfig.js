@@ -7,11 +7,18 @@ const envPath = path.join(__dirname, 'env', nodeEnv)
 const migFldr =
   nodeEnv === 'development' || nodeEnv === 'testing' ? 'development' : nodeEnv
 
-const server = path.join(envPath, '.env.server')
-if (fs.existsSync(server)) {
-  dotenv.config({ path: server })
+const client = path.join(envPath, '.env.client')
+if (fs.existsSync(client)) {
+  dotenv.config({ path: client })
 } else {
-  throw new Error(`File does not exist: ${server}`)
+  throw new Error(`File does not exist: ${client}`)
+}
+
+const admin = path.join(envPath, '.env.admin')
+if (fs.existsSync(admin)) {
+  dotenv.config({ path: admin })
+} else {
+  throw new Error(`File does not exist: ${admin}`)
 }
 
 const db = path.join(envPath, '.env.db')

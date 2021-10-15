@@ -27,7 +27,28 @@
     ]
   },
   "projects": {
-    "auth": {
+    "admin-drawing-pool": {
+      "tags": []
+    },
+    "admin-market": {
+      "tags": []
+    },
+    "admin-server": {
+      "tags": []
+    },
+    "client-auth": {
+      "tags": []
+    },
+    "client-market": {
+      "tags": []
+    },
+    "client-server": {
+      "tags": []
+    },
+    "client-submission": {
+      "tags": []
+    },
+    "client-user": {
       "tags": []
     },
     "database": {
@@ -60,19 +81,7 @@
     "logger": {
       "tags": []
     },
-    "market": {
-      "tags": []
-    },
     "rate-limiter": {
-      "tags": []
-    },
-    "server": {
-      "tags": []
-    },
-    "submission": {
-      "tags": []
-    },
-    "user": {
       "tags": []
     },
     "utils": {
