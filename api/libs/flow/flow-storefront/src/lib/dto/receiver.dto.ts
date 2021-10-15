@@ -10,7 +10,7 @@ class ValueDto {
 class PathDto {
   @ApiProperty({ type: 'string', example: 'Path' })
   readonly type: string
-  @ApiProperty({ type: 'string', example: 'Path' })
+  @ApiProperty({ type: ValueDto })
   readonly value: ValueDto
 }
 

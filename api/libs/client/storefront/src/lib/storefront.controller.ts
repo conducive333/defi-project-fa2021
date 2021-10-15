@@ -5,9 +5,10 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { AdminListingDto } from '@api/flow/flow-admin-storefront'
 import { FlowAddressDto, IsValidFlowAddressGuard } from '@api/flow/flow-service'
 import { HasFlowStorefront, ListingDto } from '@api/flow/flow-storefront'
-import { HasAdminStorefront } from '@api/flow/flow-admin-storefront'
+import { RateLimiterGuard } from '@api/rate-limiter'
 import { FlowAddressAndListingIdDto } from './dto/address-and-id.dto'
 
+@UseGuards(RateLimiterGuard)
 @ApiTags('Storefront')
 @Controller('storefront')
 export class StorefrontController {

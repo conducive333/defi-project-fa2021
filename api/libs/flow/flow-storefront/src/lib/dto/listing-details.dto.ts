@@ -1,9 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { NftMetadataDto } from './metadata.dto'
 import { SaleCutsDto } from './sale-cuts.dto'
 
 export class ListingDetailsDto {
-  @ApiProperty({ type: 'integer', example: 14184069 })
+  @ApiProperty({
+    type: 'integer',
+    minimum: 0,
+    maximum: 2 ** 64 - 1,
+    example: 14184069,
+  })
   readonly storefrontID: number
 
   @ApiProperty({ type: 'boolean', example: false })
@@ -13,10 +17,10 @@ export class ListingDetailsDto {
     type: 'string',
     example: 'A.543c936653c95e57.CryptoCreate.NFT',
   })
-  nftType: string
+  readonly nftType: string
 
   @ApiProperty({ type: 'integer', example: 75 })
-  nftID: string
+  readonly nftID: string
 
   @ApiProperty({
     type: 'string',
@@ -27,6 +31,6 @@ export class ListingDetailsDto {
   @ApiProperty({ type: 'string', example: '10.12732000' })
   readonly salePrice: string
 
-  @ApiProperty({ type: 'string' })
+  @ApiProperty({ type: SaleCutsDto })
   readonly saleCuts: SaleCutsDto[]
 }
