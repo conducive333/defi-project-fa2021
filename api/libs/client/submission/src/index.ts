@@ -1,1 +1,1 @@
-export * from './lib/client-submission'
+export * from './lib/submission.module'

@@ -1,5 +1,6 @@
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { StorefrontModule } from '@api/client/storefront'
+import { SubmissionModule } from '@api/client/submission'
 import { AuthModule } from '@api/client/auth'
 import { PassportModule } from '@nestjs/passport'
 import { TypeOrmModule } from '@nestjs/typeorm'
@@ -63,6 +64,7 @@ const env = path.join(
       }),
     }),
     AuthModule,
+    SubmissionModule,
     StorefrontModule,
   ],
 })

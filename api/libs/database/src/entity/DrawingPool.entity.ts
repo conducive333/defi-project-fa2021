@@ -39,7 +39,7 @@ export class DrawingPool {
   size: number
 
   @OneToMany(() => NftSubmission, (nftSubmission) => nftSubmission.creator)
-  submissions: NftSubmission
+  submissions: NftSubmission[]
 
   @OneToMany(() => User, (user) => user.drawingPool)
   users: User[]

@@ -37,12 +37,12 @@ export class NftSubmission {
   @ManyToOne(() => DrawingPool, (drawingPool) => drawingPool.submissions)
   drawingPool: string
 
-  @Column({ name: 'drawing_pool_id', type: 'text', nullable: false })
+  @Column({ name: 'drawing_pool_id', type: 'uuid', nullable: false })
   drawingPoolId: string
 
   @ManyToOne(() => User, (user) => user.submissions)
   creator: string
 
-  @Column({ name: 'creator_id', type: 'text', nullable: false })
+  @Column({ name: 'creator_id', type: 'uuid', nullable: false })
   creatorId: string
 }
