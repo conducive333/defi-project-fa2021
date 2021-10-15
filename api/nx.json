@@ -39,10 +39,10 @@
     "client-auth": {
       "tags": []
     },
-    "client-market": {
+    "client-server": {
       "tags": []
     },
-    "client-server": {
+    "client-storefront": {
       "tags": []
     },
     "client-submission": {

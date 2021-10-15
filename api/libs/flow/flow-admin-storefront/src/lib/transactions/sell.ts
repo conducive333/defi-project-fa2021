@@ -1,4 +1,5 @@
 export default (
+  nftContractName: string,
   devAddress: string,
   nftAddress: string,
   fungibleTokenAddress: string,
@@ -9,44 +10,53 @@ export default (
 import FungibleToken from ${fungibleTokenAddress}
 import NonFungibleToken from ${nftAddress}
 import FlowToken from ${flowTokenAddress}
-import CryptoCreateItems from ${devAddress}
-import CryptoCreateNFTStorefront from ${flowStorefrontAddress}
+import ${nftContractName} from ${devAddress}
+import AdminNFTStorefront from ${flowStorefrontAddress}
 
-transaction(saleItemID: UInt64, saleItemPrice: UFix64) {
+transaction(
+    creatorAddress: Address, 
+    saleItemPrice: UFix64, 
+    creatorPercent: UFix64,
+    metadata: {String:String}
+) {
 
-    let flowReceiver: Capability<&FlowToken.Vault{FungibleToken.Receiver}>
-    let nftProvider: Capability<&CryptoCreateItems.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>
-    let storefront: &CryptoCreateNFTStorefront.Storefront
+    let adminWallet: Capability<&FlowToken.Vault{FungibleToken.Receiver}>
+    let creatorWallet: Capability<&FlowToken.Vault{FungibleToken.Receiver}>
+    let nftReceiver: Capability<&${nftContractName}.Collection{NonFungibleToken.CollectionPublic}>
+    let storefront: &AdminNFTStorefront.AdminStorefront
 
     prepare(acct: AuthAccount) {
-        // We need a provider capability, but one is not provided by default so we create one if needed.
-        let nftCollectionProviderPrivatePath = /private/nftCollectionProviderForCryptoCreateNFTStorefront
+        assert(creatorPercent >= 0.0 && creatorPercent <= 1.0, message: "Invalid creator percentage sale cut.")
+        let creator = getAccount(creatorAddress)
 
-        self.flowReceiver = acct.getCapability<&FlowToken.Vault{FungibleToken.Receiver}>(/public/flowTokenReceiver)!
-        assert(self.flowReceiver.borrow() != nil, message: "Missing or mis-typed FlowToken receiver")
+        self.adminWallet = acct.getCapability<&FlowToken.Vault{FungibleToken.Receiver}>(/public/flowTokenReceiver)!
+        assert(self.adminWallet.borrow() != nil, message: "Missing or mis-typed FlowToken receiver for admin")
 
-        if !acct.getCapability<&CryptoCreateItems.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>(nftCollectionProviderPrivatePath)!.check() {
-            acct.link<&CryptoCreateItems.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>(nftCollectionProviderPrivatePath, target: CryptoCreateItems.CollectionStoragePath)
-        }
+        self.creatorWallet = creator.getCapability<&FlowToken.Vault{FungibleToken.Receiver}>(/public/flowTokenReceiver)!
+        assert(self.creatorWallet.borrow() != nil, message: "Missing or mis-typed FlowToken receiver for creator")
 
-        self.nftProvider = acct.getCapability<&CryptoCreateItems.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>(nftCollectionProviderPrivatePath)!
-        assert(self.nftProvider.borrow() != nil, message: "Missing or mis-typed CryptoCreateItems.Collection provider")
+        // borrow a public reference to the receivers collection
+        self.nftReceiver = creator.getCapability<&CryptoCreate.Collection{NonFungibleToken.CollectionPublic}>(CryptoCreate.CollectionPublicPath)!
+        assert(self.nftReceiver.borrow() != nil, message: "Missing or mis-typed ${nftContractName}.Collection receiver")
 
-        self.storefront = acct.borrow<&CryptoCreateNFTStorefront.Storefront>(from: CryptoCreateNFTStorefront.StorefrontStoragePath)
-            ?? panic("Missing or mis-typed CryptoCreateNFTStorefront Storefront")
+        self.storefront = acct.borrow<&AdminNFTStorefront.AdminStorefront>(from: AdminNFTStorefront.AdminStorefrontStoragePath)
+            ?? panic("Missing or mis-typed AdminNFTStorefront Storefront")
     }
 
     execute {
-        let saleCut = CryptoCreateNFTStorefront.SaleCut(
-            receiver: self.flowReceiver,
-            amount: saleItemPrice
+        let adminCut = AdminNFTStorefront.SaleCut(
+            receiver: self.adminWallet,
+            amount: saleItemPrice * (1.0 - creatorPercent)
+        )
+        let creatorCut = AdminNFTStorefront.SaleCut(
+            receiver: self.creatorWallet,
+            amount: saleItemPrice * creatorPercent
         )
         self.storefront.createListing(
-            nftProviderCapability: self.nftProvider,
-            nftType: Type<@CryptoCreateItems.NFT>(),
-            nftID: saleItemID,
+            nftReceiverCapability: self.nftReceiver,
+            metadata: metadata,
             salePaymentVaultType: Type<@FlowToken.Vault>(),
-            saleCuts: [saleCut]
+            saleCuts: [adminCut, creatorCut]
         )
     }
 }

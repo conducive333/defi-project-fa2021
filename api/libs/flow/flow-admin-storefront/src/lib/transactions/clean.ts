@@ -1,14 +1,14 @@
 export default (flowStorefrontAddress: string) =>
   `
-import CryptoCreateNFTStorefront from ${flowStorefrontAddress}
+import AdminNFTStorefront from ${flowStorefrontAddress}
 
 transaction(listingResourceID: UInt64, storefrontAddress: Address) {
-    let storefront: &CryptoCreateNFTStorefront.Storefront{CryptoCreateNFTStorefront.StorefrontPublic}
+    let storefront: &AdminNFTStorefront.Storefront{AdminNFTStorefront.StorefrontPublic}
 
     prepare(acct: AuthAccount) {
         self.storefront = getAccount(storefrontAddress)
-            .getCapability<&CryptoCreateNFTStorefront.Storefront{CryptoCreateNFTStorefront.StorefrontPublic}>(
-                CryptoCreateNFTStorefront.StorefrontPublicPath
+            .getCapability<&AdminNFTStorefront.Storefront{AdminNFTStorefront.StorefrontPublic}>(
+                AdminNFTStorefront.StorefrontPublicPath
             )!
             .borrow()
             ?? panic("Could not borrow Storefront from provided address")

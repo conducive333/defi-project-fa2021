@@ -3,17 +3,17 @@ import { User } from '@api/database'
 
 export class UserDto implements Omit<User, 'drawingPool' | 'submissions'> {
   @ApiProperty({ type: 'string', format: 'uuid' })
-  id: string
+  readonly id: string
 
   @ApiProperty({ type: 'string', format: 'date-time' })
-  createdAt: Date
+  readonly createdAt: Date
 
   @ApiProperty({ type: 'string', format: 'email' })
-  email: string
+  readonly email: string
 
   @ApiProperty({ type: 'string' })
-  username: string
+  readonly username: string
 
   @ApiProperty({ type: 'string', format: 'uuid' })
-  drawingPoolId: string
+  readonly drawingPoolId: string
 }

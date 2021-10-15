@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { FlowAdminStorefrontService } from './admin-storefront.service'
+import { AdminStorefrontService } from './admin-storefront.service'
 
-describe('FlowAdminStorefrontService', () => {
-  let service: FlowAdminStorefrontService
+describe('AdminStorefrontService', () => {
+  let service: AdminStorefrontService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [FlowAdminStorefrontService],
+      providers: [AdminStorefrontService],
     }).compile()
 
-    service = module.get<FlowAdminStorefrontService>(FlowAdminStorefrontService)
+    service = module.get<AdminStorefrontService>(AdminStorefrontService)
   })
 
   it('should be defined', () => {

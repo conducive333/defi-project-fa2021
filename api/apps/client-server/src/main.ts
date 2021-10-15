@@ -1,8 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import {
-  ExpressAdapter,
-  NestExpressApplication,
-} from '@nestjs/platform-express'
+import { ExpressAdapter } from '@nestjs/platform-express'
 import { Logger, ValidationPipe } from '@nestjs/common'
 import { FlowService } from '@api/flow/flow-service'
 import { LoggingFilter, LoggingInterceptor } from '@api/logger'
@@ -19,7 +16,7 @@ import * as passport from 'passport'
 import * as helmet from 'helmet'
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule)
+  const app = await NestFactory.create(AppModule)
   const env = process.env['NODE' + '_ENV']
   const { httpAdapter } = app.get(HttpAdapterHost)
   const conf = app.get(ConfigService)
@@ -35,8 +32,8 @@ async function bootstrap() {
 
   // Special configs
   if (env === 'staging' || env === 'production') {
-    const expressAdapter = app.getHttpAdapter().getInstance() as ExpressAdapter
-    expressAdapter.set('trust proxy', true)
+    const express = app.getHttpAdapter().getInstance() as ExpressAdapter
+    express.set('trust proxy', true)
   } else {
     app.enableCors({
       origin: 'http://localhost:3000',
@@ -65,11 +62,12 @@ async function bootstrap() {
   app.use(
     session({
       name: 'session',
-      secret: app.get(ConfigService).get<string>('MISC_COOKIE_SECRET'),
+      secret: conf.get<string>('MISC_COOKIE_SECRET'),
       resave: false, // TypeormStore implements the touch method, so this should be false
       saveUninitialized: false,
       unset: 'destroy',
       store: sessionStore,
+      rolling: true,
       cookie: {
         path: '/',
         maxAge: maxCookieAge,
@@ -97,16 +95,17 @@ async function bootstrap() {
       })
     )
     const config = new swagger.DocumentBuilder()
-      .setTitle('CryptoCreate Admin API')
-      .setDescription('The CryptoCreate Admin API')
+      .setTitle('CryptoCreate Client API')
+      .setDescription('The CryptoCreate Client API')
       .setVersion('1.0.0-alpha')
       .addTag('API Specification')
       .build()
     const document = swagger.SwaggerModule.createDocument(app, config)
     swagger.SwaggerModule.setup('api', app, document)
   }
+
   FlowService.setAccessNode(conf.get<string>('FLOW_ACCESS_API'))
-  const port = app.get(ConfigService).get<string>('ADMIN_PORT')
+  const port = conf.get<string>('CLIENT_PORT')
   await app.listen(port, () => {
     Logger.log('Listening at http://localhost:' + port + '/' + globalPrefix)
   })

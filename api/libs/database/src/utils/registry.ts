@@ -10,13 +10,17 @@ import { RateLimitRecord } from '../entity/RateLimitRecord.entity'
 import { User } from '../entity/User.entity'
 import { UserSession } from '../entity/UserSession.entity'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { DrawingPool } from '../entity/DrawingPool.entity'
+import { NftSubmission } from '../entity/NftSubmission.entity'
 
 export const registry = [
   TypeOrmModule.forFeature([BlockCursor]),
   TypeOrmModule.forFeature([CryptoCreateItem]),
+  TypeOrmModule.forFeature([DrawingPool]),
   TypeOrmModule.forFeature([FlowKey]),
   TypeOrmModule.forFeature([FlowTransaction]),
   TypeOrmModule.forFeature([NftEvent]),
+  TypeOrmModule.forFeature([NftSubmission]),
   TypeOrmModule.forFeature([RateLimitRecord]),
   TypeOrmModule.forFeature([SaleOfferAvailableEvent]),
   TypeOrmModule.forFeature([SaleOfferCompletedEvent]),

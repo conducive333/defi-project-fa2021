@@ -118,28 +118,6 @@
         }
       }
     },
-    "client-market": {
-      "root": "libs/client/market",
-      "sourceRoot": "libs/client/market/src",
-      "projectType": "library",
-      "targets": {
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "outputs": ["{options.outputFile}"],
-          "options": {
-            "lintFilePatterns": ["libs/client/market/**/*.ts"]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/client/market"],
-          "options": {
-            "jestConfig": "libs/client/market/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
     "client-server": {
       "root": "apps/client-server",
       "sourceRoot": "apps/client-server/src",
@@ -186,6 +164,28 @@
           "outputs": ["coverage/apps/client-server"],
           "options": {
             "jestConfig": "apps/client-server/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "client-storefront": {
+      "root": "libs/client/storefront",
+      "sourceRoot": "libs/client/storefront/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/client/storefront/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/client/storefront"],
+          "options": {
+            "jestConfig": "libs/client/storefront/jest.config.js",
             "passWithNoTests": true
           }
         }

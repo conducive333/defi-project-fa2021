@@ -1,7 +1,8 @@
 import { FlowTypes } from '@api/flow/flow-service'
 
 export interface NftMetadata extends FlowTypes.SimpleDictionary {
-  mintedCardId: string
+  name: string
+  desc: string
 }
 
 export interface NftType {
