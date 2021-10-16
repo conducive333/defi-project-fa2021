@@ -23,28 +23,6 @@
         }
       }
     },
-    "admin-market": {
-      "root": "libs/admin/market",
-      "sourceRoot": "libs/admin/market/src",
-      "projectType": "library",
-      "targets": {
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "outputs": ["{options.outputFile}"],
-          "options": {
-            "lintFilePatterns": ["libs/admin/market/**/*.ts"]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/admin/market"],
-          "options": {
-            "jestConfig": "libs/admin/market/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
     "admin-server": {
       "root": "apps/admin-server",
       "sourceRoot": "apps/admin-server/src",
@@ -113,6 +91,28 @@
           "outputs": ["coverage/libs/client/auth"],
           "options": {
             "jestConfig": "libs/client/auth/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "client-drawing-pool": {
+      "root": "libs/client/drawing-pool",
+      "sourceRoot": "libs/client/drawing-pool/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/client/drawing-pool/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/client/drawing-pool"],
+          "options": {
+            "jestConfig": "libs/client/drawing-pool/jest.config.js",
             "passWithNoTests": true
           }
         }

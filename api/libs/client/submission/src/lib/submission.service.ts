@@ -1,11 +1,22 @@
-import { NftSubmission, NftSubmissionDto, User } from '@api/database'
-import { LimitOffsetOrderQueryDto } from '@api/utils'
-import { Injectable } from '@nestjs/common'
+import {
+  DrawingPool,
+  NftSubmission,
+  NftSubmissionDto,
+  User,
+} from '@api/database'
+import { LimitOffsetOrderQueryDto, UUIDv4Dto } from '@api/utils'
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common'
+import { UserToDrawingPool } from 'libs/database/src/entity/UserToDrawingPool.entity'
 import { getConnection, ILike } from 'typeorm'
-import { UpdateSubmissionDto } from './dto/update-submission.dto'
 
 @Injectable()
 export class SubmissionService {
+  private static readonly LOCK_ID = 2
   async create(
     nftSubmission: Omit<
       NftSubmission,
@@ -13,27 +24,55 @@ export class SubmissionService {
     >
   ) {
     const result = await getConnection().transaction(async (tx) => {
-      // NOTE: using await tx.save(...) will not return
-      // the ID of the inserted entity. As a result, we'll
-      // need to perform another query afterwards, which
-      // is inefficient. To resolve this, we need to use
-      // the query builder interface and cast the result
-      // before returning.
-      return await tx
-        .createQueryBuilder()
-        .insert()
-        .into(NftSubmissionDto)
-        .values(nftSubmission)
-        .returning('*')
-        .execute()
+      await tx.query(`SELECT pg_advisory_xact_lock($1)`, [
+        SubmissionService.LOCK_ID,
+      ])
+      const dp = await tx.findOne(DrawingPool, nftSubmission.drawingPoolId)
+      if (dp) {
+        const now = new Date()
+        if (dp.releaseDate <= now && dp.endDate > now) {
+          const userIsInPool = await tx.findOne(UserToDrawingPool, {
+            where: {
+              drawingPoolId: nftSubmission.drawingPoolId,
+              userId: nftSubmission.creatorId,
+            },
+          })
+          if (userIsInPool) {
+            const hasSubmission = await tx.findOne(NftSubmission, {
+              where: {
+                drawingPoolId: nftSubmission.drawingPoolId,
+                creatorId: nftSubmission.creatorId,
+              },
+            })
+            if (!hasSubmission) {
+              return await tx
+                .createQueryBuilder()
+                .insert()
+                .into(NftSubmissionDto)
+                .values(nftSubmission)
+                .returning('*')
+                .execute()
+            } else {
+              throw new BadRequestException(
+                'User already has a submission for this drawing pool.'
+              )
+            }
+          } else {
+            throw new UnauthorizedException(
+              'User does not have permission to make a submission to this drawing pool.'
+            )
+          }
+        } else {
+          throw new BadRequestException('Drawing pool is not available.')
+        }
+      } else {
+        throw new NotFoundException('Drawing pool not found.')
+      }
     })
     return result.generatedMaps[0] as NftSubmission
   }
 
-  async findAll(
-    user: User,
-    filterOpts: LimitOffsetOrderQueryDto
-  ) {
+  async findAllForUser(userId: string, filterOpts: LimitOffsetOrderQueryDto) {
     // Apparently LIMIT 0 means NO LIMIT in SQL: https://github.com/typeorm/typeorm/issues/4883
     // This if statement makes sure we don't do an unnecessary database call.
     if (filterOpts.limit === 0) return []
@@ -41,7 +80,7 @@ export class SubmissionService {
       if (filterOpts.query) {
         return await tx.find(NftSubmission, {
           where: {
-            creatorId: user.id,
+            creatorId: userId,
             name: ILike(`%${filterOpts.query}%`),
           },
           order: {
@@ -54,7 +93,7 @@ export class SubmissionService {
       } else {
         return await tx.find(NftSubmission, {
           where: {
-            creatorId: user.id,
+            creatorId: userId,
           },
           order: {
             createdAt: filterOpts.order,
@@ -67,42 +106,46 @@ export class SubmissionService {
     })
   }
 
-  async findOne(user: User, id: string) {
-    return await getConnection().transaction(async (tx) => {
-      return await tx.findOne(NftSubmission, id, {
-        where: {
-          creatorId: user.id,
-        },
-      })
-    })
-  }
-
-  async update(
-    user: User,
-    id: string,
-    updateSubmissionDto: UpdateSubmissionDto
+  async findAllForDrawingPool(
+    drawingPoolId: string,
+    filterOpts: LimitOffsetOrderQueryDto
   ) {
+    // Apparently LIMIT 0 means NO LIMIT in SQL: https://github.com/typeorm/typeorm/issues/4883
+    // This if statement makes sure we don't do an unnecessary database call.
+    if (filterOpts.limit === 0) return []
     return await getConnection().transaction(async (tx) => {
-      return await tx
-        .createQueryBuilder()
-        .setLock('pessimistic_write')
-        .update(NftSubmission)
-        .where({
-          id: id,
-          creatorId: user.id,
+      if (filterOpts.query) {
+        return await tx.find(NftSubmission, {
+          where: {
+            drawingPoolId: drawingPoolId,
+            name: ILike(`%${filterOpts.query}%`),
+          },
+          order: {
+            createdAt: filterOpts.order,
+            id: 'DESC',
+          },
+          take: filterOpts.limit,
+          skip: filterOpts.offset,
         })
-        .set(updateSubmissionDto)
-        .returning('*')
-        .execute()
+      } else {
+        return await tx.find(NftSubmission, {
+          where: {
+            drawingPoolId: drawingPoolId,
+          },
+          order: {
+            createdAt: filterOpts.order,
+            id: 'DESC',
+          },
+          take: filterOpts.limit,
+          skip: filterOpts.offset,
+        })
+      }
     })
   }
 
-  async remove(user: User, id: string) {
+  async findOne(id: string) {
     return await getConnection().transaction(async (tx) => {
-      return await tx.delete(NftSubmission, {
-        id: id,
-        creatorId: user.id,
-      })
+      return await tx.findOne(NftSubmission, id)
     })
   }
 }

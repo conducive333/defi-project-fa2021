@@ -12,6 +12,7 @@ import { UserSession } from '../entity/UserSession.entity'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { DrawingPool } from '../entity/DrawingPool.entity'
 import { NftSubmission } from '../entity/NftSubmission.entity'
+import { UserToDrawingPool } from '../entity/UserToDrawingPool.entity'
 
 export const registry = [
   TypeOrmModule.forFeature([BlockCursor]),
@@ -27,4 +28,5 @@ export const registry = [
   TypeOrmModule.forFeature([SimpleNftTransfer]),
   TypeOrmModule.forFeature([User]),
   TypeOrmModule.forFeature([UserSession]),
+  TypeOrmModule.forFeature([UserToDrawingPool]),
 ]

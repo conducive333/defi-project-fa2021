@@ -1,3 +1,4 @@
+import { DrawingPool } from './DrawingPool.entity'
 import {
   Check,
   Column,
@@ -5,11 +6,12 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Unique,
 } from 'typeorm'
 import { User } from './User.entity'
-import { DrawingPool } from './DrawingPool.entity'
 
 @Entity()
+@Unique(['drawingPoolId', 'creatorId']) // User can only make one submission per drawing pool
 @Check(`"address" ~ '^0x[a-z0-9]{16}$'`)
 export class NftSubmission {
   @PrimaryGeneratedColumn('uuid')

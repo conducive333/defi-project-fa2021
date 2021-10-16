@@ -16,8 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@api/admin/drawing-pool": ["libs/admin/drawing-pool/src/index.ts"],
-      "@api/admin/market": ["libs/admin/market/src/index.ts"],
       "@api/client/auth": ["libs/client/auth/src/index.ts"],
+      "@api/client/drawing-pool": ["libs/client/drawing-pool/src/index.ts"],
       "@api/client/storefront": ["libs/client/storefront/src/index.ts"],
       "@api/client/submission": ["libs/client/submission/src/index.ts"],
       "@api/client/user": ["libs/client/user/src/index.ts"],

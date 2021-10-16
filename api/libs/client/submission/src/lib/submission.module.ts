@@ -7,5 +7,6 @@ import { Module } from '@nestjs/common'
   imports: [RateLimiterModule],
   controllers: [SubmissionController],
   providers: [SubmissionService],
+  exports: [SubmissionService],
 })
 export class SubmissionModule {}

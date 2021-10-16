@@ -1,6 +1,9 @@
+import { DrawingPool } from '@api/database'
 import { ApiProperty } from '@nestjs/swagger'
 
-export class DrawingPoolDto {
+export class DrawingPoolDto
+  implements Omit<DrawingPool, 'submissions' | 'userToDrawingPools'>
+{
   @ApiProperty({ type: 'string', format: 'uuid' })
   readonly id: string
 
@@ -23,5 +26,5 @@ export class DrawingPoolDto {
   readonly endDate: Date
 
   @ApiProperty({ type: 'integer' })
-  readonly size: number
+  readonly maxSize: number
 }

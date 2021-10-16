@@ -23,13 +23,16 @@ export class createTables1627860201306 implements MigrationInterface {
       `CREATE TABLE "crypto_create_item" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "name" text NOT NULL, "description" text NOT NULL, "image" text NOT NULL, CONSTRAINT "PK_8d0ebf4b6fc9cbcdc71d68de18f" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
-      `CREATE TABLE "user" ("id" text NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "email" text NOT NULL, "username" text NOT NULL, "drawing_pool_id" uuid, "drawingPoolId" uuid, CONSTRAINT "UQ_e12875dfb3b1d92d7d7c5377e22" UNIQUE ("email"), CONSTRAINT "UQ_78a916df40e02a9deb1c4b75edb" UNIQUE ("username"), CONSTRAINT "PK_cace4a159ff9f2512dd42373760" PRIMARY KEY ("id"))`
+      `CREATE TABLE "user_to_drawing_pool" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "drawing_pool_id" uuid NOT NULL, "user_id" uuid NOT NULL, "drawingPoolId" uuid NOT NULL, "userId" text NOT NULL, CONSTRAINT "UQ_aa8f0e64ff30306cc38eede049f" UNIQUE ("drawingPoolId", "userId"), CONSTRAINT "PK_f4445f50f92ff49fe1d082119d8" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
-      `CREATE TABLE "nft_submission" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "name" text NOT NULL, "description" text NOT NULL, "image" text NOT NULL, "address" text NOT NULL, "drawing_pool_id" uuid NOT NULL, "creator_id" uuid NOT NULL, "drawingPoolId" uuid, "creatorId" text, CONSTRAINT "CHK_906599a110828be59b8bba5930" CHECK ("address" ~ '^0x[a-z0-9]{16}$'), CONSTRAINT "PK_c00c01dddbba44df97e70080028" PRIMARY KEY ("id"))`
+      `CREATE TABLE "user" ("id" text NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "email" text NOT NULL, "username" text NOT NULL, CONSTRAINT "UQ_e12875dfb3b1d92d7d7c5377e22" UNIQUE ("email"), CONSTRAINT "UQ_78a916df40e02a9deb1c4b75edb" UNIQUE ("username"), CONSTRAINT "PK_cace4a159ff9f2512dd42373760" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
-      `CREATE TABLE "drawing_pool" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "name" text NOT NULL, "description" text NOT NULL, "image" text NOT NULL, "release_date" TIMESTAMP WITH TIME ZONE NOT NULL, "end_date" TIMESTAMP WITH TIME ZONE NOT NULL, "size" integer NOT NULL, CONSTRAINT "PK_f57d44f8372a1c26aa0c32d74fa" PRIMARY KEY ("id"))`
+      `CREATE TABLE "nft_submission" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "name" text NOT NULL, "description" text NOT NULL, "image" text NOT NULL, "address" text NOT NULL, "drawing_pool_id" uuid NOT NULL, "creator_id" uuid NOT NULL, "drawingPoolId" uuid, "creatorId" text, CONSTRAINT "UQ_dab6fbdb53ea35f777ced7c1f1f" UNIQUE ("drawing_pool_id", "creator_id"), CONSTRAINT "CHK_906599a110828be59b8bba5930" CHECK ("address" ~ '^0x[a-z0-9]{16}$'), CONSTRAINT "PK_c00c01dddbba44df97e70080028" PRIMARY KEY ("id"))`
+    )
+    await queryRunner.query(
+      `CREATE TABLE "drawing_pool" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "name" text NOT NULL, "description" text NOT NULL, "image" text NOT NULL, "release_date" TIMESTAMP WITH TIME ZONE NOT NULL, "end_date" TIMESTAMP WITH TIME ZONE NOT NULL, "maxSize" integer NOT NULL, CONSTRAINT "PK_f57d44f8372a1c26aa0c32d74fa" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
       `CREATE TABLE "flow_key" ("id" integer NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "is_in_use" boolean NOT NULL DEFAULT false, CONSTRAINT "PK_4ddc07d5b7cabacb45ce362492e" PRIMARY KEY ("id"))`
@@ -59,7 +62,10 @@ export class createTables1627860201306 implements MigrationInterface {
       `ALTER TABLE "sale_offer_available_event" ADD CONSTRAINT "FK_ac8f7d13a7a8bcb353c9c30ff3a" FOREIGN KEY ("sale_offer_completed_event_id") REFERENCES "sale_offer_completed_event"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
     )
     await queryRunner.query(
-      `ALTER TABLE "user" ADD CONSTRAINT "FK_a6fd0d3f9cff45885e7eb784c4b" FOREIGN KEY ("drawingPoolId") REFERENCES "drawing_pool"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
+      `ALTER TABLE "user_to_drawing_pool" ADD CONSTRAINT "FK_af19afca104206a0b281b3f00a4" FOREIGN KEY ("drawingPoolId") REFERENCES "drawing_pool"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
+    )
+    await queryRunner.query(
+      `ALTER TABLE "user_to_drawing_pool" ADD CONSTRAINT "FK_eb55b8b79c8b40f37a93105a892" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
     )
     await queryRunner.query(
       `ALTER TABLE "nft_submission" ADD CONSTRAINT "FK_0c526fa40b2407b75de4a930f6f" FOREIGN KEY ("drawingPoolId") REFERENCES "drawing_pool"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
@@ -128,7 +134,10 @@ INNER JOIN crypto_create_item ON crypto_create_item.id = mint_event.crypto_creat
       `ALTER TABLE "nft_submission" DROP CONSTRAINT "FK_0c526fa40b2407b75de4a930f6f"`
     )
     await queryRunner.query(
-      `ALTER TABLE "user" DROP CONSTRAINT "FK_a6fd0d3f9cff45885e7eb784c4b"`
+      `ALTER TABLE "user_to_drawing_pool" DROP CONSTRAINT "FK_eb55b8b79c8b40f37a93105a892"`
+    )
+    await queryRunner.query(
+      `ALTER TABLE "user_to_drawing_pool" DROP CONSTRAINT "FK_af19afca104206a0b281b3f00a4"`
     )
     await queryRunner.query(
       `ALTER TABLE "sale_offer_available_event" DROP CONSTRAINT "FK_ac8f7d13a7a8bcb353c9c30ff3a"`
@@ -154,6 +163,7 @@ INNER JOIN crypto_create_item ON crypto_create_item.id = mint_event.crypto_creat
     await queryRunner.query(`DROP TABLE "drawing_pool"`)
     await queryRunner.query(`DROP TABLE "nft_submission"`)
     await queryRunner.query(`DROP TABLE "user"`)
+    await queryRunner.query(`DROP TABLE "user_to_drawing_pool"`)
     await queryRunner.query(`DROP TABLE "crypto_create_item"`)
     await queryRunner.query(`DROP TABLE "sale_offer_available_event"`)
     await queryRunner.query(`DROP TABLE "sale_offer_completed_event"`)

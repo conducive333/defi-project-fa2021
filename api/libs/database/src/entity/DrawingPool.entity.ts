@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm'
 import { NftSubmission } from './NftSubmission.entity'
-import { User } from './User.entity'
+import { UserToDrawingPool } from './UserToDrawingPool.entity'
 
 @Entity()
 export class DrawingPool {
@@ -36,11 +36,14 @@ export class DrawingPool {
   endDate: Date
 
   @Column({ type: 'integer', nullable: false })
-  size: number
+  maxSize: number
 
   @OneToMany(() => NftSubmission, (nftSubmission) => nftSubmission.creator)
   submissions: NftSubmission[]
 
-  @OneToMany(() => User, (user) => user.drawingPool)
-  users: User[]
+  @OneToMany(
+    () => UserToDrawingPool,
+    (userToDrawingPool) => userToDrawingPool.drawingPool
+  )
+  userToDrawingPools: UserToDrawingPool[]
 }

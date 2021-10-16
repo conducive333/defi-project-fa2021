@@ -1,5 +1,6 @@
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { StorefrontModule } from '@api/client/storefront'
+import { DrawingPoolModule } from '@api/client/drawing-pool'
 import { SubmissionModule } from '@api/client/submission'
 import { AuthModule } from '@api/client/auth'
 import { PassportModule } from '@nestjs/passport'
@@ -63,9 +64,10 @@ const env = path.join(
         autoLoadEntities: true,
       }),
     }),
-    AuthModule,
+    DrawingPoolModule,
     SubmissionModule,
     StorefrontModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

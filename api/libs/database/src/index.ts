@@ -1,3 +1,4 @@
+export * from './dto/drawing-pool/drawing-pool.dto'
 export * from './dto/nft-submission/nft-submission.dto'
 export * from './dto/user/user.dto'
 export * from './entity/BlockCursor.entity'

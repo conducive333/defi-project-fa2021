@@ -2,12 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToOne,
   OneToMany,
   PrimaryColumn,
 } from 'typeorm'
-import { DrawingPool } from './DrawingPool.entity'
 import { NftSubmission } from './NftSubmission.entity'
+import { UserToDrawingPool } from './UserToDrawingPool.entity'
 
 @Entity()
 export class User {
@@ -26,11 +25,9 @@ export class User {
   @OneToMany(() => NftSubmission, (nftSubmission) => nftSubmission.creator)
   submissions: NftSubmission
 
-  @Column({ name: 'drawing_pool_id', type: 'uuid', nullable: true })
-  drawingPoolId: string
-
-  @ManyToOne(() => DrawingPool, (drawingPool) => drawingPool.users, {
-    nullable: true,
-  })
-  drawingPool: DrawingPool
+  @OneToMany(
+    () => UserToDrawingPool,
+    (userToDrawingPool) => userToDrawingPool.user
+  )
+  userToDrawingPools: UserToDrawingPool[]
 }

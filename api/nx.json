@@ -30,13 +30,13 @@
     "admin-drawing-pool": {
       "tags": []
     },
-    "admin-market": {
-      "tags": []
-    },
     "admin-server": {
       "tags": []
     },
     "client-auth": {
+      "tags": []
+    },
+    "client-drawing-pool": {
       "tags": []
     },
     "client-server": {
