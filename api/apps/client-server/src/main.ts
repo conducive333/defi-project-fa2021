@@ -3,7 +3,6 @@ import { ExpressAdapter } from '@nestjs/platform-express'
 import { Logger, ValidationPipe } from '@nestjs/common'
 import { FlowService } from '@api/flow/flow-service'
 import { LoggingFilter, LoggingInterceptor } from '@api/logger'
-import * as basicAuth from 'express-basic-auth'
 import { UserSession } from '@api/database'
 import { ConfigService } from '@nestjs/config'
 import { TypeormStore } from 'typeorm-store'
@@ -83,17 +82,6 @@ async function bootstrap() {
 
   if (env !== 'production') {
     const swagger = await import('@nestjs/swagger')
-    const username = conf.get<string>('MISC_DOCS_USERNAME')
-    const password = conf.get<string>('MISC_DOCS_PASSWORD')
-    app.use(
-      ['/api', '/api-json'],
-      basicAuth({
-        users: {
-          [username]: password,
-        },
-        challenge: true,
-      })
-    )
     const config = new swagger.DocumentBuilder()
       .setTitle('CryptoCreate Client API')
       .setDescription('The CryptoCreate Client API')

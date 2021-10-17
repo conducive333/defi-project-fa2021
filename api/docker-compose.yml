@@ -1,0 +1,31 @@
+version: '3.7'
+
+services:
+  client-server:
+    container_name: client-server
+    image: client-server:1.0.0-alpha
+    restart: always
+    build:
+      context: .
+      dockerfile: ./client.Dockerfile
+    ports:
+      - '3001:3001'
+  admin-server:
+    container_name: admin-server
+    image: admin-server:1.0.0-alpha
+    restart: always
+    build:
+      context: .
+      dockerfile: ./admin.Dockerfile
+    ports:
+      - '3002:3002'
+  defi-db:
+    container_name: defi-db-dev
+    image: postgres:12
+    ports:
+      - '5431:5432'
+    environment:
+      - PGDATA=/var/lib/postgresql/data
+      - POSTGRES_DB=dev
+      - POSTGRES_USER=rootuser
+      - POSTGRES_PASSWORD=password

@@ -9,7 +9,7 @@
     "client:start": "node ./dist/apps/client-server/main.js",
     "admin:start": "node ./dist/apps/admin-server/main.js",
     "cron:start": "node ./dist/apps/cron-cleanup/main.js",
-    "nft:start": "node ./dist/apps/flow-listener/main.js",
+    "listener:start": "node ./dist/apps/flow-listener/main.js",
     "storefront:start": "node ./dist/apps/flow-listener/main.js",
     "build": "nx build",
     "build:stag": "cross-env NODE_ENV=staging nx build",

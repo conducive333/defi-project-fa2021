@@ -11,21 +11,21 @@ const client = path.join(envPath, '.env.client')
 if (fs.existsSync(client)) {
   dotenv.config({ path: client })
 } else {
-  throw new Error(`File does not exist: ${client}`)
+  console.warn(`File does not exist: ${client}`)
 }
 
 const admin = path.join(envPath, '.env.admin')
 if (fs.existsSync(admin)) {
   dotenv.config({ path: admin })
 } else {
-  throw new Error(`File does not exist: ${admin}`)
+  console.warn(`File does not exist: ${admin}`)
 }
 
 const db = path.join(envPath, '.env.db')
 if (fs.existsSync(db)) {
   dotenv.config({ path: db })
 } else {
-  throw new Error(`File does not exist: ${db}`)
+  console.warn(`File does not exist: ${db}`)
 }
 
 module.exports = [
