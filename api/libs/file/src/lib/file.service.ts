@@ -21,9 +21,9 @@ export class FileService {
         .insert()
         .into(CryptoCreateFile)
         .values({
+          category: filetype,
           mimetype: file.mimetype,
           name: file.originalname,
-          filetype: filetype,
           size: file.size,
           key: key,
           url: url,

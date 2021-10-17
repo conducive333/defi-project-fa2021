@@ -24,7 +24,7 @@ export class CryptoCreateFileDto implements CryptoCreateFile {
   readonly mimetype: string
 
   @ApiProperty({ enum: FileType, example: FileType.IMAGE })
-  readonly filetype: FileType
+  readonly category: FileType
 
   @ApiProperty({ type: 'integer' })
   readonly size: number

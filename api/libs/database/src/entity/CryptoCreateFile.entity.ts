@@ -36,7 +36,7 @@ export class CryptoCreateFile {
   mimetype: string
 
   @Column({ type: 'enum', enum: FileType, nullable: false })
-  filetype: FileType
+  category: FileType
 
   @Column({ type: 'integer', nullable: false })
   size: number
