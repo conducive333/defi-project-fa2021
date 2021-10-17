@@ -1,8 +1,8 @@
-import NonFungibleToken from 0x02
-import FungibleToken from 0x03
-import CryptoCreateItems from 0x04
+import NonFungibleToken from ${nftAddress}
+import FungibleToken from ${ftAddress}
+import CryptoCreate from ${devAddress}
 
-// CryptoCreateNFTStorefront
+// AdminNFTStorefront
 //
 // A general purpose sale support contract for Flow NonFungibleTokens.
 // 
@@ -22,7 +22,7 @@ import CryptoCreateItems from 0x04
 // Marketplaces and other aggregators can watch for Listing events
 // and list items of interest.
 //
-pub contract CryptoCreateNFTStorefront {
+pub contract AdminNFTStorefront {
     // NFTStorefrontInitialized
     // This contract has been deployed.
     // Event consumers can now expect events from this contract.
@@ -226,7 +226,7 @@ pub contract CryptoCreateNFTStorefront {
             self.details.setToPurchased()
 
             // Get the DooverseItems minter from admin storage
-            let minter = CryptoCreateNFTStorefront.account.borrow<&CryptoCreateItems.NFTMinter>(from: CryptoCreateItems.MinterStoragePath) 
+            let minter = AdminNFTStorefront.account.borrow<&CryptoCreate.NFTMinter>(from: CryptoCreate.MinterStoragePath) 
               ?? panic("Could not borrow a reference to the NFT minter")
 
             // Mint the NFT to the specified account
@@ -349,15 +349,15 @@ pub contract CryptoCreateNFTStorefront {
         // Returns an array of the Listing resource IDs that are in the collection
         //
         pub fun getListingIDs(): [UInt64] {
-            return CryptoCreateNFTStorefront.listings.keys
+            return AdminNFTStorefront.listings.keys
         }
 
         // borrowSaleItem
         // Returns a read-only view of the SaleItem for the given listingID if it is contained by this collection.
         //
         pub fun borrowListing(listingResourceID: UInt64): &Listing{ListingPublic}? {
-            if CryptoCreateNFTStorefront.listings[listingResourceID] != nil {
-                return &CryptoCreateNFTStorefront.listings[listingResourceID] as! &Listing{ListingPublic}
+            if AdminNFTStorefront.listings[listingResourceID] != nil {
+                return &AdminNFTStorefront.listings[listingResourceID] as! &Listing{ListingPublic}
             } else {
                 return nil
             }
@@ -370,10 +370,10 @@ pub contract CryptoCreateNFTStorefront {
         //
         pub fun cleanup(listingResourceID: UInt64) {
             pre {
-                CryptoCreateNFTStorefront.listings[listingResourceID] != nil: "could not find listing with given id"
+                AdminNFTStorefront.listings[listingResourceID] != nil: "could not find listing with given id"
             }
 
-            let listing <- CryptoCreateNFTStorefront.listings.remove(key: listingResourceID)!
+            let listing <- AdminNFTStorefront.listings.remove(key: listingResourceID)!
             assert(listing.getDetails().purchased == true, message: "listing is not purchased, only admin can remove")
             destroy listing
         }
@@ -407,7 +407,7 @@ pub contract CryptoCreateNFTStorefront {
             let listingPrice = listing.getDetails().salePrice
 
             // Add the new listing to the dictionary.
-            let oldListing <- CryptoCreateNFTStorefront.listings[listingResourceID] <- listing
+            let oldListing <- AdminNFTStorefront.listings[listingResourceID] <- listing
             // Note that oldListing will always be nil, but we have to handle it.
             destroy oldListing
 
@@ -426,7 +426,7 @@ pub contract CryptoCreateNFTStorefront {
         // Remove a Listing that has not yet been purchased from the collection and destroy it.
         //
         pub fun removeListing(listingResourceID: UInt64) {
-            let listing <- CryptoCreateNFTStorefront.listings.remove(key: listingResourceID)
+            let listing <- AdminNFTStorefront.listings.remove(key: listingResourceID)
                 ?? panic("missing Listing")
     
             // This will emit a ListingCompleted event.
@@ -443,9 +443,9 @@ pub contract CryptoCreateNFTStorefront {
     }
 
     init () {
-        self.StorefrontStoragePath = /storage/CryptoCreateNFTStorefront
-        self.StorefrontPublicPath = /public/CryptoCreateNFTStorefront
-        self.AdminStorefrontStoragePath = /storage/AdminCryptoCreateNFTStorefront
+        self.StorefrontStoragePath = /storage/AdminNFTStorefront
+        self.StorefrontPublicPath = /public/AdminNFTStorefront
+        self.AdminStorefrontStoragePath = /storage/AdminAdminNFTStorefront
         self.listings <- {}
         self.account.save(<-create AdminStorefront(), to: self.AdminStorefrontStoragePath)
         emit NFTStorefrontInitialized()
