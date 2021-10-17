@@ -19,6 +19,7 @@ export class DrawingPoolService {
             createdAt: filterOpts.order,
             id: 'DESC',
           },
+          relations: ['file'],
           take: filterOpts.limit,
           skip: filterOpts.offset,
         })
@@ -28,6 +29,7 @@ export class DrawingPoolService {
             createdAt: filterOpts.order,
             id: 'DESC',
           },
+          relations: ['file'],
           take: filterOpts.limit,
           skip: filterOpts.offset,
         })
@@ -37,7 +39,7 @@ export class DrawingPoolService {
 
   async findOne(id: string) {
     return await getConnection().transaction(async (tx) => {
-      return await tx.findOne(DrawingPool, id)
+      return await tx.findOne(DrawingPool, id, { relations: ['file'] })
     })
   }
 }

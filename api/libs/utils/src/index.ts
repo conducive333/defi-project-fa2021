@@ -1,6 +1,7 @@
 export * from './lib/config/admin.config'
 export * from './lib/config/client.config'
 export * from './lib/config/db.config'
+export * from './lib/config/firebase.config'
 export * from './lib/config/flow.config'
 export * from './lib/config/google.config'
 export * from './lib/config/misc.config'

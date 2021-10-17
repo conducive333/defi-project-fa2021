@@ -8,7 +8,16 @@ export class createTables1627860201306 implements MigrationInterface {
       `CREATE TABLE "block_cursor" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "event_name" text NOT NULL, "current_block_height" bigint NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), CONSTRAINT "UQ_f60e689896bdc102ac4b99cd340" UNIQUE ("event_name"), CONSTRAINT "PK_dacaf004fee2c87d0a37278335f" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
-      `CREATE TABLE "nft_event" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "event_type" character varying NOT NULL, "event_index" integer NOT NULL, "nft_id" text NOT NULL, "address" text, "flow_transaction_id" text NOT NULL, "crypto_create_item_id" uuid, CONSTRAINT "UQ_33b9cf93128e10b6aaf6c1233a0" UNIQUE ("crypto_create_item_id", "nft_id"), CONSTRAINT "UQ_fdc00bbf2f45a99b9a25f238b85" UNIQUE ("crypto_create_item_id"), CONSTRAINT "PK_eca59e3d53ba2009252626e64d9" PRIMARY KEY ("id"))`
+      `CREATE TYPE "public"."crypto_create_file_filetype_enum" AS ENUM('IMAGE', 'VIDEO')`
+    )
+    await queryRunner.query(
+      `CREATE TABLE "crypto_create_file" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "key" text NOT NULL, "name" text NOT NULL, "url" text NOT NULL, "mimetype" text NOT NULL, "filetype" "public"."crypto_create_file_filetype_enum" NOT NULL, "size" integer NOT NULL, CONSTRAINT "UQ_3853a69f8f96840b8b35269e380" UNIQUE ("key"), CONSTRAINT "PK_159a2258387b85fcfbba6db1699" PRIMARY KEY ("id"))`
+    )
+    await queryRunner.query(
+      `CREATE TYPE "public"."nft_event_event_type_enum" AS ENUM('Minted', 'Deposit', 'Withdraw')`
+    )
+    await queryRunner.query(
+      `CREATE TABLE "nft_event" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "event_type" "public"."nft_event_event_type_enum" NOT NULL, "event_index" integer NOT NULL, "nft_id" text NOT NULL, "address" text, "flow_transaction_id" text NOT NULL, "crypto_create_item_id" uuid, CONSTRAINT "UQ_33b9cf93128e10b6aaf6c1233a0" UNIQUE ("crypto_create_item_id", "nft_id"), CONSTRAINT "UQ_fdc00bbf2f45a99b9a25f238b85" UNIQUE ("crypto_create_item_id"), CONSTRAINT "PK_eca59e3d53ba2009252626e64d9" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
       `CREATE TABLE "flow_transaction" ("transaction_id" text NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "block_id" text NOT NULL, "block_height" bigint NOT NULL, "block_timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, CONSTRAINT "PK_9a52fae35f8449be77e1b097f35" PRIMARY KEY ("transaction_id"))`
@@ -20,7 +29,7 @@ export class createTables1627860201306 implements MigrationInterface {
       `CREATE TABLE "sale_offer_available_event" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "storefront_address" text NOT NULL, "sale_offer_resource_id" text NOT NULL, "nft_type" text NOT NULL, "crypto_create_item_id" uuid NOT NULL, "ft_vault_type" text NOT NULL, "price" text NOT NULL, "flow_transaction_id" text NOT NULL, "sale_offer_completed_event_id" uuid, CONSTRAINT "REL_ac8f7d13a7a8bcb353c9c30ff3" UNIQUE ("sale_offer_completed_event_id"), CONSTRAINT "PK_200331bbf4b22bfaf1cbbdfc702" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
-      `CREATE TABLE "crypto_create_item" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "name" text NOT NULL, "description" text NOT NULL, "image" text NOT NULL, CONSTRAINT "PK_8d0ebf4b6fc9cbcdc71d68de18f" PRIMARY KEY ("id"))`
+      `CREATE TABLE "crypto_create_item" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "name" text NOT NULL, "description" text NOT NULL, "file_id" uuid NOT NULL, CONSTRAINT "REL_d87e91b646f20a8ec4a98fb621" UNIQUE ("file_id"), CONSTRAINT "PK_8d0ebf4b6fc9cbcdc71d68de18f" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
       `CREATE TABLE "user_to_drawing_pool" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "drawing_pool_id" uuid NOT NULL, "user_id" uuid NOT NULL, "drawingPoolId" uuid NOT NULL, "userId" text NOT NULL, CONSTRAINT "UQ_aa8f0e64ff30306cc38eede049f" UNIQUE ("drawingPoolId", "userId"), CONSTRAINT "PK_f4445f50f92ff49fe1d082119d8" PRIMARY KEY ("id"))`
@@ -29,10 +38,10 @@ export class createTables1627860201306 implements MigrationInterface {
       `CREATE TABLE "user" ("id" text NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "email" text NOT NULL, "username" text NOT NULL, CONSTRAINT "UQ_e12875dfb3b1d92d7d7c5377e22" UNIQUE ("email"), CONSTRAINT "UQ_78a916df40e02a9deb1c4b75edb" UNIQUE ("username"), CONSTRAINT "PK_cace4a159ff9f2512dd42373760" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
-      `CREATE TABLE "nft_submission" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "name" text NOT NULL, "description" text NOT NULL, "image" text NOT NULL, "address" text NOT NULL, "drawing_pool_id" uuid NOT NULL, "creator_id" uuid NOT NULL, "drawingPoolId" uuid, "creatorId" text, CONSTRAINT "UQ_dab6fbdb53ea35f777ced7c1f1f" UNIQUE ("drawing_pool_id", "creator_id"), CONSTRAINT "CHK_906599a110828be59b8bba5930" CHECK ("address" ~ '^0x[a-z0-9]{16}$'), CONSTRAINT "PK_c00c01dddbba44df97e70080028" PRIMARY KEY ("id"))`
+      `CREATE TABLE "nft_submission" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "name" text NOT NULL, "description" text NOT NULL, "file_id" uuid NOT NULL, "address" text NOT NULL, "drawing_pool_id" uuid NOT NULL, "creator_id" uuid NOT NULL, "drawingPoolId" uuid, "creatorId" text, CONSTRAINT "UQ_dab6fbdb53ea35f777ced7c1f1f" UNIQUE ("drawing_pool_id", "creator_id"), CONSTRAINT "REL_4db8dc75ba1c6b429cfb230821" UNIQUE ("file_id"), CONSTRAINT "CHK_906599a110828be59b8bba5930" CHECK ("address" ~ '^0x[a-z0-9]{16}$'), CONSTRAINT "PK_c00c01dddbba44df97e70080028" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
-      `CREATE TABLE "drawing_pool" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "name" text NOT NULL, "description" text NOT NULL, "image" text NOT NULL, "release_date" TIMESTAMP WITH TIME ZONE NOT NULL, "end_date" TIMESTAMP WITH TIME ZONE NOT NULL, "maxSize" integer NOT NULL, CONSTRAINT "PK_f57d44f8372a1c26aa0c32d74fa" PRIMARY KEY ("id"))`
+      `CREATE TABLE "drawing_pool" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "name" text NOT NULL, "description" text NOT NULL, "file_id" uuid NOT NULL, "release_date" TIMESTAMP WITH TIME ZONE NOT NULL, "end_date" TIMESTAMP WITH TIME ZONE NOT NULL, "max_size" integer NOT NULL, CONSTRAINT "REL_ee5548c1a3d0c8db43009a955a" UNIQUE ("file_id"), CONSTRAINT "CHK_eb92ac2c5f8637c9b1402bf47e" CHECK ("max_size" >= 0), CONSTRAINT "PK_f57d44f8372a1c26aa0c32d74fa" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
       `CREATE TABLE "flow_key" ("id" integer NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "is_in_use" boolean NOT NULL DEFAULT false, CONSTRAINT "PK_4ddc07d5b7cabacb45ce362492e" PRIMARY KEY ("id"))`
@@ -62,16 +71,25 @@ export class createTables1627860201306 implements MigrationInterface {
       `ALTER TABLE "sale_offer_available_event" ADD CONSTRAINT "FK_ac8f7d13a7a8bcb353c9c30ff3a" FOREIGN KEY ("sale_offer_completed_event_id") REFERENCES "sale_offer_completed_event"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
     )
     await queryRunner.query(
+      `ALTER TABLE "crypto_create_item" ADD CONSTRAINT "FK_d87e91b646f20a8ec4a98fb621a" FOREIGN KEY ("file_id") REFERENCES "crypto_create_file"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
+    )
+    await queryRunner.query(
       `ALTER TABLE "user_to_drawing_pool" ADD CONSTRAINT "FK_af19afca104206a0b281b3f00a4" FOREIGN KEY ("drawingPoolId") REFERENCES "drawing_pool"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
     )
     await queryRunner.query(
       `ALTER TABLE "user_to_drawing_pool" ADD CONSTRAINT "FK_eb55b8b79c8b40f37a93105a892" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
     )
     await queryRunner.query(
+      `ALTER TABLE "nft_submission" ADD CONSTRAINT "FK_4db8dc75ba1c6b429cfb2308215" FOREIGN KEY ("file_id") REFERENCES "crypto_create_file"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
+    )
+    await queryRunner.query(
       `ALTER TABLE "nft_submission" ADD CONSTRAINT "FK_0c526fa40b2407b75de4a930f6f" FOREIGN KEY ("drawingPoolId") REFERENCES "drawing_pool"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
     )
     await queryRunner.query(
       `ALTER TABLE "nft_submission" ADD CONSTRAINT "FK_8f8ef0e4336b8227b95dae2a2fd" FOREIGN KEY ("creatorId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
+    )
+    await queryRunner.query(
+      `ALTER TABLE "drawing_pool" ADD CONSTRAINT "FK_ee5548c1a3d0c8db43009a955aa" FOREIGN KEY ("file_id") REFERENCES "crypto_create_file"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
     )
     await queryRunner.query(`CREATE VIEW "simple_nft_transfer" AS 
 WITH simple_event AS (
@@ -128,16 +146,25 @@ INNER JOIN crypto_create_item ON crypto_create_item.id = mint_event.crypto_creat
     )
     await queryRunner.query(`DROP VIEW "simple_nft_transfer"`)
     await queryRunner.query(
+      `ALTER TABLE "drawing_pool" DROP CONSTRAINT "FK_ee5548c1a3d0c8db43009a955aa"`
+    )
+    await queryRunner.query(
       `ALTER TABLE "nft_submission" DROP CONSTRAINT "FK_8f8ef0e4336b8227b95dae2a2fd"`
     )
     await queryRunner.query(
       `ALTER TABLE "nft_submission" DROP CONSTRAINT "FK_0c526fa40b2407b75de4a930f6f"`
     )
     await queryRunner.query(
+      `ALTER TABLE "nft_submission" DROP CONSTRAINT "FK_4db8dc75ba1c6b429cfb2308215"`
+    )
+    await queryRunner.query(
       `ALTER TABLE "user_to_drawing_pool" DROP CONSTRAINT "FK_eb55b8b79c8b40f37a93105a892"`
     )
     await queryRunner.query(
       `ALTER TABLE "user_to_drawing_pool" DROP CONSTRAINT "FK_af19afca104206a0b281b3f00a4"`
+    )
+    await queryRunner.query(
+      `ALTER TABLE "crypto_create_item" DROP CONSTRAINT "FK_d87e91b646f20a8ec4a98fb621a"`
     )
     await queryRunner.query(
       `ALTER TABLE "sale_offer_available_event" DROP CONSTRAINT "FK_ac8f7d13a7a8bcb353c9c30ff3a"`
@@ -169,6 +196,11 @@ INNER JOIN crypto_create_item ON crypto_create_item.id = mint_event.crypto_creat
     await queryRunner.query(`DROP TABLE "sale_offer_completed_event"`)
     await queryRunner.query(`DROP TABLE "flow_transaction"`)
     await queryRunner.query(`DROP TABLE "nft_event"`)
+    await queryRunner.query(`DROP TYPE "public"."nft_event_event_type_enum"`)
+    await queryRunner.query(`DROP TABLE "crypto_create_file"`)
+    await queryRunner.query(
+      `DROP TYPE "public"."crypto_create_file_filetype_enum"`
+    )
     await queryRunner.query(`DROP TABLE "block_cursor"`)
   }
 }

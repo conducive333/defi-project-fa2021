@@ -6,15 +6,38 @@ import {
   Param,
   UseGuards,
   Query,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
 } from '@nestjs/common'
 import { DrawingPoolService } from './drawing-pool.service'
-import { RateLimiterGuard } from '@api/rate-limiter'
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { DrawingPoolDto, NftSubmissionDto, User } from '@api/database'
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
+import {
+  DrawingPoolDto,
+  DrawingPoolWithFileDto,
+  FileType,
+  NftSubmissionDto,
+  NftSubmissionWithFileDto,
+  User,
+} from '@api/database'
+import {
+  CreateImageSubmissionDto,
+  CreateVideoSubmissionDto,
+  CreateSubmissionDto,
+  SubmissionService,
+} from '@api/client/submission'
 import { LimitOffsetOrderQueryDto, UUIDv4Dto } from '@api/utils'
+import { FileInterceptor } from '@nestjs/platform-express'
 import { AuthenticatedGuard } from '@api/client/auth'
-import { CreateSubmissionDto, SubmissionService } from '@api/client/submission'
+import { RateLimiterGuard } from '@api/rate-limiter'
 import { ApiUser } from '@api/client/user'
+import { FileService } from '@api/file'
 
 @UseGuards(RateLimiterGuard)
 @ApiTags('Drawing Pools')
@@ -28,50 +51,93 @@ export class DrawingPoolController {
   @ApiOperation({
     summary: 'Lists all drawing pools.',
   })
-  @ApiResponse({ status: 200, type: DrawingPoolDto, isArray: true })
+  @ApiResponse({ status: 200, type: DrawingPoolWithFileDto, isArray: true })
   @Get()
   async findAll(
     @Query() filterOpts: LimitOffsetOrderQueryDto
-  ): Promise<DrawingPoolDto[]> {
+  ): Promise<DrawingPoolWithFileDto[]> {
     return await this.drawingPoolService.findAll(filterOpts)
   }
 
   @ApiOperation({
     summary: 'Finds a drawing pool by ID.',
   })
-  @ApiResponse({ status: 200, type: NftSubmissionDto })
+  @ApiResponse({ status: 200, type: DrawingPoolWithFileDto })
   @Get(':id')
-  async findOne(@Param() { id }: UUIDv4Dto): Promise<DrawingPoolDto> {
+  async findOne(@Param() { id }: UUIDv4Dto): Promise<DrawingPoolWithFileDto> {
     return await this.drawingPoolService.findOne(id)
   }
 
   @ApiOperation({
-    summary: 'Creates a submission for a particular drawing pool.',
+    summary:
+      'Creates an image upload submission for a particular drawing pool.',
   })
-  @ApiResponse({ status: 200, type: NftSubmissionDto })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: CreateImageSubmissionDto })
+  @ApiResponse({ status: 200, type: NftSubmissionWithFileDto })
   @UseGuards(AuthenticatedGuard)
+  @UseInterceptors(FileInterceptor('image', FileService.imgOpts()))
   @Post(':id/submission')
-  async createSubmission(
+  async createImageSubmission(
     @ApiUser() user: User,
     @Param() drawingPoolId: UUIDv4Dto,
-    @Body() createSubmissionDto: CreateSubmissionDto
-  ): Promise<NftSubmissionDto> {
-    return await this.submissionService.create({
-      ...createSubmissionDto,
-      drawingPoolId: drawingPoolId.id,
-      creatorId: user.id,
-    })
+    @Body() createSubmissionDto: CreateSubmissionDto,
+    @UploadedFile() image: Express.Multer.File
+  ): Promise<NftSubmissionWithFileDto> {
+    if (image) {
+      return await this.submissionService.create(
+        {
+          ...createSubmissionDto,
+          drawingPoolId: drawingPoolId.id,
+          creatorId: user.id,
+        },
+        image,
+        FileType.IMAGE
+      )
+    } else {
+      throw new BadRequestException('image is required.')
+    }
+  }
+
+  @ApiOperation({
+    summary: 'Creates a video upload submission for a particular drawing pool.',
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: CreateVideoSubmissionDto })
+  @ApiResponse({ status: 200, type: NftSubmissionWithFileDto })
+  @UseGuards(AuthenticatedGuard)
+  @UseInterceptors(FileInterceptor('video', FileService.vidOpts()))
+  @Post(':id/submission')
+  async createVideoSubmission(
+    @ApiUser() user: User,
+    @Param() drawingPoolId: UUIDv4Dto,
+    @Body() createSubmissionDto: CreateSubmissionDto,
+    @UploadedFile() video: Express.Multer.File
+  ): Promise<NftSubmissionWithFileDto> {
+    if (video) {
+      return await this.submissionService.create(
+        {
+          ...createSubmissionDto,
+          drawingPoolId: drawingPoolId.id,
+          creatorId: user.id,
+        },
+        video,
+        FileType.VIDEO
+      )
+    } else {
+      throw new BadRequestException('video is required.')
+    }
   }
 
   @ApiOperation({
     summary: 'Lists all NFT submissions made for a particular drawing pool.',
   })
-  @ApiResponse({ status: 200, type: NftSubmissionDto, isArray: true })
+  @ApiResponse({ status: 200, type: NftSubmissionWithFileDto, isArray: true })
   @Get(':id/submission')
   async findAllSubmissions(
     @Param() { id }: UUIDv4Dto,
     @Query() filterOpts: LimitOffsetOrderQueryDto
-  ): Promise<NftSubmissionDto[]> {
+  ): Promise<NftSubmissionWithFileDto[]> {
     return await this.submissionService.findAllForDrawingPool(id, filterOpts)
   }
 }

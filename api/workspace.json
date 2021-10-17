@@ -257,6 +257,50 @@
         }
       }
     },
+    "file": {
+      "root": "libs/file",
+      "sourceRoot": "libs/file/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/file/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/file"],
+          "options": {
+            "jestConfig": "libs/file/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "firebase": {
+      "root": "libs/firebase",
+      "sourceRoot": "libs/firebase/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/firebase/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/firebase"],
+          "options": {
+            "jestConfig": "libs/firebase/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "flow-flow-admin-storefront": {
       "root": "libs/flow/flow-admin-storefront",
       "sourceRoot": "libs/flow/flow-admin-storefront/src",

@@ -4,9 +4,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm'
+import { CryptoCreateFile } from './CryptoCreateFile.entity'
 
 @Entity()
 export class CryptoCreateItem {
@@ -26,8 +29,12 @@ export class CryptoCreateItem {
   @Column({ type: 'text', nullable: false })
   description: string
 
-  @Column({ type: 'text', nullable: false })
-  image: string
+  @OneToOne(() => CryptoCreateFile, { nullable: false })
+  @JoinColumn({ name: 'file_id' })
+  file: CryptoCreateFile
+
+  @Column({ name: 'file_id', type: 'uuid', nullable: false })
+  fileId: string
 
   @OneToMany(() => NftEvent, (event) => event.cryptoCreateItem)
   events: NftEvent[]

@@ -1,8 +1,8 @@
-import { DrawingPool } from '@api/database'
+import { DrawingPool } from '../../entity/DrawingPool.entity'
 import { ApiProperty } from '@nestjs/swagger'
 
 export class DrawingPoolDto
-  implements Omit<DrawingPool, 'submissions' | 'userToDrawingPools'>
+  implements Omit<DrawingPool, 'submissions' | 'userToDrawingPools' | 'file'>
 {
   @ApiProperty({ type: 'string', format: 'uuid' })
   readonly id: string
@@ -16,8 +16,8 @@ export class DrawingPoolDto
   @ApiProperty({ type: 'string' })
   readonly description: string
 
-  @ApiProperty({ type: 'string' })
-  readonly image: string
+  @ApiProperty({ type: 'string', format: 'uuid' })
+  readonly fileId: string
 
   @ApiProperty({ type: 'string', format: 'date-time' })
   readonly releaseDate: Date

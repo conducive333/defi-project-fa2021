@@ -7,6 +7,7 @@ import * as path from 'path'
 import * as Joi from 'joi'
 import {
   adminConfigSchema,
+  firebaseConfigSchema,
   flowConfigSchema,
   miscConfigSchema,
 } from '@api/utils'
@@ -29,11 +30,13 @@ const env = path.join(
         path.join(env, '.env.admin'),
         path.join(env, '.env.misc'),
         path.join(env, '.env.flow'),
+        path.join(env, '.env.firebase'),
       ],
       validationSchema: Joi.object({
         ...adminConfigSchema,
         ...miscConfigSchema,
         ...flowConfigSchema,
+        ...firebaseConfigSchema,
       }),
       validationOptions: {
         abortEarly: true,

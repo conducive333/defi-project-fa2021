@@ -22,6 +22,8 @@
       "@api/client/submission": ["libs/client/submission/src/index.ts"],
       "@api/client/user": ["libs/client/user/src/index.ts"],
       "@api/database": ["libs/database/src/index.ts"],
+      "@api/file": ["libs/file/src/index.ts"],
+      "@api/firebase": ["libs/firebase/src/index.ts"],
       "@api/flow/flow-admin-storefront": [
         "libs/flow/flow-admin-storefront/src/index.ts"
       ],

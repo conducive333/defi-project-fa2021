@@ -14,6 +14,7 @@ import {
   flowConfigSchema,
   miscConfigSchema,
   googleConfigSchema,
+  firebaseConfigSchema,
 } from '@api/utils'
 
 // https://stackoverflow.com/questions/58090082/process-env-node-env-always-development-when-building-nestjs-app-with-nrwl-nx
@@ -35,12 +36,14 @@ const env = path.join(
         path.join(env, '.env.misc'),
         path.join(env, '.env.flow'),
         path.join(env, '.env.google'),
+        path.join(env, '.env.firebase'),
       ],
       validationSchema: Joi.object({
         ...clientConfigSchema,
         ...miscConfigSchema,
         ...flowConfigSchema,
         ...googleConfigSchema,
+        ...firebaseConfigSchema,
       }),
       validationOptions: {
         abortEarly: true,

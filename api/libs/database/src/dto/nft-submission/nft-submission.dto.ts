@@ -1,8 +1,8 @@
-import { NftSubmission } from '@api/database'
+import { NftSubmission } from '../../entity/NftSubmission.entity'
 import { ApiProperty } from '@nestjs/swagger'
 
 export class NftSubmissionDto
-  implements Omit<NftSubmission, 'drawingPool' | 'creator'>
+  implements Omit<NftSubmission, 'drawingPool' | 'creator' | 'file'>
 {
   @ApiProperty({ type: 'string', format: 'uuid' })
   readonly id: string
@@ -16,8 +16,8 @@ export class NftSubmissionDto
   @ApiProperty({ type: 'string' })
   readonly description: string
 
-  @ApiProperty({ type: 'string' })
-  readonly image: string
+  @ApiProperty({ type: 'string', format: 'uuid' })
+  readonly fileId: string
 
   @ApiProperty({ type: 'string', example: '0x5a82ff7cd806d9fc' })
   readonly address: string

@@ -6,7 +6,10 @@ import { IsNotEmpty, MaxLength, MinLength } from 'class-validator'
 export class CreateSubmissionDto
   extends FlowAddressDto
   implements
-    Omit<NftSubmissionDto, 'id' | 'createdAt' | 'drawingPoolId' | 'creatorId'>
+    Omit<
+      NftSubmissionDto,
+      'id' | 'createdAt' | 'fileId' | 'drawingPoolId' | 'creatorId'
+    >
 {
   @IsNotEmpty()
   @MinLength(3)
@@ -19,9 +22,4 @@ export class CreateSubmissionDto
   @MaxLength(160)
   @ApiProperty({ type: 'string' })
   readonly description: string
-
-  @IsNotEmpty()
-  @MaxLength(2047)
-  @ApiProperty({ type: 'string' })
-  readonly image: string
 }

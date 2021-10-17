@@ -54,6 +54,12 @@
     "database": {
       "tags": []
     },
+    "file": {
+      "tags": []
+    },
+    "firebase": {
+      "tags": []
+    },
     "flow-flow-admin-storefront": {
       "tags": []
     },

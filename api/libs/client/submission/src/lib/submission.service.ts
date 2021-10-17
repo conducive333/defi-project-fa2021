@@ -1,29 +1,28 @@
-import {
-  DrawingPool,
-  NftSubmission,
-  NftSubmissionDto,
-  User,
-} from '@api/database'
-import { LimitOffsetOrderQueryDto, UUIDv4Dto } from '@api/utils'
+import { DrawingPool, NftSubmission, UserToDrawingPool } from '@api/database'
+import { LimitOffsetOrderQueryDto } from '@api/utils'
+import { getConnection, ILike } from 'typeorm'
+import { FileType } from '@api/database'
+import { FileService } from '@api/file'
 import {
   BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common'
-import { UserToDrawingPool } from 'libs/database/src/entity/UserToDrawingPool.entity'
-import { getConnection, ILike } from 'typeorm'
 
 @Injectable()
 export class SubmissionService {
   private static readonly LOCK_ID = 2
+  constructor(private readonly fileService: FileService) {}
   async create(
     nftSubmission: Omit<
       NftSubmission,
-      'id' | 'createdAt' | 'drawingPool' | 'creator'
-    >
+      'id' | 'createdAt' | 'fileId' | 'file' | 'drawingPool' | 'creator'
+    >,
+    file: Express.Multer.File,
+    fileType: FileType
   ) {
-    const result = await getConnection().transaction(async (tx) => {
+    return await getConnection().transaction(async (tx) => {
       await tx.query(`SELECT pg_advisory_xact_lock($1)`, [
         SubmissionService.LOCK_ID,
       ])
@@ -45,13 +44,24 @@ export class SubmissionService {
               },
             })
             if (!hasSubmission) {
-              return await tx
+              const nftFile = await this.fileService.firebaseUpload(
+                file,
+                fileType
+              )
+              const result = await tx
                 .createQueryBuilder()
                 .insert()
-                .into(NftSubmissionDto)
-                .values(nftSubmission)
+                .into(NftSubmission)
+                .values({
+                  ...nftSubmission,
+                  fileId: nftFile.id,
+                })
                 .returning('*')
                 .execute()
+              return {
+                ...(result.generatedMaps[0] as NftSubmission),
+                file: nftFile,
+              }
             } else {
               throw new BadRequestException(
                 'User already has a submission for this drawing pool.'
@@ -69,7 +79,6 @@ export class SubmissionService {
         throw new NotFoundException('Drawing pool not found.')
       }
     })
-    return result.generatedMaps[0] as NftSubmission
   }
 
   async findAllForUser(userId: string, filterOpts: LimitOffsetOrderQueryDto) {
@@ -87,6 +96,7 @@ export class SubmissionService {
             createdAt: filterOpts.order,
             id: 'DESC',
           },
+          relations: ['file'],
           take: filterOpts.limit,
           skip: filterOpts.offset,
         })
@@ -99,6 +109,7 @@ export class SubmissionService {
             createdAt: filterOpts.order,
             id: 'DESC',
           },
+          relations: ['file'],
           take: filterOpts.limit,
           skip: filterOpts.offset,
         })
@@ -124,6 +135,7 @@ export class SubmissionService {
             createdAt: filterOpts.order,
             id: 'DESC',
           },
+          relations: ['file'],
           take: filterOpts.limit,
           skip: filterOpts.offset,
         })
@@ -136,6 +148,7 @@ export class SubmissionService {
             createdAt: filterOpts.order,
             id: 'DESC',
           },
+          relations: ['file'],
           take: filterOpts.limit,
           skip: filterOpts.offset,
         })
@@ -145,7 +158,7 @@ export class SubmissionService {
 
   async findOne(id: string) {
     return await getConnection().transaction(async (tx) => {
-      return await tx.findOne(NftSubmission, id)
+      return await tx.findOne(NftSubmission, id, { relations: ['file'] })
     })
   }
 }

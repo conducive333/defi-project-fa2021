@@ -30,8 +30,13 @@ export class NftEvent {
   })
   createdAt: Date
 
-  @Column({ name: 'event_type', enum: NftEventType, nullable: false })
-  eventType: string
+  @Column({
+    name: 'event_type',
+    type: 'enum',
+    enum: NftEventType,
+    nullable: false,
+  })
+  eventType: NftEventType
 
   @Column({ name: 'event_index', type: 'integer', nullable: false })
   eventIndex: number

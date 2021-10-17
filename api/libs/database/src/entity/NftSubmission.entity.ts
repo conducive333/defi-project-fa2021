@@ -4,11 +4,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm'
 import { User } from './User.entity'
+import { CryptoCreateFile } from './CryptoCreateFile.entity'
 
 @Entity()
 @Unique(['drawingPoolId', 'creatorId']) // User can only make one submission per drawing pool
@@ -30,8 +33,12 @@ export class NftSubmission {
   @Column({ type: 'text', nullable: false })
   description: string
 
-  @Column({ type: 'text', nullable: false })
-  image: string
+  @OneToOne(() => CryptoCreateFile, { nullable: false })
+  @JoinColumn({ name: 'file_id' })
+  file: CryptoCreateFile
+
+  @Column({ name: 'file_id', type: 'uuid', nullable: false })
+  fileId: string
 
   @Column({ type: 'text', nullable: false })
   address: string

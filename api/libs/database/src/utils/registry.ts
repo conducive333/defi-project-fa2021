@@ -13,9 +13,11 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { DrawingPool } from '../entity/DrawingPool.entity'
 import { NftSubmission } from '../entity/NftSubmission.entity'
 import { UserToDrawingPool } from '../entity/UserToDrawingPool.entity'
+import { CryptoCreateFile } from '../entity/CryptoCreateFile.entity'
 
 export const registry = [
   TypeOrmModule.forFeature([BlockCursor]),
+  TypeOrmModule.forFeature([CryptoCreateFile]),
   TypeOrmModule.forFeature([CryptoCreateItem]),
   TypeOrmModule.forFeature([DrawingPool]),
   TypeOrmModule.forFeature([FlowKey]),

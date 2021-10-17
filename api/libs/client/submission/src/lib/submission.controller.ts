@@ -3,7 +3,7 @@ import { SubmissionService } from './submission.service'
 import { RateLimiterGuard } from '@api/rate-limiter'
 import { AuthenticatedGuard } from '@api/client/auth'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { NftSubmissionDto, User } from '@api/database'
+import { NftSubmissionWithFileDto, User } from '@api/database'
 import { ApiUser } from '@api/client/user'
 import { LimitOffsetOrderQueryDto, UUIDv4Dto } from '@api/utils'
 
@@ -16,22 +16,22 @@ export class SubmissionController {
   @ApiOperation({
     summary: 'Lists all NFT submissions made by the logged in user.',
   })
-  @ApiResponse({ status: 200, type: NftSubmissionDto, isArray: true })
+  @ApiResponse({ status: 200, type: NftSubmissionWithFileDto, isArray: true })
   @UseGuards(AuthenticatedGuard)
   @Get()
   async findAll(
     @ApiUser() user: User,
     @Query() filterOpts: LimitOffsetOrderQueryDto
-  ): Promise<NftSubmissionDto[]> {
+  ): Promise<NftSubmissionWithFileDto[]> {
     return await this.submissionService.findAllForUser(user.id, filterOpts)
   }
 
   @ApiOperation({
     summary: 'Finds an NFT submission by ID.',
   })
-  @ApiResponse({ status: 200, type: NftSubmissionDto })
+  @ApiResponse({ status: 200, type: NftSubmissionWithFileDto })
   @Get(':id')
-  async findOne(@Param() { id }: UUIDv4Dto): Promise<NftSubmissionDto> {
+  async findOne(@Param() { id }: UUIDv4Dto): Promise<NftSubmissionWithFileDto> {
     return await this.submissionService.findOne(id)
   }
 }
