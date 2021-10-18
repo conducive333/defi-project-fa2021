@@ -77,7 +77,7 @@ export class DrawingPoolController {
   @ApiResponse({ status: 200, type: NftSubmissionWithFileDto })
   @UseGuards(AuthenticatedGuard)
   @UseInterceptors(FileInterceptor('image', FileService.imgOpts()))
-  @Post(':id/submission')
+  @Post(':id/submission/image')
   async createImageSubmission(
     @ApiUser() user: User,
     @Param() drawingPoolId: UUIDv4Dto,
@@ -107,7 +107,7 @@ export class DrawingPoolController {
   @ApiResponse({ status: 200, type: NftSubmissionWithFileDto })
   @UseGuards(AuthenticatedGuard)
   @UseInterceptors(FileInterceptor('video', FileService.vidOpts()))
-  @Post(':id/submission')
+  @Post(':id/submission/video')
   async createVideoSubmission(
     @ApiUser() user: User,
     @Param() drawingPoolId: UUIDv4Dto,
