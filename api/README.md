@@ -2,10 +2,11 @@
 
 ## Starting the API:
 
-1. Obtain the configuration files from Slack
-2. Paste all .env files in the `/env/development` folder
-3. Run `bash main.sh` to start the API
-4. You can view the docs at `http://localhost:3001/api/`
+1. Install dependencies: `npm install`
+2. Obtain the configuration files from Slack
+3. Paste all .env files in the `/env/development` folder
+4. Run `bash main.sh` to start the API
+5. You can view the docs at `http://localhost:3001/api/`
 
 ## Stopping the API:
 
