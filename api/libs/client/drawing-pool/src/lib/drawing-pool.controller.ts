@@ -19,10 +19,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 import {
-  DrawingPoolDto,
   DrawingPoolWithFileDto,
   FileType,
-  NftSubmissionDto,
   NftSubmissionWithFileDto,
   User,
 } from '@api/database'

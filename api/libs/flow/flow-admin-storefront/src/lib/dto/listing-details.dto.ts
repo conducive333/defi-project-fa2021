@@ -26,6 +26,6 @@ export class ListingDetailsDto {
   @ApiProperty({ type: 'string', example: '10.12732000' })
   readonly salePrice: string
 
-  @ApiProperty({ type: SaleCutsDto })
+  @ApiProperty({ type: SaleCutsDto, isArray: true })
   readonly saleCuts: SaleCutsDto[]
 }

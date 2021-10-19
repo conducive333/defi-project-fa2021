@@ -1,6 +1,6 @@
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { registry } from '@api/database'
+import { entities } from '@api/database'
 import { Module } from '@nestjs/common'
 import * as path from 'path'
 import * as Joi from 'joi'
@@ -31,7 +31,6 @@ const env = path.join(
         abortEarly: true,
       },
     }),
-    ...registry,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -42,7 +41,7 @@ const env = path.join(
         username: configService.get('CLIENT_DB_USER'),
         password: configService.get('CLIENT_DB_PASS'),
         database: configService.get('CLIENT_DB_NAME'),
-        autoLoadEntities: true,
+        entities: entities,
       }),
     }),
     NFTModule,

@@ -60,7 +60,7 @@ export class SaleOfferAvailableEvent {
   @Column({ name: 'flow_transaction_id', type: 'text', nullable: false })
   flowTransactionId: string
 
-  @OneToOne(() => SaleOfferCompletedEvent, {
+  @OneToOne(() => SaleOfferCompletedEvent, (saleOfferCompletedEvent) => saleOfferCompletedEvent.id, {
     nullable: true,
   })
   @JoinColumn({ name: 'sale_offer_completed_event_id' })

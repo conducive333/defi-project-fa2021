@@ -9,26 +9,25 @@ import { NftEvent } from '../entity/NftEvent.entity'
 import { RateLimitRecord } from '../entity/RateLimitRecord.entity'
 import { User } from '../entity/User.entity'
 import { UserSession } from '../entity/UserSession.entity'
-import { TypeOrmModule } from '@nestjs/typeorm'
 import { DrawingPool } from '../entity/DrawingPool.entity'
 import { NftSubmission } from '../entity/NftSubmission.entity'
 import { UserToDrawingPool } from '../entity/UserToDrawingPool.entity'
 import { CryptoCreateFile } from '../entity/CryptoCreateFile.entity'
 
-export const registry = [
-  TypeOrmModule.forFeature([BlockCursor]),
-  TypeOrmModule.forFeature([CryptoCreateFile]),
-  TypeOrmModule.forFeature([CryptoCreateItem]),
-  TypeOrmModule.forFeature([DrawingPool]),
-  TypeOrmModule.forFeature([FlowKey]),
-  TypeOrmModule.forFeature([FlowTransaction]),
-  TypeOrmModule.forFeature([NftEvent]),
-  TypeOrmModule.forFeature([NftSubmission]),
-  TypeOrmModule.forFeature([RateLimitRecord]),
-  TypeOrmModule.forFeature([SaleOfferAvailableEvent]),
-  TypeOrmModule.forFeature([SaleOfferCompletedEvent]),
-  TypeOrmModule.forFeature([SimpleNftTransfer]),
-  TypeOrmModule.forFeature([User]),
-  TypeOrmModule.forFeature([UserSession]),
-  TypeOrmModule.forFeature([UserToDrawingPool]),
+export const entities = [
+  BlockCursor,
+  CryptoCreateFile,
+  CryptoCreateItem,
+  DrawingPool,
+  FlowKey,
+  FlowTransaction,
+  NftEvent,
+  NftSubmission,
+  RateLimitRecord,
+  SaleOfferAvailableEvent,
+  SaleOfferCompletedEvent,
+  SimpleNftTransfer,
+  User,
+  UserSession,
+  UserToDrawingPool
 ]

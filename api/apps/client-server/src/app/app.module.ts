@@ -6,7 +6,7 @@ import { AuthModule } from '@api/client/auth'
 import { PassportModule } from '@nestjs/passport'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { Module } from '@nestjs/common'
-import { registry } from '@api/database'
+import { entities } from '@api/database'
 import * as path from 'path'
 import * as Joi from 'joi'
 import {
@@ -49,7 +49,6 @@ const env = path.join(
         abortEarly: true,
       },
     }),
-    ...registry,
     PassportModule.register({
       defaultStrategy: 'local',
       session: true,
@@ -64,7 +63,7 @@ const env = path.join(
         username: configService.get('CLIENT_DB_USER'),
         password: configService.get('CLIENT_DB_PASS'),
         database: configService.get('CLIENT_DB_NAME'),
-        autoLoadEntities: true,
+        entities: entities,
       }),
     }),
     DrawingPoolModule,

@@ -31,7 +31,7 @@ export class DrawingPool {
   @Column({ type: 'text', nullable: false })
   description: string
 
-  @OneToOne(() => CryptoCreateFile, { nullable: false })
+  @OneToOne(() => CryptoCreateFile, (cryptoCreateFile) => cryptoCreateFile.id, { nullable: false })
   @JoinColumn({ name: 'file_id' })
   file: CryptoCreateFile
 
