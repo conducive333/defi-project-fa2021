@@ -1,0 +1,1 @@
+export { useNewFlowAuthenticator } from './useNewFlowAuthenticator';
