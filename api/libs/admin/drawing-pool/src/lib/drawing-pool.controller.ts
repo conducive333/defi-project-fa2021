@@ -3,43 +3,86 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
+  Query,
+  NotFoundException,
 } from '@nestjs/common'
-import { DrawingPoolService } from './drawing-pool.service'
-import { CreateDrawingPoolDto } from './dto/create-drawing-pool.dto'
-import { UpdateDrawingPoolDto } from './dto/update-drawing-pool.dto'
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { DrawingPoolWithFileDto, NftSubmissionWithFileDto } from '@api/database'
+import { SubmissionService } from '@api/submission'
+import { LimitOffsetOrderQueryDto, UUIDv4Dto } from '@api/utils'
+import { CreateDrawingPoolDto, DrawingPoolService } from '@api/drawing-pool'
 
+@ApiTags('Drawing Pools')
 @Controller('drawing-pool')
-export class DrawingPoolController {
-  constructor(private readonly drawingPoolService: DrawingPoolService) {}
+export class AdminDrawingPoolController {
+  constructor(
+    private readonly drawingPoolService: DrawingPoolService,
+    private readonly submissionService: SubmissionService
+  ) {}
 
   @Post()
-  create(@Body() createDrawingPoolDto: CreateDrawingPoolDto) {
+  async create(@Body() createDrawingPoolDto: CreateDrawingPoolDto) {
     return this.drawingPoolService.create(createDrawingPoolDto)
   }
 
+  @ApiOperation({
+    summary: 'Lists all drawing pools.',
+  })
+  @ApiResponse({ status: 200, type: DrawingPoolWithFileDto, isArray: true })
   @Get()
-  findAll() {
-    return this.drawingPoolService.findAll()
+  async findAll(
+    @Query() filterOpts: LimitOffsetOrderQueryDto
+  ): Promise<DrawingPoolWithFileDto[]> {
+    return await this.drawingPoolService.findAll(filterOpts)
   }
 
+  @ApiOperation({
+    summary: 'Finds a drawing pool by ID.',
+  })
+  @ApiResponse({ status: 200, type: DrawingPoolWithFileDto, isArray: true })
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.drawingPoolService.findOne(+id)
+  async findOne(@Param() { id }: UUIDv4Dto): Promise<DrawingPoolWithFileDto> {
+    const pool = await this.drawingPoolService.findOne(id)
+    if (pool) {
+      return pool
+    }
+    throw new NotFoundException()
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateDrawingPoolDto: UpdateDrawingPoolDto
-  ) {
-    return this.drawingPoolService.update(+id, updateDrawingPoolDto)
+  @ApiOperation({
+    summary: 'Lists all NFT submissions made for a particular drawing pool.',
+  })
+  @ApiResponse({ status: 200, type: NftSubmissionWithFileDto, isArray: true })
+  @Get(':id/submission')
+  async findAllSubmissions(
+    @Param() { id }: UUIDv4Dto,
+    @Query() filterOpts: LimitOffsetOrderQueryDto
+  ): Promise<NftSubmissionWithFileDto[]> {
+    return await this.submissionService.findAllForDrawingPool(id, filterOpts)
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.drawingPoolService.remove(+id)
-  }
+  // @ApiOperation({
+  //   summary: 'Randomly selects .',
+  // })
+  // @ApiResponse({ status: 200, type: NftSubmissionWithFileDto, isArray: true })
+  // @Get(':id/submission')
+  // async mintRandomSubmissions(
+  //   @Param() { id }: UUIDv4Dto,
+  //   @Query() filterOpts: LimitOffsetOrderQueryDto
+  // ): Promise<NftSubmissionWithFileDto[]> {
+  //   return await this.submissionService.findAllForDrawingPool(id, filterOpts)
+  // }
+
+  // @ApiOperation({
+  //   summary: 'Lists all NFT submissions made for a particular drawing pool.',
+  // })
+  // @ApiResponse({ status: 200, type: NftSubmissionWithFileDto, isArray: true })
+  // @Get(':id/submission')
+  // async mintSpecificSubmissions(
+  //   @Param() { id }: UUIDv4Dto,
+  //   @Query() filterOpts: LimitOffsetOrderQueryDto
+  // ): Promise<NftSubmissionWithFileDto[]> {
+  //   return await this.submissionService.findAllForDrawingPool(id, filterOpts)
+  // }
 }

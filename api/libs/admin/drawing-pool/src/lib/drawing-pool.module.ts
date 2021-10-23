@@ -1,9 +1,9 @@
+import { AdminDrawingPoolController } from './drawing-pool.controller'
+import { DrawingPoolModule } from '@api/drawing-pool'
 import { Module } from '@nestjs/common'
-import { DrawingPoolService } from './drawing-pool.service'
-import { DrawingPoolController } from './drawing-pool.controller'
 
 @Module({
-  controllers: [DrawingPoolController],
-  providers: [DrawingPoolService],
+  imports: [DrawingPoolModule],
+  controllers: [AdminDrawingPoolController],
 })
-export class DrawingPoolModule {}
+export class AdminDrawingPoolModule {}

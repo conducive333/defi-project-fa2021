@@ -16,12 +16,14 @@
     "baseUrl": ".",
     "paths": {
       "@api/admin/drawing-pool": ["libs/admin/drawing-pool/src/index.ts"],
+      "@api/admin/submission": ["libs/admin/submission/src/index.ts"],
       "@api/client/auth": ["libs/client/auth/src/index.ts"],
       "@api/client/drawing-pool": ["libs/client/drawing-pool/src/index.ts"],
       "@api/client/storefront": ["libs/client/storefront/src/index.ts"],
       "@api/client/submission": ["libs/client/submission/src/index.ts"],
       "@api/client/user": ["libs/client/user/src/index.ts"],
       "@api/database": ["libs/database/src/index.ts"],
+      "@api/drawing-pool": ["libs/drawing-pool/src/index.ts"],
       "@api/file": ["libs/file/src/index.ts"],
       "@api/firebase": ["libs/firebase/src/index.ts"],
       "@api/flow/flow-admin-storefront": [
@@ -35,6 +37,7 @@
       "@api/flow/flow-storefront": ["libs/flow/flow-storefront/src/index.ts"],
       "@api/logger": ["libs/logger/src/index.ts"],
       "@api/rate-limiter": ["libs/rate-limiter/src/index.ts"],
+      "@api/submission": ["libs/submission/src/index.ts"],
       "@api/utils": ["libs/utils/src/index.ts"]
     }
   },

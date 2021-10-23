@@ -1,11 +1,18 @@
-import { Controller, Get, Param, UseGuards, Query } from '@nestjs/common'
-import { SubmissionService } from './submission.service'
+import {
+  Controller,
+  Get,
+  Param,
+  UseGuards,
+  Query,
+  NotFoundException,
+} from '@nestjs/common'
 import { RateLimiterGuard } from '@api/rate-limiter'
 import { AuthenticatedGuard } from '@api/client/auth'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { NftSubmissionWithFileDto, User } from '@api/database'
-import { ApiUser } from '@api/client/user'
 import { LimitOffsetOrderQueryDto, UUIDv4Dto } from '@api/utils'
+import { SubmissionService } from '@api/submission'
+import { ApiUser } from '@api/client/user'
 
 @UseGuards(RateLimiterGuard)
 @ApiTags('NFT Submissions')
@@ -27,11 +34,20 @@ export class SubmissionController {
   }
 
   @ApiOperation({
-    summary: 'Finds an NFT submission by ID.',
+    summary:
+      'Finds an NFT submission by ID. Users can only look up their own submissions.',
   })
   @ApiResponse({ status: 200, type: NftSubmissionWithFileDto })
+  @UseGuards(AuthenticatedGuard)
   @Get(':id')
-  async findOne(@Param() { id }: UUIDv4Dto): Promise<NftSubmissionWithFileDto> {
-    return await this.submissionService.findOne(id)
+  async findOne(
+    @ApiUser() user: User,
+    @Param() { id }: UUIDv4Dto
+  ): Promise<NftSubmissionWithFileDto> {
+    const submission = await this.submissionService.findOneByUser(user.id, id)
+    if (submission) {
+      return submission
+    }
+    throw new NotFoundException()
   }
 }

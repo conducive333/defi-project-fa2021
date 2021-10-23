@@ -14,12 +14,20 @@ export class CreateSubmissionDto
   @IsNotEmpty()
   @MinLength(3)
   @MaxLength(50)
-  @ApiProperty({ type: 'string' })
-  readonly name: string
+  @ApiProperty({
+    type: 'string',
+    minLength: 3,
+    maxLength: 50,
+  })
+  readonly name!: string
 
   @IsNotEmpty()
   @MinLength(0)
   @MaxLength(160)
-  @ApiProperty({ type: 'string' })
-  readonly description: string
+  @ApiProperty({
+    type: 'string',
+    minLength: 0,
+    maxLength: 160,
+  })
+  readonly description!: string
 }

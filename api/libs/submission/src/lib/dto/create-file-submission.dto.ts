@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger'
 import { Express } from 'express'
 import 'multer'
 
-export class CreateVideoSubmissionDto extends CreateSubmissionDto {
+export class CreateFileSubmissionDto extends CreateSubmissionDto {
   @ApiProperty({ type: 'file' })
-  readonly video: Express.Multer.File
+  readonly file?: Express.Multer.File
 }

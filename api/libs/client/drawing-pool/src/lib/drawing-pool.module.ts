@@ -1,12 +1,10 @@
-import { DrawingPoolService } from './drawing-pool.service'
-import { DrawingPoolController } from './drawing-pool.controller'
-import { SubmissionModule } from '@api/client/submission'
+import { ClientDrawingPoolController } from './drawing-pool.controller'
+import { DrawingPoolModule } from '@api/drawing-pool'
 import { RateLimiterModule } from '@api/rate-limiter'
 import { Module } from '@nestjs/common'
 
 @Module({
-  imports: [RateLimiterModule, SubmissionModule],
-  controllers: [DrawingPoolController],
-  providers: [DrawingPoolService],
+  imports: [RateLimiterModule, DrawingPoolModule],
+  controllers: [ClientDrawingPoolController],
 })
-export class DrawingPoolModule {}
+export class ClientDrawingPoolModule {}

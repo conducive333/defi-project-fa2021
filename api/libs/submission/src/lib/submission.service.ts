@@ -117,6 +117,15 @@ export class SubmissionService {
     })
   }
 
+  async findOneByUser(userId: string, id: string) {
+    return await getConnection().transaction(async (tx) => {
+      return await tx.findOne(NftSubmission, id, {
+        where: { creatorId: userId },
+        relations: ['file'],
+      })
+    })
+  }
+
   async findAllForDrawingPool(
     drawingPoolId: string,
     filterOpts: LimitOffsetOrderQueryDto
