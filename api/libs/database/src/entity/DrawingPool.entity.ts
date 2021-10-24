@@ -13,7 +13,6 @@ import { NftSubmission } from './NftSubmission.entity'
 import { UserToDrawingPool } from './UserToDrawingPool.entity'
 
 @Entity()
-@Check(`"max_size" >= 0`)
 export class DrawingPool {
   @PrimaryGeneratedColumn('uuid')
   id: string
@@ -31,7 +30,9 @@ export class DrawingPool {
   @Column({ type: 'text', nullable: false })
   description: string
 
-  @OneToOne(() => CryptoCreateFile, (cryptoCreateFile) => cryptoCreateFile.id, { nullable: false })
+  @OneToOne(() => CryptoCreateFile, (cryptoCreateFile) => cryptoCreateFile.id, {
+    nullable: false,
+  })
   @JoinColumn({ name: 'file_id' })
   file: CryptoCreateFile
 
@@ -43,9 +44,6 @@ export class DrawingPool {
 
   @Column({ name: 'end_date', type: 'timestamptz', nullable: false })
   endDate: Date
-
-  @Column({ name: 'max_size', type: 'integer', nullable: false })
-  maxSize: number
 
   @OneToMany(() => NftSubmission, (nftSubmission) => nftSubmission.creator)
   submissions: NftSubmission[]

@@ -108,7 +108,7 @@ export class ClientDrawingPoolController {
   @ApiBody({ type: CreateFileSubmissionDto })
   @ApiResponse({ status: 200, type: NftSubmissionWithFileDto })
   @UseGuards(AuthenticatedGuard)
-  @UseInterceptors(FileInterceptor('video', FileService.vidOpts()))
+  @UseInterceptors(FileInterceptor('file', FileService.vidOpts()))
   @Post(':id/submission/video')
   async createVideoSubmission(
     @ApiUser() user: User,

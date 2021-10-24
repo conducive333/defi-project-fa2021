@@ -1,14 +1,87 @@
-import { DrawingPool, NftSubmission } from '@api/database'
+import {
+  DrawingPool,
+  FileType,
+  NftSubmission,
+  User,
+  UserToDrawingPool,
+} from '@api/database'
+import { FileService } from '@api/file'
 import { LimitOffsetOrderQueryDto } from '@api/utils'
-import { Injectable } from '@nestjs/common'
-import { getConnection, ILike } from 'typeorm'
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common'
+import { EntityManager, getConnection, ILike } from 'typeorm'
 import { CreateDrawingPoolDto } from './dto/create-drawing-pool.dto'
 
 @Injectable()
 export class DrawingPoolService {
-  // TODO:
-  async create(createDrawingPoolDto: CreateDrawingPoolDto) {
-    return 'This action adds a new drawingPool'
+  // The PG advisory lock identifier. Transaction-level lock requests for the
+  // same advisory lock identifier will block each other in the expected way.
+  private static readonly LOCK_ID = 3
+
+  constructor(private readonly fileService: FileService) {}
+
+  async create(
+    createDrawingPoolDto: CreateDrawingPoolDto,
+    file: Express.Multer.File,
+    filetype: FileType,
+    random = false
+  ) {
+    if (createDrawingPoolDto.releaseDate < new Date()) {
+      throw new BadRequestException('releaseDate must be in the future')
+    }
+    if (createDrawingPoolDto.releaseDate > createDrawingPoolDto.endDate) {
+      throw new BadRequestException('endDate must be a time after releaseDate')
+    }
+    return await getConnection().transaction(async (tx) => {
+      const drawingPoolFile = await this.fileService.firebaseUpload(
+        file,
+        filetype
+      )
+      const result = await tx
+        .createQueryBuilder()
+        .insert()
+        .into(DrawingPool)
+        .values({
+          ...createDrawingPoolDto,
+          fileId: drawingPoolFile.id,
+        })
+        .returning('*')
+        .execute()
+      const drawingPool = result.generatedMaps[0] as DrawingPool
+      if (random) {
+        await this.addRandomUsersToPool(
+          tx,
+          drawingPool.id,
+          createDrawingPoolDto.size
+        )
+      }
+      return {
+        ...drawingPool,
+        file: drawingPoolFile,
+      }
+    })
+  }
+
+  async addRandomUsersToPool(
+    tx: EntityManager,
+    drawingPoolId: string,
+    poolSize: number
+  ) {
+    const userTable = tx.getRepository(User).metadata.tableName
+    return await tx
+      .createQueryBuilder()
+      .insert()
+      .into(UserToDrawingPool)
+      .values({
+        user: () =>
+          `(SELECT "${userTable}".id FROM "${userTable}" ORDER BY RANDOM() LIMIT :limit)`,
+        drawingPoolId: drawingPoolId,
+      })
+      .setParameter('limit', poolSize)
+      .execute()
   }
 
   async findAll(filterOpts: LimitOffsetOrderQueryDto) {
@@ -46,6 +119,130 @@ export class DrawingPoolService {
   async findOne(id: string) {
     return await getConnection().transaction(async (tx) => {
       return await tx.findOne(DrawingPool, id, { relations: ['file'] })
+    })
+  }
+
+  async remove(id: string) {
+    return await getConnection().transaction(async (tx) => {
+      await tx.query(`SELECT pg_advisory_xact_lock($1)`, [
+        DrawingPoolService.LOCK_ID,
+      ])
+
+      // Double check that the pool can be deleted
+      const drawingPool = await tx.findOne(DrawingPool, id)
+      const now = new Date()
+      if (!drawingPool) {
+        throw new NotFoundException('Drawing pool not found.')
+      }
+      if (now >= drawingPool.releaseDate) {
+        throw new BadRequestException('Drawing pool has already started.')
+      }
+
+      // Double check that the pool has no submissions
+      const submissionCount = await tx.count(NftSubmission, {
+        where: { drawingPoolId: id },
+      })
+      if (submissionCount > 0) {
+        throw new BadRequestException('Drawing pool has submissions.')
+      }
+
+      // Double check that the pool has no users
+      const userCount = await tx.count(UserToDrawingPool, {
+        where: { drawingPoolId: id },
+      })
+      if (userCount > 0) {
+        throw new BadRequestException('Drawing pool has users.')
+      }
+
+      // Delete the pool!
+      await this.fileService.firebaseRemove(drawingPool.fileId)
+      await tx.delete(DrawingPool, drawingPool)
+      return drawingPool
+    })
+  }
+
+  async appendUser(drawingPoolId: string, userId: string) {
+    return await getConnection().transaction(async (tx) => {
+      await tx.query(`SELECT pg_advisory_xact_lock($1)`, [
+        DrawingPoolService.LOCK_ID,
+      ])
+
+      // Double check that users can be added to this pool
+      const drawingPool = await tx.findOne(DrawingPool, drawingPoolId)
+      const now = new Date()
+      if (!drawingPool) {
+        throw new NotFoundException('Drawing pool not found.')
+      }
+      if (now >= drawingPool.endDate) {
+        throw new BadRequestException('Drawing pool has already ended.')
+      }
+
+      // Check that the user exists
+      const user = await tx.findOne(User, userId)
+      if (!user) {
+        throw new NotFoundException('User not found.')
+      }
+
+      // Double check that the user is not in the drawing pool already
+      const userInPool = await tx.findOne(UserToDrawingPool, {
+        where: {
+          userId,
+          drawingPoolId,
+        },
+      })
+      if (userInPool) {
+        throw new BadRequestException('User is already in drawing pool.')
+      } else {
+        const result = await tx
+          .createQueryBuilder()
+          .insert()
+          .into(UserToDrawingPool)
+          .values({
+            userId,
+            drawingPoolId,
+          })
+          .returning('*')
+          .execute()
+        return result.generatedMaps[0] as UserToDrawingPool
+      }
+    })
+  }
+
+  async removeUser(drawingPoolId: string, userId: string) {
+    return await getConnection().transaction(async (tx) => {
+      await tx.query(`SELECT pg_advisory_xact_lock($1)`, [
+        DrawingPoolService.LOCK_ID,
+      ])
+
+      // Double check that users can be removed from this pool
+      const drawingPool = await tx.findOne(DrawingPool, drawingPoolId)
+      const now = new Date()
+      if (!drawingPool) {
+        throw new NotFoundException('Drawing pool not found.')
+      }
+      if (now >= drawingPool.releaseDate) {
+        throw new BadRequestException('Drawing pool has already started.')
+      }
+
+      // Check that the user exists
+      const user = await tx.findOne(User, userId)
+      if (!user) {
+        throw new NotFoundException('User not found.')
+      }
+
+      // Double check that the user is in the drawing pool
+      const userInPool = await tx.findOne(UserToDrawingPool, {
+        where: {
+          userId,
+          drawingPoolId,
+        },
+      })
+      if (!userInPool) {
+        throw new BadRequestException('User is not in drawing pool.')
+      } else {
+        await tx.delete(UserToDrawingPool, userInPool)
+        return userInPool
+      }
     })
   }
 }

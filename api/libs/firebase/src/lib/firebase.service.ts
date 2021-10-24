@@ -1,4 +1,10 @@
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from 'firebase/storage'
 import { ConfigService } from '@nestjs/config'
 import { initializeApp } from 'firebase/app'
 import { Injectable } from '@nestjs/common'
@@ -25,5 +31,10 @@ export class FirebaseService {
     const storageRef = ref(this.storage, key)
     await uploadBytes(storageRef, file.buffer)
     return await getDownloadURL(storageRef)
+  }
+
+  async removeFile(key: string) {
+    const storageRef = ref(this.storage, key)
+    await deleteObject(storageRef)
   }
 }

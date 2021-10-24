@@ -30,7 +30,6 @@
         "libs/flow/flow-admin-storefront/src/index.ts"
       ],
       "@api/flow/flow-auth": ["libs/flow/flow-auth/src/index.ts"],
-      "@api/flow/flow-events": ["libs/flow/flow-events/src/index.ts"],
       "@api/flow/flow-key-cycler": ["libs/flow/flow-key-cycler/src/index.ts"],
       "@api/flow/flow-nft": ["libs/flow/flow-nft/src/index.ts"],
       "@api/flow/flow-service": ["libs/flow/flow-service/src/index.ts"],

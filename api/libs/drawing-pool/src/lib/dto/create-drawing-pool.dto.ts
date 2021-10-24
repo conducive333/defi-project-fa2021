@@ -52,5 +52,5 @@ export class CreateDrawingPoolDto
     minLength: 0,
     maxLength: 1000,
   })
-  readonly maxSize!: number
+  readonly size!: number
 }

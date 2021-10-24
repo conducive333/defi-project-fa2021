@@ -14,6 +14,18 @@ import {
 export class SubmissionService {
   private static readonly LOCK_ID = 2
   constructor(private readonly fileService: FileService) {}
+
+  isValidDrawingPool(drawingPool: DrawingPool | undefined) {
+    const now = new Date()
+    if (!drawingPool) {
+      throw new NotFoundException('Drawing pool not found.')
+    }
+    if (now < drawingPool.releaseDate || now >= drawingPool.endDate) {
+      throw new BadRequestException('Drawing pool is not available.')
+    }
+    return true
+  }
+
   async create(
     nftSubmission: Omit<
       NftSubmission,
@@ -27,57 +39,47 @@ export class SubmissionService {
         SubmissionService.LOCK_ID,
       ])
       const dp = await tx.findOne(DrawingPool, nftSubmission.drawingPoolId)
-      if (dp) {
-        const now = new Date()
-        if (dp.releaseDate <= now && dp.endDate > now) {
-          const userIsInPool = await tx.findOne(UserToDrawingPool, {
+      if (this.isValidDrawingPool(dp)) {
+        const userIsInPool = await tx.findOne(UserToDrawingPool, {
+          where: {
+            drawingPoolId: nftSubmission.drawingPoolId,
+            userId: nftSubmission.creatorId,
+          },
+        })
+        if (userIsInPool) {
+          const hasSubmission = await tx.findOne(NftSubmission, {
             where: {
               drawingPoolId: nftSubmission.drawingPoolId,
-              userId: nftSubmission.creatorId,
+              creatorId: nftSubmission.creatorId,
             },
           })
-          if (userIsInPool) {
-            const hasSubmission = await tx.findOne(NftSubmission, {
-              where: {
-                drawingPoolId: nftSubmission.drawingPoolId,
-                creatorId: nftSubmission.creatorId,
-              },
-            })
-            if (!hasSubmission) {
-              const nftFile = await this.fileService.firebaseUpload(
-                file,
-                fileType
-              )
-              const result = await tx
-                .createQueryBuilder()
-                .insert()
-                .into(NftSubmission)
-                .values({
-                  ...nftSubmission,
-                  fileId: nftFile.id,
-                })
-                .returning('*')
-                .execute()
-              return {
-                ...(result.generatedMaps[0] as NftSubmission),
-                file: nftFile,
-              }
-            } else {
-              throw new BadRequestException(
-                'User already has a submission for this drawing pool.'
-              )
+          if (!hasSubmission) {
+            const nftFile = await this.fileService.firebaseUpload(
+              file,
+              fileType
+            )
+            const result = await tx
+              .createQueryBuilder()
+              .insert()
+              .into(NftSubmission)
+              .values({
+                ...nftSubmission,
+                fileId: nftFile.id,
+              })
+              .returning('*')
+              .execute()
+            return {
+              ...(result.generatedMaps[0] as NftSubmission),
+              file: nftFile,
             }
           } else {
-            throw new UnauthorizedException(
-              'User does not have permission to make a submission to this drawing pool.'
-            )
+            throw new BadRequestException('Already submitted to drawing pool.')
           }
         } else {
-          throw new BadRequestException('Drawing pool is not available.')
+          throw new UnauthorizedException('Cannot submit to this drawing pool.')
         }
-      } else {
-        throw new NotFoundException('Drawing pool not found.')
       }
+      throw new BadRequestException('Invalid drawing pool.')
     })
   }
 

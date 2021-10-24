@@ -55,7 +55,7 @@
         "serve": {
           "executor": "@nrwl/node:execute",
           "options": {
-            "buildTarget": "admin-client-server:build"
+            "buildTarget": "admin-server:build"
           }
         },
         "lint": {
@@ -404,29 +404,6 @@
       },
       "tags": []
     },
-    "flow-flow-events": {
-      "root": "libs/flow/flow-events",
-      "sourceRoot": "libs/flow/flow-events/src",
-      "projectType": "library",
-      "targets": {
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "outputs": ["{options.outputFile}"],
-          "options": {
-            "lintFilePatterns": ["libs/flow/flow-events/**/*.ts"]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/flow/flow-events"],
-          "options": {
-            "jestConfig": "libs/flow/flow-events/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      },
-      "tags": []
-    },
     "flow-flow-key-cycler": {
       "root": "libs/flow/flow-key-cycler",
       "sourceRoot": "libs/flow/flow-key-cycler/src",
@@ -513,58 +490,6 @@
           "outputs": ["coverage/libs/flow/flow-storefront"],
           "options": {
             "jestConfig": "libs/flow/flow-storefront/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      },
-      "tags": []
-    },
-    "flow-listener": {
-      "root": "apps/flow-listener",
-      "sourceRoot": "apps/flow-listener/src",
-      "projectType": "application",
-      "targets": {
-        "build": {
-          "executor": "@nrwl/node:build",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "outputPath": "dist/apps/flow-listener",
-            "main": "apps/flow-listener/src/main.ts",
-            "tsConfig": "apps/flow-listener/tsconfig.app.json",
-            "assets": []
-          },
-          "configurations": {
-            "production": {
-              "optimization": true,
-              "extractLicenses": true,
-              "inspect": false,
-              "fileReplacements": [
-                {
-                  "replace": "apps/flow-listener/src/environments/environment.ts",
-                  "with": "apps/flow-listener/src/environments/environment.prod.ts"
-                }
-              ]
-            }
-          }
-        },
-        "serve": {
-          "executor": "@nrwl/node:execute",
-          "options": {
-            "buildTarget": "flow-listener:build"
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "outputs": ["{options.outputFile}"],
-          "options": {
-            "lintFilePatterns": ["apps/flow-listener/**/*.ts"]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/flow-listener"],
-          "options": {
-            "jestConfig": "apps/flow-listener/jest.config.js",
             "passWithNoTests": true
           }
         }

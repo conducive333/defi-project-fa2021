@@ -1,5 +1,5 @@
 import { MulterModuleOptions } from '@nestjs/platform-express'
-import { BadRequestException } from '@nestjs/common'
+import { BadRequestException, NotFoundException } from '@nestjs/common'
 import { FirebaseService } from '@api/firebase'
 import { Injectable } from '@nestjs/common'
 import { getConnection } from 'typeorm'
@@ -31,6 +31,18 @@ export class FileService {
         .returning('*')
         .execute()
       return res.generatedMaps[0] as CryptoCreateFile
+    })
+  }
+
+  async firebaseRemove(id: string) {
+    return await getConnection().transaction(async (tx) => {
+      const cryptoCreateFile = await tx.findOne(CryptoCreateFile, id)
+      if (!cryptoCreateFile) {
+        throw new NotFoundException('File not found.')
+      }
+      await this.firebaseService.removeFile(cryptoCreateFile.key)
+      await tx.delete(CryptoCreateFile, id)
+      return cryptoCreateFile
     })
   }
 

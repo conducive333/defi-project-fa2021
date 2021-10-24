@@ -1,1 +1,1 @@
-export * from './lib/admin-drawing-pool'
+export * from './lib/drawing-pool.module'

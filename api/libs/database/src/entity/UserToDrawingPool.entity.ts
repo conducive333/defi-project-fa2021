@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -13,6 +14,13 @@ import { User } from './User.entity'
 export class UserToDrawingPool {
   @PrimaryGeneratedColumn('uuid')
   id: string
+
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamptz',
+    nullable: false,
+  })
+  createdAt: Date
 
   @ManyToOne(
     () => DrawingPool,
