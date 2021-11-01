@@ -7,6 +7,7 @@ import * as transactions from './transactions'
 import * as scripts from './scripts'
 import * as cdcTypes from '@onflow/types'
 import * as fcl from '@onflow/fcl'
+import { NftMetadata } from '@api/flow/flow-nft'
 
 @Injectable()
 export class AdminStorefrontService {
@@ -34,10 +35,12 @@ export class AdminStorefrontService {
   }
 
   async sell(
-    saleItemPrice: string,
-    creatorAddress: string,
-    creatorPercent: number,
-    metadata: FlowTypes.SimpleDictionary
+    setId: string,
+    packId: string,
+    saleItemPrice: number,
+    beneficiaryAddress: string,
+    beneficiaryPercent: number,
+    metadatas: FlowTypes.SimpleDictionary[]
   ): Promise<FlowTypes.TransactionStatus> {
     const devAuth = await this.flowAuthorizer.developerAuthenticate(0)
     const trsAuth = await this.flowAuthorizer.treasuryAuthenticate()
@@ -49,14 +52,16 @@ export class AdminStorefrontService {
       this.flowTokenAddress,
       this.devAddress
     )
-    const [meta, metaTypes] = FlowService.convertObject(metadata)
+    const [meta, metaTypes] = FlowService.convertObjects(metadatas)
     const transaction = await FlowService.sendTx({
       transaction: cadenceCode,
       args: [
-        fcl.arg(fcl.withPrefix(creatorAddress), cdcTypes.Address),
-        fcl.arg(Number(saleItemPrice).toFixed(8).toString(), cdcTypes.UFix64),
-        fcl.arg(Number(creatorPercent).toFixed(8).toString(), cdcTypes.UFix64),
+        fcl.arg(setId, cdcTypes.String),
+        fcl.arg(packId, cdcTypes.String),
+        fcl.arg(saleItemPrice.toFixed(8).toString(), cdcTypes.UFix64),
         fcl.arg(meta, metaTypes),
+        fcl.arg(fcl.withPrefix(beneficiaryAddress), cdcTypes.Address),
+        fcl.arg(beneficiaryPercent.toFixed(8).toString(), cdcTypes.UFix64),
       ],
       authorizations: [devAuth],
       payer: trsAuth,
@@ -66,14 +71,15 @@ export class AdminStorefrontService {
   }
 
   async remove(
-    listingResourceId: string
+    setId: string,
+    packId: string
   ): Promise<FlowTypes.TransactionStatus> {
     const devAuth = await this.flowAuthorizer.developerAuthenticate(0)
     const trsAuth = await this.flowAuthorizer.treasuryAuthenticate()
     const cadenceCode = transactions.remove(this.devAddress)
     const transaction = await FlowService.sendTx({
       transaction: cadenceCode,
-      args: [fcl.arg(parseInt(listingResourceId), cdcTypes.UInt64)],
+      args: [fcl.arg(setId, cdcTypes.String), fcl.arg(packId, cdcTypes.String)],
       authorizations: [devAuth],
       payer: trsAuth,
       proposer: devAuth,
@@ -82,7 +88,8 @@ export class AdminStorefrontService {
   }
 
   async clean(
-    listingResourceId: string,
+    setId: string,
+    packId: string,
     storefrontAddress: string
   ): Promise<FlowTypes.TransactionStatus> {
     const devAuth = await this.flowAuthorizer.developerAuthenticate(0)
@@ -91,7 +98,8 @@ export class AdminStorefrontService {
     const transaction = await FlowService.sendTx({
       transaction: cadenceCode,
       args: [
-        fcl.arg(parseInt(listingResourceId), cdcTypes.UInt64),
+        fcl.arg(setId, cdcTypes.String),
+        fcl.arg(packId, cdcTypes.String),
         fcl.arg(storefrontAddress, cdcTypes.Address),
       ],
       authorizations: [devAuth],
@@ -101,32 +109,53 @@ export class AdminStorefrontService {
     return transaction
   }
 
-  async getSaleOffers(
-    limit: number,
-    offset: number
-  ): Promise<AdminListingDto[]> {
-    if (!Number.isInteger(limit) || limit < 0)
-      throw new Error('limit must be a nonnegative integer.')
-    if (!Number.isInteger(offset) || offset < 0)
-      throw new Error('offset must be a nonnegative integer.')
+  async borrowListing(setId: string, packId: string): Promise<AdminListingDto> {
     return await FlowService.executeScript({
-      script: scripts.getSaleOffers(this.devAddress),
+      script: scripts.borrowListing(this.devAddress),
       args: [
         fcl.arg(this.devAddress, cdcTypes.Address),
-        fcl.arg(limit, cdcTypes.Int),
-        fcl.arg(offset, cdcTypes.Int),
+        fcl.arg(setId, cdcTypes.String),
+        fcl.arg(packId, cdcTypes.String),
       ],
     })
   }
 
-  async getSaleOffer(listingResourceID: number): Promise<AdminListingDto> {
-    if (!Number.isInteger(listingResourceID))
-      throw new Error('listingResourceID must be an integer.')
+  async borrowListings(
+    setId: string
+  ): Promise<Record<string, AdminListingDto>> {
     return await FlowService.executeScript({
-      script: scripts.getSaleOffer(this.devAddress),
+      script: scripts.borrowListings(this.devAddress),
       args: [
         fcl.arg(this.devAddress, cdcTypes.Address),
-        fcl.arg(listingResourceID, cdcTypes.UInt64),
+        fcl.arg(setId, cdcTypes.String),
+      ],
+    })
+  }
+
+  async getPackIds(setId: string): Promise<string[]> {
+    return await FlowService.executeScript({
+      script: scripts.getPackIds(this.devAddress),
+      args: [
+        fcl.arg(this.devAddress, cdcTypes.Address),
+        fcl.arg(setId, cdcTypes.String),
+      ],
+    })
+  }
+
+  async getSetIds(): Promise<string[]> {
+    return await FlowService.executeScript({
+      script: scripts.getSetIds(this.devAddress),
+      args: [fcl.arg(this.devAddress, cdcTypes.Address)],
+    })
+  }
+
+  async hasListing(setId: string, packId: string): Promise<boolean> {
+    return await FlowService.executeScript({
+      script: scripts.hasListing(this.devAddress),
+      args: [
+        fcl.arg(this.devAddress, cdcTypes.Address),
+        fcl.arg(setId, cdcTypes.String),
+        fcl.arg(packId, cdcTypes.String),
       ],
     })
   }
@@ -135,16 +164,6 @@ export class AdminStorefrontService {
     return await FlowService.executeScript({
       script: scripts.hasStorefront(this.devAddress),
       args: [fcl.arg(address, cdcTypes.Address)],
-    })
-  }
-
-  async hasSaleOffer(listingResourceID: number): Promise<boolean> {
-    return await FlowService.executeScript({
-      script: scripts.hasSaleOffer(this.storefrontAddress),
-      args: [
-        fcl.arg(this.devAddress, cdcTypes.Address),
-        fcl.arg(listingResourceID, cdcTypes.UInt64),
-      ],
     })
   }
 }

@@ -8,7 +8,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm'
-import { CryptoCreateFile } from './CryptoCreateFile.entity'
+import { UploadedFile } from './UploadedFile.entity'
 import { NftSubmission } from './NftSubmission.entity'
 import { UserToDrawingPool } from './UserToDrawingPool.entity'
 
@@ -30,11 +30,11 @@ export class DrawingPool {
   @Column({ type: 'text', nullable: false })
   description: string
 
-  @OneToOne(() => CryptoCreateFile, (cryptoCreateFile) => cryptoCreateFile.id, {
+  @OneToOne(() => UploadedFile, (uploadedFile) => uploadedFile.id, {
     nullable: false,
   })
   @JoinColumn({ name: 'file_id' })
-  file: CryptoCreateFile
+  file: UploadedFile
 
   @Column({ name: 'file_id', type: 'uuid', nullable: false })
   fileId: string

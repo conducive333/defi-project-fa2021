@@ -8,7 +8,7 @@ import {
   Unique,
 } from 'typeorm'
 import { FlowTransaction } from './FlowTransaction.entity'
-import { CryptoCreateItem } from './CryptoCreateItem.entity'
+import { OpenSpaceItem } from './OpenSpaceItem.entity'
 
 export enum NftEventType {
   minted = 'Minted',
@@ -17,8 +17,8 @@ export enum NftEventType {
 }
 
 @Entity()
-@Unique(['cryptoCreateItem'])
-@Unique(['cryptoCreateItem', 'nftId'])
+@Unique(['openSpaceItem'])
+@Unique(['openSpaceItemId', 'nftId'])
 export class NftEvent {
   @PrimaryGeneratedColumn('uuid')
   id: string
@@ -60,16 +60,12 @@ export class NftEvent {
   @Column({ name: 'flow_transaction_id', type: 'text', nullable: false })
   flowTransactionId: string
 
-  @ManyToOne(
-    () => CryptoCreateItem,
-    (cryptoCreateItem) => cryptoCreateItem.events,
-    {
-      nullable: false,
-    }
-  )
-  @JoinColumn({ name: 'crypto_create_item_id' })
-  cryptoCreateItem: CryptoCreateItem
+  @ManyToOne(() => OpenSpaceItem, (openSpaceItem) => openSpaceItem.events, {
+    nullable: false,
+  })
+  @JoinColumn({ name: 'open_space_item_id' })
+  openSpaceItem: OpenSpaceItem
 
-  @Column({ name: 'crypto_create_item_id', type: 'uuid', nullable: true })
-  cryptoCreateItemId: string
+  @Column({ name: 'open_space_item_id', type: 'uuid', nullable: true })
+  openSpaceItemId: string
 }

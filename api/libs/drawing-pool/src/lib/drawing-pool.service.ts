@@ -12,7 +12,7 @@ import {
   BadRequestException,
   NotFoundException,
 } from '@nestjs/common'
-import { EntityManager, getConnection, ILike } from 'typeorm'
+import { EntityManager, FindConditions, getConnection, ILike } from 'typeorm'
 import { CreateDrawingPoolDto } from './dto/create-drawing-pool.dto'
 
 @Injectable()
@@ -84,7 +84,10 @@ export class DrawingPoolService {
       .execute()
   }
 
-  async findAll(filterOpts: LimitOffsetOrderQueryDto) {
+  async findAll(
+    filterOpts: LimitOffsetOrderQueryDto,
+    whereOpts: FindConditions<DrawingPool> = {}
+  ) {
     // Apparently LIMIT 0 means NO LIMIT in SQL: https://github.com/typeorm/typeorm/issues/4883
     // This if statement makes sure we don't do an unnecessary database call.
     if (filterOpts.limit === 0) return []
@@ -92,6 +95,7 @@ export class DrawingPoolService {
       if (filterOpts.query) {
         return await tx.find(DrawingPool, {
           where: {
+            ...whereOpts,
             name: ILike(`%${filterOpts.query}%`),
           },
           order: {
@@ -104,6 +108,9 @@ export class DrawingPoolService {
         })
       } else {
         return await tx.find(DrawingPool, {
+          where: {
+            ...whereOpts,
+          },
           order: {
             createdAt: filterOpts.order,
             id: 'DESC',
@@ -116,9 +123,12 @@ export class DrawingPoolService {
     })
   }
 
-  async findOne(id: string) {
+  async findOne(id: string, whereOpts: FindConditions<DrawingPool> = {}) {
     return await getConnection().transaction(async (tx) => {
-      return await tx.findOne(DrawingPool, id, { relations: ['file'] })
+      return await tx.findOne(DrawingPool, id, {
+        where: whereOpts,
+        relations: ['file'],
+      })
     })
   }
 

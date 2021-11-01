@@ -15,12 +15,12 @@ export class ListingDetailsDto {
 
   @ApiProperty({
     type: 'string',
-    example: 'A.543c936653c95e57.CryptoCreate.NFT',
+    example: 'A.543c936653c95e57.OpenSpaceItem.NFT',
   })
   readonly nftType: string
 
   @ApiProperty({ type: 'integer', example: 75 })
-  readonly nftID: string
+  readonly nftID: number
 
   @ApiProperty({
     type: 'string',

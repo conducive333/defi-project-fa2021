@@ -2,10 +2,10 @@ import { MigrationInterface, QueryRunner } from 'typeorm'
 import { resetPermissions } from '../../utils/permissions'
 import { clientRole } from '../../utils/roles'
 
-export class createCryptoCreateItemPermissions1628120404233
+export class createOpenSpaceItemPermissions1628120404233
   implements MigrationInterface
 {
-  private readonly TABLE = 'crypto_create_item'
+  private readonly TABLE = 'open_space_item'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     const { CLIENT_DB_USER } = clientRole

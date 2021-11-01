@@ -25,7 +25,7 @@ import {
   NftSubmissionWithFileDto,
   UserToDrawingPoolDto,
 } from '@api/database'
-import { SubmissionService } from '@api/submission'
+import { SubmissionsService } from '@api/submissions'
 import { LimitOffsetOrderQueryDto, UUIDv4Dto } from '@api/utils'
 import {
   CreateDrawingPoolDto,
@@ -41,7 +41,7 @@ import { DrawingPoolIdUserIdDto } from './dto/drawing-pool-id-user-id.dto'
 export class AdminDrawingPoolController {
   constructor(
     private readonly drawingPoolService: DrawingPoolService,
-    private readonly submissionService: SubmissionService
+    private readonly submissionsService: SubmissionsService
   ) {}
 
   @ApiOperation({
@@ -198,6 +198,6 @@ export class AdminDrawingPoolController {
     @Param() { id }: UUIDv4Dto,
     @Query() filterOpts: LimitOffsetOrderQueryDto
   ): Promise<NftSubmissionWithFileDto[]> {
-    return await this.submissionService.findAllForDrawingPool(id, filterOpts)
+    return await this.submissionsService.findAllForDrawingPool(id, filterOpts)
   }
 }

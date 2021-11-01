@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist/out-tsc",
+    "declaration": true,
+    "types": []
+  },
+  "include": ["**/*.ts", "../client/listings/src/lib/dto/create-nft.dto.ts"],
+  "exclude": ["**/*.spec.ts"]
+}

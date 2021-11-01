@@ -9,7 +9,7 @@ import {
 } from 'typeorm'
 import { SaleOfferCompletedEvent } from './SaleOfferCompletedEvent.entity'
 import { FlowTransaction } from './FlowTransaction.entity'
-import { CryptoCreateItem } from './CryptoCreateItem.entity'
+import { OpenSpaceItem } from './OpenSpaceItem.entity'
 
 @Entity()
 export class SaleOfferAvailableEvent {
@@ -29,17 +29,17 @@ export class SaleOfferAvailableEvent {
   nftType: string
 
   @ManyToOne(
-    () => CryptoCreateItem,
-    (cryptoCreateItem) => cryptoCreateItem.saleOfferAvailableEvent,
+    () => OpenSpaceItem,
+    (openSpaceItem) => openSpaceItem.saleOfferAvailableEvent,
     {
       nullable: false,
     }
   )
-  @JoinColumn({ name: 'crypto_create_item_id' })
-  cryptoCreateItem: CryptoCreateItem
+  @JoinColumn({ name: 'open_space_item_id' })
+  openSpaceItem: OpenSpaceItem
 
-  @Column({ name: 'crypto_create_item_id', type: 'uuid', nullable: false })
-  cryptoCreateItemId: string
+  @Column({ name: 'open_space_item_id', type: 'uuid', nullable: false })
+  openSpaceItemId: string
 
   @Column({ name: 'ft_vault_type', type: 'text', nullable: false })
   ftVaultType: string
@@ -60,9 +60,13 @@ export class SaleOfferAvailableEvent {
   @Column({ name: 'flow_transaction_id', type: 'text', nullable: false })
   flowTransactionId: string
 
-  @OneToOne(() => SaleOfferCompletedEvent, (saleOfferCompletedEvent) => saleOfferCompletedEvent.id, {
-    nullable: true,
-  })
+  @OneToOne(
+    () => SaleOfferCompletedEvent,
+    (saleOfferCompletedEvent) => saleOfferCompletedEvent.id,
+    {
+      nullable: true,
+    }
+  )
   @JoinColumn({ name: 'sale_offer_completed_event_id' })
   saleOfferCompletedEvent: SaleOfferCompletedEvent
 

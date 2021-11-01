@@ -1,11 +1,10 @@
 export default (flowStorefrontAddress: string) =>
   `
-import AdminNFTStorefront from ${flowStorefrontAddress}
-
+import AdminNFTStorefrontV3 from ${flowStorefrontAddress}
 
 pub fun main(address: Address): Bool {
   let account = getAccount(address)
-  if let storefrontRef = account.getCapability<&AdminNFTStorefront.Storefront{AdminNFTStorefront.StorefrontPublic}>(AdminNFTStorefront.StorefrontPublicPath).borrow() {
+  if let storefrontRef = account.getCapability<&AdminNFTStorefrontV3.Storefront{AdminNFTStorefrontV3.StorefrontPublic}>(AdminNFTStorefrontV3.StorefrontPublicPath).borrow() {
     return true
   }
   return false

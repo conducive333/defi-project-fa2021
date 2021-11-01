@@ -1,7 +1,7 @@
 export default (address: string, nftAddress: string) =>
   `
 import NonFungibleToken from ${nftAddress}
-import CryptoCreateItems from ${address}
+import OpenSpaceItems from ${address}
 
 // This transction uses the NFTMinter resource to mint a new NFT.
 //
@@ -11,11 +11,11 @@ import CryptoCreateItems from ${address}
 transaction(recipient: Address, initMeta: [{String: String}]) {
     
     // local variable for storing the minter reference
-    let minter: &CryptoCreateItems.NFTMinter
+    let minter: &OpenSpaceItems.NFTMinter
 
     prepare(signer: AuthAccount) {
         // borrow a reference to the NFTMinter resource in storage
-        self.minter = signer.borrow<&CryptoCreateItems.NFTMinter>(from: CryptoCreateItems.MinterStoragePath)
+        self.minter = signer.borrow<&OpenSpaceItems.NFTMinter>(from: OpenSpaceItems.MinterStoragePath)
             ?? panic("Could not borrow a reference to the NFT minter")
     }
 
@@ -25,7 +25,7 @@ transaction(recipient: Address, initMeta: [{String: String}]) {
 
         // borrow the recipient's public NFT collection reference
         let receiver = recipient
-            .getCapability(CryptoCreateItems.CollectionPublicPath)!
+            .getCapability(OpenSpaceItems.CollectionPublicPath)!
             .borrow<&{NonFungibleToken.CollectionPublic}>()
             ?? panic("Could not get receiver reference to the NFT Collection")
 

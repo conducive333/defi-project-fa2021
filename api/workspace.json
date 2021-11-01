@@ -24,6 +24,29 @@
       },
       "tags": []
     },
+    "admin-listings": {
+      "root": "libs/admin/listings",
+      "sourceRoot": "libs/admin/listings/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/admin/listings/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/admin/listings"],
+          "options": {
+            "jestConfig": "libs/admin/listings/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": []
+    },
     "admin-server": {
       "root": "apps/admin-server",
       "sourceRoot": "apps/admin-server/src",
@@ -76,23 +99,23 @@
       },
       "tags": []
     },
-    "admin-submission": {
-      "root": "libs/admin/submission",
-      "sourceRoot": "libs/admin/submission/src",
+    "admin-submissions": {
+      "root": "libs/admin/submissions",
+      "sourceRoot": "libs/admin/submissions/src",
       "projectType": "library",
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "outputs": ["{options.outputFile}"],
           "options": {
-            "lintFilePatterns": ["libs/admin/submission/**/*.ts"]
+            "lintFilePatterns": ["libs/admin/submissions/**/*.ts"]
           }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/admin/submission"],
+          "outputs": ["coverage/libs/admin/submissions"],
           "options": {
-            "jestConfig": "libs/admin/submission/jest.config.js",
+            "jestConfig": "libs/admin/submissions/jest.config.js",
             "passWithNoTests": true
           }
         }
@@ -139,6 +162,29 @@
           "outputs": ["coverage/libs/client/drawing-pool"],
           "options": {
             "jestConfig": "libs/client/drawing-pool/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": []
+    },
+    "client-listings": {
+      "root": "libs/client/listings",
+      "sourceRoot": "libs/client/listings/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/client/listings/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/client/listings"],
+          "options": {
+            "jestConfig": "libs/client/listings/jest.config.js",
             "passWithNoTests": true
           }
         }
@@ -197,46 +243,23 @@
       },
       "tags": []
     },
-    "client-storefront": {
-      "root": "libs/client/storefront",
-      "sourceRoot": "libs/client/storefront/src",
+    "client-submissions": {
+      "root": "libs/client/submissions",
+      "sourceRoot": "libs/client/submissions/src",
       "projectType": "library",
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "outputs": ["{options.outputFile}"],
           "options": {
-            "lintFilePatterns": ["libs/client/storefront/**/*.ts"]
+            "lintFilePatterns": ["libs/client/submissions/**/*.ts"]
           }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/client/storefront"],
+          "outputs": ["coverage/libs/client/submissions"],
           "options": {
-            "jestConfig": "libs/client/storefront/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      },
-      "tags": []
-    },
-    "client-submission": {
-      "root": "libs/client/submission",
-      "sourceRoot": "libs/client/submission/src",
-      "projectType": "library",
-      "targets": {
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "outputs": ["{options.outputFile}"],
-          "options": {
-            "lintFilePatterns": ["libs/client/submission/**/*.ts"]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/client/submission"],
-          "options": {
-            "jestConfig": "libs/client/submission/jest.config.js",
+            "jestConfig": "libs/client/submissions/jest.config.js",
             "passWithNoTests": true
           }
         }
@@ -496,6 +519,29 @@
       },
       "tags": []
     },
+    "listings": {
+      "root": "libs/listings",
+      "sourceRoot": "libs/listings/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/listings/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/listings"],
+          "options": {
+            "jestConfig": "libs/listings/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": []
+    },
     "logger": {
       "root": "libs/logger",
       "sourceRoot": "libs/logger/src",
@@ -513,6 +559,29 @@
           "outputs": ["coverage/libs/logger"],
           "options": {
             "jestConfig": "libs/logger/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": []
+    },
+    "nfts": {
+      "root": "libs/nfts",
+      "sourceRoot": "libs/nfts/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/nfts/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/nfts"],
+          "options": {
+            "jestConfig": "libs/nfts/jest.config.js",
             "passWithNoTests": true
           }
         }
@@ -542,23 +611,23 @@
       },
       "tags": []
     },
-    "submission": {
-      "root": "libs/submission",
-      "sourceRoot": "libs/submission/src",
+    "submissions": {
+      "root": "libs/submissions",
+      "sourceRoot": "libs/submissions/src",
       "projectType": "library",
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "outputs": ["{options.outputFile}"],
           "options": {
-            "lintFilePatterns": ["libs/submission/**/*.ts"]
+            "lintFilePatterns": ["libs/submissions/**/*.ts"]
           }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/submission"],
+          "outputs": ["coverage/libs/submissions"],
           "options": {
-            "jestConfig": "libs/submission/jest.config.js",
+            "jestConfig": "libs/submissions/jest.config.js",
             "passWithNoTests": true
           }
         }

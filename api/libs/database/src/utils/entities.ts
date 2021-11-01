@@ -2,7 +2,7 @@ import { SaleOfferAvailableEvent } from '../entity/SaleOfferAvailableEvent.entit
 import { SaleOfferCompletedEvent } from '../entity/SaleOfferCompletedEvent.entity'
 import { SimpleNftTransfer } from '../entity/SimpleNftTransfer.entity'
 import { BlockCursor } from '../entity/BlockCursor.entity'
-import { CryptoCreateItem } from '../entity/CryptoCreateItem.entity'
+import { OpenSpaceItem } from '../entity/OpenSpaceItem.entity'
 import { FlowKey } from '../entity/FlowKey.entity'
 import { FlowTransaction } from '../entity/FlowTransaction.entity'
 import { NftEvent } from '../entity/NftEvent.entity'
@@ -12,12 +12,12 @@ import { UserSession } from '../entity/UserSession.entity'
 import { DrawingPool } from '../entity/DrawingPool.entity'
 import { NftSubmission } from '../entity/NftSubmission.entity'
 import { UserToDrawingPool } from '../entity/UserToDrawingPool.entity'
-import { CryptoCreateFile } from '../entity/CryptoCreateFile.entity'
+import { UploadedFile } from '../entity/UploadedFile.entity'
 
 export const entities = [
   BlockCursor,
-  CryptoCreateFile,
-  CryptoCreateItem,
+  UploadedFile,
+  OpenSpaceItem,
   DrawingPool,
   FlowKey,
   FlowTransaction,
@@ -29,5 +29,5 @@ export const entities = [
   SimpleNftTransfer,
   User,
   UserSession,
-  UserToDrawingPool
+  UserToDrawingPool,
 ]

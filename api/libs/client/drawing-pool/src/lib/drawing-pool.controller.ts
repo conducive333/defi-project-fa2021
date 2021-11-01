@@ -22,20 +22,23 @@ import {
   DrawingPoolWithFileDto,
   FileType,
   NftSubmissionWithFileDto,
+  OpenSpaceItemDto,
   User,
 } from '@api/database'
 import {
   CreateFileSubmissionDto,
   CreateSubmissionDto,
-  SubmissionService,
-} from '@api/submission'
+  SubmissionsService,
+} from '@api/submissions'
+import { ListingsService } from '@api/listings'
 import { LimitOffsetOrderQueryDto, UUIDv4Dto } from '@api/utils'
 import { FileInterceptor } from '@nestjs/platform-express'
+import { DrawingPoolService } from '@api/drawing-pool'
 import { AuthenticatedGuard } from '@api/client/auth'
 import { RateLimiterGuard } from '@api/rate-limiter'
 import { ApiUser } from '@api/client/user'
+import { LessThanOrEqual } from 'typeorm'
 import { FileService } from '@api/file'
-import { DrawingPoolService } from '@api/drawing-pool'
 
 @UseGuards(RateLimiterGuard)
 @ApiTags('Drawing Pools')
@@ -43,7 +46,8 @@ import { DrawingPoolService } from '@api/drawing-pool'
 export class ClientDrawingPoolController {
   constructor(
     private readonly drawingPoolService: DrawingPoolService,
-    private readonly submissionService: SubmissionService
+    private readonly submissionsService: SubmissionsService,
+    private readonly listingsService: ListingsService
   ) {}
 
   @ApiOperation({
@@ -54,7 +58,10 @@ export class ClientDrawingPoolController {
   async findAll(
     @Query() filterOpts: LimitOffsetOrderQueryDto
   ): Promise<DrawingPoolWithFileDto[]> {
-    return await this.drawingPoolService.findAll(filterOpts)
+    const now = new Date()
+    return await this.drawingPoolService.findAll(filterOpts, {
+      releaseDate: LessThanOrEqual(now),
+    })
   }
 
   @ApiOperation({
@@ -63,11 +70,26 @@ export class ClientDrawingPoolController {
   @ApiResponse({ status: 200, type: DrawingPoolWithFileDto })
   @Get(':id')
   async findOne(@Param() { id }: UUIDv4Dto): Promise<DrawingPoolWithFileDto> {
-    const pool = await this.drawingPoolService.findOne(id)
+    const now = new Date()
+    const pool = await this.drawingPoolService.findOne(id, {
+      releaseDate: LessThanOrEqual(now),
+    })
     if (pool) {
       return pool
     }
     throw new NotFoundException()
+  }
+
+  @ApiOperation({
+    summary: 'Fetches multiple listings from the primary storefront.',
+  })
+  @ApiResponse({ status: 200, type: OpenSpaceItemDto, isArray: true })
+  @Get(':id/listings')
+  async getAdminListings(
+    @Param() { id }: UUIDv4Dto,
+    @Query() filterOpts: LimitOffsetOrderQueryDto
+  ): Promise<OpenSpaceItemDto[]> {
+    return await this.listingsService.findAllAdminListings(id, filterOpts)
   }
 
   @ApiOperation({
@@ -87,7 +109,7 @@ export class ClientDrawingPoolController {
     @UploadedFile() file: Express.Multer.File
   ): Promise<NftSubmissionWithFileDto> {
     if (file) {
-      return await this.submissionService.create(
+      return await this.submissionsService.create(
         {
           ...createSubmissionDto,
           drawingPoolId: drawingPoolId.id,
@@ -117,7 +139,7 @@ export class ClientDrawingPoolController {
     @UploadedFile() file: Express.Multer.File
   ): Promise<NftSubmissionWithFileDto> {
     if (file) {
-      return await this.submissionService.create(
+      return await this.submissionsService.create(
         {
           ...createSubmissionDto,
           drawingPoolId: drawingPoolId.id,
