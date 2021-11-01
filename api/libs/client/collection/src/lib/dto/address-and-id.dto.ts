@@ -2,7 +2,7 @@ import { FlowAddressDto } from '@api/flow/flow-service'
 import { IsNotEmpty, IsUUID } from 'class-validator'
 import { ApiProperty } from '@nestjs/swagger'
 
-export class FlowAddressAndOpenSpaceItemIdDto extends FlowAddressDto {
+export class FlowAddressAndNftIdDto extends FlowAddressDto {
   @IsNotEmpty()
   @IsUUID(4)
   @ApiProperty({ type: 'string', format: 'uuid' })

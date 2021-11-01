@@ -3,7 +3,9 @@ import { FlowStorefrontService } from '@api/flow/flow-storefront'
 import { NftWithAdminListingDto } from './dto/nft-with-admin-listing.dto'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { LimitOffsetOrderQueryDto } from '@api/utils'
+import { NftWithUserListingDto } from './dto/nft-with-user-listing.dto'
 import { NftsService } from '@api/nfts'
+import { In } from 'typeorm'
 
 @Injectable()
 export class ListingsService {
@@ -16,26 +18,23 @@ export class ListingsService {
     private readonly nftsService: NftsService
   ) {}
 
-  async create(nftSubmissionId: string): Promise<NftWithAdminListingDto> {
-    const nft = await this.nftsService.create(nftSubmissionId)
+  async create(nftSubmissionId: string) {
+    const openSpaceItem = await this.nftsService.create(nftSubmissionId)
     const listing = await this.adminStorefrontService.borrowListing(
-      nft.nftSubmission.drawingPoolId,
-      nft.id
+      openSpaceItem.nftSubmission.drawingPoolId,
+      openSpaceItem.id
     )
     if (!listing) {
       await this.adminStorefrontService.sell(
-        nft.nftSubmission.drawingPoolId,
-        nft.id,
+        openSpaceItem.nftSubmission.drawingPoolId,
+        openSpaceItem.id,
         ListingsService.NFT_PRICE,
-        nft.nftSubmission.address,
+        openSpaceItem.nftSubmission.address,
         ListingsService.CREATOR_CUT,
-        [{ openSpaceItemId: nft.id }]
+        [{ openSpaceItemId: openSpaceItem.id }]
       )
     }
-    return {
-      ...nft,
-      listing,
-    }
+    return openSpaceItem
   }
 
   async findAllAdminListings(
@@ -49,25 +48,32 @@ export class ListingsService {
     })
   }
 
-  // TODO
-  // async findAllUserListings(filterOpts: LimitOffsetOrderQueryDto) {
-  //   return await this.flowStorefrontService.getSaleOffers(
-  //     address,
-  //     filterOpts.limit,
-  //     filterOpts.offset
-  //   )
-  // }
+  async findAllUserListings(
+    address: string,
+    filterOpts: LimitOffsetOrderQueryDto
+  ) {
+    const ids = await this.flowStorefrontService.getSaleOffers(
+      address,
+      filterOpts.limit,
+      filterOpts.offset
+    )
+    return await this.nftsService.findAll(filterOpts, {
+      id: In(ids),
+    })
+  }
 
-  async findOneAdminListing(nftId: string): Promise<NftWithAdminListingDto> {
-    const nft = await this.nftsService.findOne(nftId)
-    if (nft) {
+  async findOneAdminListing(
+    openSpaceItemId: string
+  ): Promise<NftWithAdminListingDto> {
+    const openSpaceItem = await this.nftsService.findOne(openSpaceItemId)
+    if (openSpaceItem) {
       const listing = await this.adminStorefrontService.borrowListing(
-        nft.nftSubmission.drawingPoolId,
-        nftId
+        openSpaceItem.nftSubmission.drawingPoolId,
+        openSpaceItemId
       )
       if (listing) {
         return {
-          ...nft,
+          ...openSpaceItem,
           listing,
         }
       }
@@ -78,27 +84,34 @@ export class ListingsService {
     throw new NotFoundException('Could not find listing.')
   }
 
-  // TODO
-  // async findOneUserListing(nftId: string): Promise<NftWithAdminListingDto> {
-  //   const nft = await this.nftsService.findOne(nftId)
-  //   if (nft) {
-  //     const listing = await this.adminStorefrontService.borrowListing(nft.nftSubmission.drawingPoolId, nftId)
-  //     if (listing) {
-  //       return {
-  //         ...nft,
-  //         listing
-  //       }
-  //     }
-  //     throw new NotFoundException('Listing does not exist on the primary storefront.')
-  //   }
-  //   throw new NotFoundException('Could not find listing.')
-  // }
+  async findOneUserListing(
+    address: string,
+    openSpaceItemId: string
+  ): Promise<NftWithUserListingDto> {
+    const openSpaceItem = await this.nftsService.findOne(openSpaceItemId)
+    if (openSpaceItem) {
+      const listing = await this.flowStorefrontService.getSaleOffer(
+        address,
+        openSpaceItemId
+      )
+      if (listing) {
+        return {
+          ...openSpaceItem,
+          listing,
+        }
+      }
+      throw new NotFoundException(
+        'Listing does not exist on the primary storefront.'
+      )
+    }
+    throw new NotFoundException('Could not find listing.')
+  }
 
-  async remove(nftId: string) {
-    await this.nftsService.remove(nftId, async (nft) => {
+  async remove(openSpaceItemId: string) {
+    await this.nftsService.remove(openSpaceItemId, async (nft) => {
       await this.adminStorefrontService.remove(
         nft.nftSubmission.drawingPoolId,
-        nftId
+        openSpaceItemId
       )
     })
   }

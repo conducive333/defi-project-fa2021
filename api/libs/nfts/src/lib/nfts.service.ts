@@ -1,13 +1,22 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
-import { LimitOffsetOrderQueryDto } from '@api/utils'
-import { FindConditions, getConnection, ILike } from 'typeorm'
+import {
+  LimitOffsetDto,
+  LimitOffsetOrderDto,
+  LimitOffsetOrderQueryDto,
+  OrderBy,
+} from '@api/utils'
+import { FindConditions, getConnection, ILike, In } from 'typeorm'
 import { NftSubmission, OpenSpaceItem } from '@api/database'
+import { NftService } from '@api/flow/flow-nft'
+import { NftDto } from './dto/nft.dto'
 
 @Injectable()
 export class NftsService {
   // The PG advisory lock identifier. Transaction-level lock requests for the
   // same advisory lock identifier will block each other in the expected way.
   private static readonly LOCK_ID = 5
+
+  constructor(private readonly nftService: NftService) {}
 
   async create(nftSubmissionId: string) {
     return await getConnection().transaction(async (tx) => {
@@ -97,5 +106,45 @@ export class NftsService {
       }
       return item
     })
+  }
+
+  async getCollection(address: string, filterOpts: LimitOffsetOrderDto) {
+    const uuids = await this.nftService.getCollectionUUIDs(
+      address,
+      filterOpts.limit,
+      filterOpts.offset
+    )
+    const nfts = await getConnection().transaction(async (tx) => {
+      return await tx.find(OpenSpaceItem, {
+        where: {
+          id: In(uuids),
+        },
+        order: {
+          createdAt: filterOpts.order,
+          id: OrderBy.DESC,
+        },
+        relations: ['nftSubmission', 'nftSubmission.file'],
+      })
+    })
+    return nfts
+  }
+
+  async getNft(address: string, id: string): Promise<NftDto> {
+    const nftId = await this.nftService.getNftId(address, id)
+    if (nftId) {
+      const nft = await getConnection().transaction(async (tx) => {
+        return await tx.findOne(OpenSpaceItem, id, {
+          relations: ['nftSubmission', 'nftSubmission.file'],
+        })
+      })
+      if (nft) {
+        return {
+          nftId,
+          ...nft,
+        }
+      }
+      throw new NotFoundException('NFT not found in database')
+    }
+    throw new NotFoundException('NFT not found in user account')
   }
 }

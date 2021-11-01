@@ -3,7 +3,7 @@ export default (address: string, nftAddress: string) =>
 import NonFungibleToken from ${nftAddress}
 import OpenSpaceItems from ${address}
 
-pub fun main(address: Address, limit: UInt64, offset: UInt64): [&OpenSpaceItems.NFT?] {
+pub fun main(address: Address, uuid: String): UInt64? {
 
   let account = getAccount(address)
 
@@ -12,17 +12,18 @@ pub fun main(address: Address, limit: UInt64, offset: UInt64): [&OpenSpaceItems.
 
   let collectionRef = account.getCapability(OpenSpaceItems.CollectionPublicPath)!.borrow<&{NonFungibleToken.CollectionPublic}>()
     ?? panic("Could not borrow capability from public collection")
-
-  let ids = collectionRef.getIDs()
-  let items: [&OpenSpaceItems.NFT?] = []
-
-  var index: UInt64 = 0
-  while (Int(index + offset) < ids.length && index < limit) {
-    items.append(collection.borrowItem(id: ids[index + offset]))
-    index = index + 1
+  
+  for id in collection.getIDs() {
+    let item = collection.borrowDooverseItem(id: id)
+    if item != nil {
+      let metadata = item!.getMetadata()
+      if metadata.containsKey("openSpaceItemsId") && metadata["openSpaceItemsId"] == uuid {
+        return id
+      }
+    }
   }
 
-  return items
+  return nil
 
 }
 `

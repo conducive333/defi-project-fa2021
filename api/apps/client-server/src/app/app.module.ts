@@ -2,6 +2,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { ClientListingsModule } from '@api/client/listings'
 import { ClientDrawingPoolModule } from '@api/client/drawing-pool'
 import { ClientSubmissionsModule } from '@api/client/submissions'
+import { CollectionModule } from '@api/client/collection'
 import { AuthModule } from '@api/client/auth'
 import { PassportModule } from '@nestjs/passport'
 import { TypeOrmModule } from '@nestjs/typeorm'
@@ -69,6 +70,7 @@ const env = path.join(
     ClientDrawingPoolModule,
     ClientSubmissionsModule,
     ClientListingsModule,
+    CollectionModule,
     AuthModule,
   ],
 })

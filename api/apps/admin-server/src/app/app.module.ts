@@ -1,6 +1,7 @@
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { AdminDrawingPoolModule } from '@api/admin/drawing-pool'
 import { AdminSubmissionsModule } from '@api/admin/submissions'
+import { AdminListingsModule } from '@api/admin/listings'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { entities } from '@api/database'
 import { Module } from '@nestjs/common'
@@ -12,7 +13,6 @@ import {
   flowConfigSchema,
   miscConfigSchema,
 } from '@api/utils'
-import { AdminListingsModule } from '../../../../libs/admin/listings/src/lib/listings.module'
 
 // https://stackoverflow.com/questions/58090082/process-env-node-env-always-development-when-building-nestjs-app-with-nrwl-nx
 const env = path.join(

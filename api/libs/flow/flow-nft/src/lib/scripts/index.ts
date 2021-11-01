@@ -1,2 +1,5 @@
+export { default as getCollectionMapping } from './get-collection-mapping'
+export { default as getCollectionUUIDs } from './get-collection-uuids'
 export { default as getCollection } from './get-collection'
 export { default as hasCollection } from './has-collection'
+export { default as getId } from './get-id'

@@ -145,6 +145,29 @@
       },
       "tags": []
     },
+    "client-collection": {
+      "root": "libs/client/collection",
+      "sourceRoot": "libs/client/collection/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/client/collection/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/client/collection"],
+          "options": {
+            "jestConfig": "libs/client/collection/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": []
+    },
     "client-drawing-pool": {
       "root": "libs/client/drawing-pool",
       "sourceRoot": "libs/client/drawing-pool/src",

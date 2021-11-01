@@ -1,8 +1,9 @@
 import { Controller, Param, Delete, Post, Body } from '@nestjs/common'
+import { OpenSpaceItemWithSubmissionAndFileDto } from '@api/database'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { CreateListingDto } from './dto/create-listing.dto'
 import { SuccessDto, UUIDv4Dto } from '@api/utils'
-import { ListingsService, NftWithAdminListingDto } from '@api/listings'
+import { ListingsService } from '@api/listings'
 
 @ApiTags('Listings')
 @Controller('listings')
@@ -12,11 +13,11 @@ export class AdminListingsController {
   @ApiOperation({
     summary: 'Creates a listing for this submission on the primary storefront.',
   })
-  @ApiResponse({ status: 200, type: NftWithAdminListingDto })
+  @ApiResponse({ status: 200, type: OpenSpaceItemWithSubmissionAndFileDto })
   @Post()
   async create(
     @Body() { nftSubmissionId }: CreateListingDto
-  ): Promise<NftWithAdminListingDto> {
+  ): Promise<OpenSpaceItemWithSubmissionAndFileDto> {
     return await this.listingsService.create(nftSubmissionId)
   }
 

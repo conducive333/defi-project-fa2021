@@ -12,7 +12,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 **/
-import NonFungibleToken from ${nftAddress}
+import NonFungibleToken from 0x03
 
 // OpenSpaceItems
 // NFT items for OpenSpaceItems!
@@ -25,7 +25,6 @@ pub contract OpenSpaceItems: NonFungibleToken {
     pub event Withdraw(id: UInt64, from: Address?)
     pub event Deposit(id: UInt64, to: Address?)
     pub event Minted(id: UInt64, initMeta: {String: String})
-    pub event TrxMeta(trxMeta: {String: String})
 
     // Named Paths
     //
@@ -66,7 +65,7 @@ pub contract OpenSpaceItems: NonFungibleToken {
         pub fun deposit(token: @NonFungibleToken.NFT)
         pub fun getIDs(): [UInt64]
         pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT
-        pub fun borrowOpenSpaceItems(id: UInt64): &OpenSpaceItems.NFT? {
+        pub fun borrowItem(id: UInt64): &OpenSpaceItems.NFT? {
             // If the result isn't nil, the id of the returned reference
             // should be the same as the argument to the function
             post {
@@ -96,11 +95,6 @@ pub contract OpenSpaceItems: NonFungibleToken {
             return <-token
         }
 
-        pub fun withdrawWithMetadata(withdrawNFTID: UInt64,trxMetadata:{String:String}): @NonFungibleToken.NFT{  
-            emit TrxMeta(trxMeta:trxMetadata)        
-            let nft <-self.withdraw(withdrawID: withdrawNFTID)
-            return <-nft
-        }
         // deposit
         // Takes a NFT and adds it to the collections dictionary
         // and adds the ID to the id array
@@ -116,12 +110,6 @@ pub contract OpenSpaceItems: NonFungibleToken {
             emit Deposit(id: id, to: self.owner?.address)
 
             destroy oldToken
-        }
-
-
-        pub fun depositWithMetadata(depositToken: @NonFungibleToken.NFT,trxMetadata:{String:String}){  
-            emit TrxMeta(trxMeta:trxMetadata)        
-            self.deposit(token:<-depositToken)
         }
         
         // getIDs
@@ -144,7 +132,7 @@ pub contract OpenSpaceItems: NonFungibleToken {
         // exposing all of its fields (including the typeID).
         // This is safe as there are no functions that can be called on the OpenSpaceItems.
         //
-        pub fun borrowOpenSpaceItems(id: UInt64): &OpenSpaceItems.NFT? {
+        pub fun borrowItem(id: UInt64): &OpenSpaceItems.NFT? {
             if self.ownedNFTs[id] != nil {
                 let ref = &self.ownedNFTs[id] as auth &NonFungibleToken.NFT
                 return ref as! &OpenSpaceItems.NFT
@@ -191,22 +179,6 @@ pub contract OpenSpaceItems: NonFungibleToken {
             OpenSpaceItems.totalSupply = OpenSpaceItems.totalSupply + (1 as UInt64)
 		}
 	}
-
-    // fetch
-    // Get a reference to a OpenSpaceItems from an account's Collection, if available.
-    // If an account does not have a OpenSpaceItems.Collection, panic.
-    // If it has a collection but does not contain the itemID, return nil.
-    // If it has a collection and that collection contains the itemID, return a reference to that.
-    //
-    pub fun fetch(_ from: Address, itemID: UInt64): &OpenSpaceItems.NFT? {
-        let collection = getAccount(from)
-            .getCapability(OpenSpaceItems.CollectionPublicPath)!
-            .borrow<&OpenSpaceItems.Collection{OpenSpaceItems.OpenSpaceItemsCollectionPublic}>()
-            ?? panic("Couldn't get collection")
-        // We trust OpenSpaceItems.Collection.borowOpenSpaceItems to get the correct itemID
-        // (it checks it before returning it).
-        return collection.borrowOpenSpaceItems(id: itemID)
-    }
 
     // initializer
     //

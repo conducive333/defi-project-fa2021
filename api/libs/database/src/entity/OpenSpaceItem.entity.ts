@@ -1,11 +1,8 @@
-import { SaleOfferAvailableEvent } from './SaleOfferAvailableEvent.entity'
-import { NftEvent } from './NftEvent.entity'
 import {
   Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
-  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm'
@@ -31,10 +28,4 @@ export class OpenSpaceItem {
 
   @Column({ name: 'nft_submission_id', type: 'uuid', nullable: false })
   nftSubmissionId: string
-
-  @OneToMany(() => NftEvent, (event) => event.openSpaceItem)
-  events: NftEvent[]
-
-  @OneToMany(() => SaleOfferAvailableEvent, (event) => event.openSpaceItem)
-  saleOfferAvailableEvent: SaleOfferAvailableEvent[]
 }

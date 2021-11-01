@@ -19,6 +19,7 @@
       "@api/admin/listings": ["libs/admin/listings/src/index.ts"],
       "@api/admin/submissions": ["libs/admin/submissions/src/index.ts"],
       "@api/client/auth": ["libs/client/auth/src/index.ts"],
+      "@api/client/collection": ["libs/client/collection/src/index.ts"],
       "@api/client/drawing-pool": ["libs/client/drawing-pool/src/index.ts"],
       "@api/client/listings": ["libs/client/listings/src/index.ts"],
       "@api/client/submissions": ["libs/client/submissions/src/index.ts"],

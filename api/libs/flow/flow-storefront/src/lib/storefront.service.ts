@@ -30,36 +30,36 @@ export class FlowStorefrontService {
     address: string,
     limit: number,
     offset: number
-  ): Promise<ListingDto[]> {
+  ): Promise<string[]> {
     if (!Number.isInteger(limit) || limit < 0)
       throw new Error('limit must be a nonnegative integer.')
     if (!Number.isInteger(offset) || offset < 0)
       throw new Error('offset must be a nonnegative integer.')
     return await FlowService.executeScript({
-      script: scripts.getSaleOffers(this.storefrontAddress),
+      script: scripts.getSaleOffers(
+        this.devAddress,
+        this.nonFungibleTokenAddress
+      ),
       args: [
         fcl.arg(address, cdcTypes.Address),
-        fcl.arg(limit, cdcTypes.Int),
-        fcl.arg(offset, cdcTypes.Int),
+        fcl.arg(limit, cdcTypes.UInt64),
+        fcl.arg(offset, cdcTypes.UInt64),
       ],
     })
   }
 
   async getSaleOffer(
     address: string,
-    listingResourceID: number
+    openSpaceItemId: string
   ): Promise<ListingDto> {
-    if (!Number.isInteger(listingResourceID))
-      throw new Error('listingResourceID must be an integer.')
-    if (listingResourceID < 0 || listingResourceID > 2 ** 64 - 1)
-      throw new Error(
-        'listingResourceID must be in the interval [0, 18446744073709551615]'
-      )
     return await FlowService.executeScript({
-      script: scripts.getSaleOffer(this.storefrontAddress),
+      script: scripts.getSaleOffer(
+        this.devAddress,
+        this.nonFungibleTokenAddress
+      ),
       args: [
         fcl.arg(address, cdcTypes.Address),
-        fcl.arg(listingResourceID, cdcTypes.UInt64),
+        fcl.arg(openSpaceItemId, cdcTypes.String),
       ],
     })
   }
@@ -68,19 +68,6 @@ export class FlowStorefrontService {
     return await FlowService.executeScript({
       script: scripts.hasStorefront(this.storefrontAddress),
       args: [fcl.arg(address, cdcTypes.Address)],
-    })
-  }
-
-  async hasSaleOffer(
-    address: string,
-    listingResourceID: number
-  ): Promise<boolean> {
-    return await FlowService.executeScript({
-      script: scripts.hasSaleOffer(this.storefrontAddress),
-      args: [
-        fcl.arg(address, cdcTypes.Address),
-        fcl.arg(listingResourceID, cdcTypes.UInt64),
-      ],
     })
   }
 }

@@ -1,10 +1,7 @@
 import { OpenSpaceItem } from '../../entity/OpenSpaceItem.entity'
 import { ApiProperty } from '@nestjs/swagger'
 
-export class OpenSpaceItemDto
-  implements
-    Omit<OpenSpaceItem, 'nftSubmission' | 'events' | 'saleOfferAvailableEvent'>
-{
+export class OpenSpaceItemDto implements Omit<OpenSpaceItem, 'nftSubmission'> {
   @ApiProperty({ type: 'string', format: 'uuid' })
   readonly id: string
 
