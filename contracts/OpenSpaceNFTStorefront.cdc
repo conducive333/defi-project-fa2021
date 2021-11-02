@@ -10,9 +10,9 @@ import OpenSpaceItems from 0x02
 //  2. Only OpenSpaceItems NFTs can be sold on the marketplace.
 //
 //  3. A OpenSpaceItems can only be apart of ONE listing. Creating 
-//     multiple listings for the same OpenSpaceItems is not allowed.
+//     multiple listings for the same OpenSpaceItem is not allowed.
 //
-//  4. Listing resource IDs have been replaced with OpenSpaceItems IDs
+//  4. Listing resource IDs have been replaced with OpenSpaceItem IDs
 //     for simplicity.
 //
 // Besides that, this contract is mostly the same. Each account that wants

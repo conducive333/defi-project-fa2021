@@ -23,6 +23,7 @@ import {
   FileType,
   NftSubmissionWithFileDto,
   OpenSpaceItemDto,
+  OpenSpaceItemWithSubmissionAndFileDto,
   User,
 } from '@api/database'
 import {
@@ -81,14 +82,14 @@ export class ClientDrawingPoolController {
   }
 
   @ApiOperation({
-    summary: 'Fetches multiple listings from the primary storefront.',
+    summary: 'Fetches multiple listings for a particular drawing pool from the primary storefront.',
   })
-  @ApiResponse({ status: 200, type: OpenSpaceItemDto, isArray: true })
+  @ApiResponse({ status: 200, type: OpenSpaceItemWithSubmissionAndFileDto, isArray: true })
   @Get(':id/listings')
   async getAdminListings(
     @Param() { id }: UUIDv4Dto,
     @Query() filterOpts: LimitOffsetOrderQueryDto
-  ): Promise<OpenSpaceItemDto[]> {
+  ): Promise<OpenSpaceItemWithSubmissionAndFileDto[]> {
     return await this.listingsService.findAllAdminListings(id, filterOpts)
   }
 
