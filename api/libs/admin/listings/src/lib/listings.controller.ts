@@ -11,7 +11,7 @@ export class AdminListingsController {
   constructor(private readonly listingsService: ListingsService) {}
 
   @ApiOperation({
-    summary: 'Creates a listing for this submission on the primary storefront.',
+    summary: 'Creates a listing on the primary storefront.',
   })
   @ApiResponse({ status: 200, type: OpenSpaceItemWithSubmissionAndFileDto })
   @Post()
@@ -26,7 +26,7 @@ export class AdminListingsController {
   })
   @ApiResponse({ status: 200, type: SuccessDto })
   @Delete(':id')
-  async remove(@Param('id') { id }: UUIDv4Dto): Promise<SuccessDto> {
+  async remove(@Param() { id }: UUIDv4Dto): Promise<SuccessDto> {
     await this.listingsService.remove(id)
     return { data: 'SUCCESS' }
   }

@@ -193,7 +193,7 @@ export class AdminDrawingPoolController {
     summary: 'Lists all NFT submissions made for a particular drawing pool.',
   })
   @ApiResponse({ status: 200, type: NftSubmissionWithFileDto, isArray: true })
-  @Get(':id/submission')
+  @Get(':id/submissions')
   async findAllSubmissions(
     @Param() { id }: UUIDv4Dto,
     @Query() filterOpts: LimitOffsetOrderQueryDto

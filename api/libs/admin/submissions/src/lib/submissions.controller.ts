@@ -5,7 +5,7 @@ import { SubmissionsService } from '@api/submissions'
 import { UUIDv4Dto } from '@api/utils'
 
 @ApiTags('NFT Submissions')
-@Controller('submission')
+@Controller('submissions')
 export class AdminSubmissionsController {
   constructor(private readonly submissionsService: SubmissionsService) {}
 
