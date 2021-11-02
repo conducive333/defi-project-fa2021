@@ -1,10 +1,8 @@
-import { FlowAddressDto } from '@api/flow/flow-service'
+import { IsDate, IsNotEmpty, MaxLength, MinLength } from 'class-validator'
 import { DrawingPoolDto } from '@api/database'
 import { ApiProperty } from '@nestjs/swagger'
-import { IsDate, IsNotEmpty, MaxLength, MinLength } from 'class-validator'
 
-export class CreateDrawingPoolDto
-  extends FlowAddressDto
+export class CreateRandomDrawingPoolDto
   implements
     Omit<DrawingPoolDto, 'id' | 'createdAt' | 'fileId' | 'drawingPoolId'>
 {

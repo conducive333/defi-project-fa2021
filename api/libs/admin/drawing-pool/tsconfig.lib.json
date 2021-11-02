@@ -7,7 +7,7 @@
   },
   "include": [
     "**/*.ts",
-    "../../drawing-pool/src/lib/dto/create-drawing-pool-with-file.dto.ts"
+    "../../drawing-pool/src/lib/dto/create-empty-drawing-pool-with-file.dto.ts"
   ],
   "exclude": ["**/*.spec.ts"]
 }

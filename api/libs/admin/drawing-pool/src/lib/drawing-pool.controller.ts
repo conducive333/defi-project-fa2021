@@ -28,8 +28,10 @@ import {
 import { SubmissionsService } from '@api/submissions'
 import { LimitOffsetOrderQueryDto, UUIDv4Dto } from '@api/utils'
 import {
-  CreateDrawingPoolDto,
-  CreateDrawingPoolWithFileDto,
+  CreateEmptyDrawingPoolDto,
+  CreateEmptyDrawingPoolWithFileDto,
+  CreateRandomDrawingPoolDto,
+  CreateRandomDrawingPoolWithFileDto,
   DrawingPoolService,
 } from '@api/drawing-pool'
 import { FileInterceptor } from '@nestjs/platform-express'
@@ -48,20 +50,21 @@ export class AdminDrawingPoolController {
     summary: 'Creates a drawing pool with randomly selected users.',
   })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({ type: CreateDrawingPoolWithFileDto })
+  @ApiBody({ type: CreateRandomDrawingPoolWithFileDto })
   @ApiResponse({ status: 200, type: DrawingPoolWithFileDto })
   @UseInterceptors(FileInterceptor('file', FileService.vidOpts()))
   @Post('random/video')
   async createRandomPoolWithVideoUpload(
-    @Body() createDrawingPoolDto: CreateDrawingPoolDto,
+    @Body() createDrawingPoolDto: CreateRandomDrawingPoolDto,
     @UploadedFile() file: Express.Multer.File
   ): Promise<DrawingPoolWithFileDto> {
     if (file) {
+      const { size, ...dto } = createDrawingPoolDto
       return await this.drawingPoolService.create(
-        createDrawingPoolDto,
+        dto,
         file,
         FileType.VIDEO,
-        true
+        size
       )
     }
     throw new BadRequestException('video is required.')
@@ -71,20 +74,21 @@ export class AdminDrawingPoolController {
     summary: 'Creates a drawing pool with randomly selected users.',
   })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({ type: CreateDrawingPoolWithFileDto })
+  @ApiBody({ type: CreateRandomDrawingPoolWithFileDto })
   @ApiResponse({ status: 200, type: DrawingPoolWithFileDto })
   @UseInterceptors(FileInterceptor('file', FileService.imgOpts()))
   @Post('random/image')
   async createRandomPoolWithImageUpload(
-    @Body() createDrawingPoolDto: CreateDrawingPoolDto,
+    @Body() createDrawingPoolDto: CreateRandomDrawingPoolDto,
     @UploadedFile() file: Express.Multer.File
   ): Promise<DrawingPoolWithFileDto> {
     if (file) {
+      const { size, ...dto } = createDrawingPoolDto
       return await this.drawingPoolService.create(
-        createDrawingPoolDto,
+        dto,
         file,
         FileType.IMAGE,
-        true
+        size
       )
     }
     throw new BadRequestException('image is required.')
@@ -94,12 +98,12 @@ export class AdminDrawingPoolController {
     summary: 'Creates an empty drawing pool.',
   })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({ type: CreateDrawingPoolWithFileDto })
+  @ApiBody({ type: CreateEmptyDrawingPoolWithFileDto })
   @ApiResponse({ status: 200, type: DrawingPoolWithFileDto })
   @UseInterceptors(FileInterceptor('file', FileService.vidOpts()))
   @Post('video')
   async createPoolWithVideoUpload(
-    @Body() createDrawingPoolDto: CreateDrawingPoolDto,
+    @Body() createDrawingPoolDto: CreateEmptyDrawingPoolDto,
     @UploadedFile() file: Express.Multer.File
   ): Promise<DrawingPoolWithFileDto> {
     if (file) {
@@ -116,12 +120,12 @@ export class AdminDrawingPoolController {
     summary: 'Creates an empty drawing pool.',
   })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({ type: CreateDrawingPoolWithFileDto })
+  @ApiBody({ type: CreateEmptyDrawingPoolWithFileDto })
   @ApiResponse({ status: 200, type: DrawingPoolWithFileDto })
   @UseInterceptors(FileInterceptor('file', FileService.imgOpts()))
   @Post('image')
   async createPoolWithImageUpload(
-    @Body() createDrawingPoolDto: CreateDrawingPoolDto,
+    @Body() createDrawingPoolDto: CreateEmptyDrawingPoolDto,
     @UploadedFile() file: Express.Multer.File
   ): Promise<DrawingPoolWithFileDto> {
     if (file) {

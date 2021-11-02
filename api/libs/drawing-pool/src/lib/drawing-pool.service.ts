@@ -13,7 +13,7 @@ import {
   NotFoundException,
 } from '@nestjs/common'
 import { EntityManager, FindConditions, getConnection, ILike } from 'typeorm'
-import { CreateDrawingPoolDto } from './dto/create-drawing-pool.dto'
+import { CreateEmptyDrawingPoolDto } from './dto/create-empty-drawing-pool.dto'
 
 @Injectable()
 export class DrawingPoolService {
@@ -24,10 +24,10 @@ export class DrawingPoolService {
   constructor(private readonly fileService: FileService) {}
 
   async create(
-    createDrawingPoolDto: CreateDrawingPoolDto,
+    createDrawingPoolDto: CreateEmptyDrawingPoolDto,
     file: Express.Multer.File,
     filetype: FileType,
-    random = false
+    size = 0
   ) {
     if (createDrawingPoolDto.releaseDate < new Date()) {
       throw new BadRequestException('releaseDate must be in the future')
@@ -51,11 +51,11 @@ export class DrawingPoolService {
         .returning('*')
         .execute()
       const drawingPool = result.generatedMaps[0] as DrawingPool
-      if (random) {
+      if (size !== 0) {
         await this.addRandomUsersToPool(
           tx,
           drawingPool.id,
-          createDrawingPoolDto.size
+          size
         )
       }
       return {
