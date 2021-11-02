@@ -151,7 +151,7 @@ export class AdminDrawingPoolController {
     summary: 'Adds a user to a drawing pool.',
   })
   @ApiResponse({ status: 200, type: UserToDrawingPoolDto })
-  @Post(':id/user/:userId')
+  @Post(':id/users/:userId')
   async addUserToPool(
     @Param() { id, userId }: DrawingPoolIdUserIdDto
   ): Promise<UserToDrawingPoolDto> {
@@ -162,7 +162,7 @@ export class AdminDrawingPoolController {
     summary: 'Removes a user from a drawing pool.',
   })
   @ApiResponse({ status: 200, type: UserToDrawingPoolDto })
-  @Delete(':id/user/:userId')
+  @Delete(':id/users/:userId')
   async removeUserFromPool(
     @Param() { id, userId }: DrawingPoolIdUserIdDto
   ): Promise<UserToDrawingPoolDto> {
