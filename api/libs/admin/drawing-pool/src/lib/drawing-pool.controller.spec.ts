@@ -1,17 +1,19 @@
+import { AdminDrawingPoolController } from './drawing-pool.controller'
+import { DrawingPoolService } from '@api/drawing-pool'
 import { Test, TestingModule } from '@nestjs/testing'
-import { DrawingPoolController } from './drawing-pool.controller'
-import { DrawingPoolService } from './drawing-pool.service'
 
-describe('DrawingPoolController', () => {
-  let controller: DrawingPoolController
+describe('AdminDrawingPoolController', () => {
+  let controller: AdminDrawingPoolController
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [DrawingPoolController],
+      controllers: [AdminDrawingPoolController],
       providers: [DrawingPoolService],
     }).compile()
 
-    controller = module.get<DrawingPoolController>(DrawingPoolController)
+    controller = module.get<AdminDrawingPoolController>(
+      AdminDrawingPoolController
+    )
   })
 
   it('should be defined', () => {

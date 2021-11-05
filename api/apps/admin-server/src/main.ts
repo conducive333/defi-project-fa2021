@@ -85,8 +85,7 @@ async function bootstrap() {
   if (env !== 'production') {
     const swagger = await import('@nestjs/swagger')
     const config = new swagger.DocumentBuilder()
-      .setTitle('CryptoCreate Admin API')
-      .setDescription('The CryptoCreate Admin API')
+      .setTitle('Admin API')
       .setVersion('1.0.0-alpha')
       .addTag('API Specification')
       .build()

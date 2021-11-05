@@ -1,4 +1,7 @@
 import { ConfigModule, ConfigService } from '@nestjs/config'
+import { AdminDrawingPoolModule } from '@api/admin/drawing-pool'
+import { AdminSubmissionsModule } from '@api/admin/submissions'
+import { AdminListingsModule } from '@api/admin/listings'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { entities } from '@api/database'
 import { Module } from '@nestjs/common'
@@ -54,6 +57,9 @@ const env = path.join(
         entities: entities,
       }),
     }),
+    AdminDrawingPoolModule,
+    AdminSubmissionsModule,
+    AdminListingsModule,
   ],
 })
 export class AppModule {}

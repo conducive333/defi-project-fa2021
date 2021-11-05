@@ -1,9 +1,9 @@
 import { MulterModuleOptions } from '@nestjs/platform-express'
-import { BadRequestException } from '@nestjs/common'
+import { BadRequestException, NotFoundException } from '@nestjs/common'
 import { FirebaseService } from '@api/firebase'
 import { Injectable } from '@nestjs/common'
 import { getConnection } from 'typeorm'
-import { CryptoCreateFile, FileType } from '@api/database'
+import { UploadedFile, FileType } from '@api/database'
 import { v4 as uuidv4 } from 'uuid'
 import * as multer from 'multer'
 import * as path from 'path'
@@ -19,7 +19,7 @@ export class FileService {
       const res = await tx
         .createQueryBuilder()
         .insert()
-        .into(CryptoCreateFile)
+        .into(UploadedFile)
         .values({
           category: filetype,
           mimetype: file.mimetype,
@@ -30,7 +30,19 @@ export class FileService {
         })
         .returning('*')
         .execute()
-      return res.generatedMaps[0] as CryptoCreateFile
+      return res.generatedMaps[0] as UploadedFile
+    })
+  }
+
+  async firebaseRemove(id: string) {
+    return await getConnection().transaction(async (tx) => {
+      const uploadedFile = await tx.findOne(UploadedFile, id)
+      if (!uploadedFile) {
+        throw new NotFoundException('File not found.')
+      }
+      await this.firebaseService.removeFile(uploadedFile.key)
+      await tx.delete(UploadedFile, id)
+      return uploadedFile
     })
   }
 

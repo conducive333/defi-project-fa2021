@@ -1,7 +1,8 @@
 import { ConfigModule, ConfigService } from '@nestjs/config'
-import { StorefrontModule } from '@api/client/storefront'
-import { DrawingPoolModule } from '@api/client/drawing-pool'
-import { SubmissionModule } from '@api/client/submission'
+import { ClientListingsModule } from '@api/client/listings'
+import { ClientDrawingPoolModule } from '@api/client/drawing-pool'
+import { ClientSubmissionsModule } from '@api/client/submissions'
+import { CollectionModule } from '@api/client/collection'
 import { AuthModule } from '@api/client/auth'
 import { PassportModule } from '@nestjs/passport'
 import { TypeOrmModule } from '@nestjs/typeorm'
@@ -66,9 +67,10 @@ const env = path.join(
         entities: entities,
       }),
     }),
-    DrawingPoolModule,
-    SubmissionModule,
-    StorefrontModule,
+    ClientDrawingPoolModule,
+    ClientSubmissionsModule,
+    ClientListingsModule,
+    CollectionModule,
     AuthModule,
   ],
 })

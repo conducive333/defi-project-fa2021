@@ -1,17 +1,17 @@
 export default (flowStorefrontAddress: string) =>
   `
-import AdminNFTStorefront from ${flowStorefrontAddress}
+import AdminNFTStorefrontV3 from ${flowStorefrontAddress}
 
-transaction(listingResourceID: UInt64) {
-    let storefront: &AdminNFTStorefront.AdminStorefront{AdminNFTStorefront.StorefrontManager}
+transaction(setID: String, packID: String) {
+    let storefront: &AdminNFTStorefrontV3.AdminStorefront{AdminNFTStorefrontV3.StorefrontManager}
 
     prepare(acct: AuthAccount) {
-        self.storefront = acct.borrow<&AdminNFTStorefront.AdminStorefront{AdminNFTStorefront.StorefrontManager}>(from: AdminNFTStorefront.AdminStorefrontStoragePath)
-            ?? panic("Missing or mis-typed AdminNFTStorefront.AdminStorefront")
+        self.storefront = acct.borrow<&AdminNFTStorefrontV3.AdminStorefront{AdminNFTStorefrontV3.StorefrontManager}>(from: AdminNFTStorefrontV3.AdminStorefrontStoragePath)
+            ?? panic("Missing or mis-typed AdminNFTStorefrontV3.AdminStorefront")
     }
 
     execute {
-        self.storefront.removeListing(listingResourceID: listingResourceID)
+        self.storefront.removeListing(setID: setID, packID: packID)
     }
 }
 `

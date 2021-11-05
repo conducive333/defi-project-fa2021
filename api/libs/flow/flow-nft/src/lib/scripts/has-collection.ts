@@ -1,12 +1,12 @@
 export default (address: string, nftAddress: string) =>
   `
 import NonFungibleToken from ${nftAddress}
-import CryptoCreateItems from ${address}
+import OpenSpaceItems from ${address}
 
 pub fun main(address: Address): Bool {
   let account = getAccount(address)
-  if let collection = account.getCapability<&CryptoCreateItems.Collection{NonFungibleToken.CollectionPublic, CryptoCreateItems.CryptoCreateItemsCollectionPublic}>(CryptoCreateItems.CollectionPublicPath)!.borrow() {
-    if let collectionRef = account.getCapability(CryptoCreateItems.CollectionPublicPath)!.borrow<&{NonFungibleToken.CollectionPublic}>() {
+  if let collection = account.getCapability<&OpenSpaceItems.Collection{NonFungibleToken.CollectionPublic, OpenSpaceItems.OpenSpaceItemsCollectionPublic}>(OpenSpaceItems.CollectionPublicPath)!.borrow() {
+    if let collectionRef = account.getCapability(OpenSpaceItems.CollectionPublicPath)!.borrow<&{NonFungibleToken.CollectionPublic}>() {
       return true
     }
   }

@@ -21,7 +21,31 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
+    },
+    "admin-listings": {
+      "root": "libs/admin/listings",
+      "sourceRoot": "libs/admin/listings/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/admin/listings/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/admin/listings"],
+          "options": {
+            "jestConfig": "libs/admin/listings/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": []
     },
     "admin-server": {
       "root": "apps/admin-server",
@@ -54,7 +78,7 @@
         "serve": {
           "executor": "@nrwl/node:execute",
           "options": {
-            "buildTarget": "admin-client-server:build"
+            "buildTarget": "admin-server:build"
           }
         },
         "lint": {
@@ -72,7 +96,31 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
+    },
+    "admin-submissions": {
+      "root": "libs/admin/submissions",
+      "sourceRoot": "libs/admin/submissions/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/admin/submissions/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/admin/submissions"],
+          "options": {
+            "jestConfig": "libs/admin/submissions/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": []
     },
     "client-auth": {
       "root": "libs/client/auth",
@@ -94,7 +142,31 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
+    },
+    "client-collection": {
+      "root": "libs/client/collection",
+      "sourceRoot": "libs/client/collection/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/client/collection/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/client/collection"],
+          "options": {
+            "jestConfig": "libs/client/collection/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": []
     },
     "client-drawing-pool": {
       "root": "libs/client/drawing-pool",
@@ -116,7 +188,31 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
+    },
+    "client-listings": {
+      "root": "libs/client/listings",
+      "sourceRoot": "libs/client/listings/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/client/listings/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/client/listings"],
+          "options": {
+            "jestConfig": "libs/client/listings/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": []
     },
     "client-server": {
       "root": "apps/client-server",
@@ -167,51 +263,31 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
-    "client-storefront": {
-      "root": "libs/client/storefront",
-      "sourceRoot": "libs/client/storefront/src",
+    "client-submissions": {
+      "root": "libs/client/submissions",
+      "sourceRoot": "libs/client/submissions/src",
       "projectType": "library",
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "outputs": ["{options.outputFile}"],
           "options": {
-            "lintFilePatterns": ["libs/client/storefront/**/*.ts"]
+            "lintFilePatterns": ["libs/client/submissions/**/*.ts"]
           }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/client/storefront"],
+          "outputs": ["coverage/libs/client/submissions"],
           "options": {
-            "jestConfig": "libs/client/storefront/jest.config.js",
+            "jestConfig": "libs/client/submissions/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
-    },
-    "client-submission": {
-      "root": "libs/client/submission",
-      "sourceRoot": "libs/client/submission/src",
-      "projectType": "library",
-      "targets": {
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "outputs": ["{options.outputFile}"],
-          "options": {
-            "lintFilePatterns": ["libs/client/submission/**/*.ts"]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/client/submission"],
-          "options": {
-            "jestConfig": "libs/client/submission/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
+      },
+      "tags": []
     },
     "client-user": {
       "root": "libs/client/user",
@@ -233,7 +309,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "database": {
       "root": "libs/database",
@@ -255,7 +332,31 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
+    },
+    "drawing-pool": {
+      "root": "libs/drawing-pool",
+      "sourceRoot": "libs/drawing-pool/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/drawing-pool/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/drawing-pool"],
+          "options": {
+            "jestConfig": "libs/drawing-pool/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": []
     },
     "file": {
       "root": "libs/file",
@@ -277,7 +378,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "firebase": {
       "root": "libs/firebase",
@@ -299,7 +401,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "flow-flow-admin-storefront": {
       "root": "libs/flow/flow-admin-storefront",
@@ -321,7 +424,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "flow-flow-auth": {
       "root": "libs/flow/flow-auth",
@@ -343,29 +447,8 @@
             "passWithNoTests": true
           }
         }
-      }
-    },
-    "flow-flow-events": {
-      "root": "libs/flow/flow-events",
-      "sourceRoot": "libs/flow/flow-events/src",
-      "projectType": "library",
-      "targets": {
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "outputs": ["{options.outputFile}"],
-          "options": {
-            "lintFilePatterns": ["libs/flow/flow-events/**/*.ts"]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/flow/flow-events"],
-          "options": {
-            "jestConfig": "libs/flow/flow-events/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
+      },
+      "tags": []
     },
     "flow-flow-key-cycler": {
       "root": "libs/flow/flow-key-cycler",
@@ -387,7 +470,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "flow-flow-nft": {
       "root": "libs/flow/flow-nft",
@@ -409,7 +493,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "flow-flow-service": {
       "root": "libs/flow/flow-service",
@@ -431,7 +516,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "flow-flow-storefront": {
       "root": "libs/flow/flow-storefront",
@@ -453,58 +539,31 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
-    "flow-listener": {
-      "root": "apps/flow-listener",
-      "sourceRoot": "apps/flow-listener/src",
-      "projectType": "application",
+    "listings": {
+      "root": "libs/listings",
+      "sourceRoot": "libs/listings/src",
+      "projectType": "library",
       "targets": {
-        "build": {
-          "executor": "@nrwl/node:build",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "outputPath": "dist/apps/flow-listener",
-            "main": "apps/flow-listener/src/main.ts",
-            "tsConfig": "apps/flow-listener/tsconfig.app.json",
-            "assets": []
-          },
-          "configurations": {
-            "production": {
-              "optimization": true,
-              "extractLicenses": true,
-              "inspect": false,
-              "fileReplacements": [
-                {
-                  "replace": "apps/flow-listener/src/environments/environment.ts",
-                  "with": "apps/flow-listener/src/environments/environment.prod.ts"
-                }
-              ]
-            }
-          }
-        },
-        "serve": {
-          "executor": "@nrwl/node:execute",
-          "options": {
-            "buildTarget": "flow-listener:build"
-          }
-        },
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "outputs": ["{options.outputFile}"],
           "options": {
-            "lintFilePatterns": ["apps/flow-listener/**/*.ts"]
+            "lintFilePatterns": ["libs/listings/**/*.ts"]
           }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/flow-listener"],
+          "outputs": ["coverage/libs/listings"],
           "options": {
-            "jestConfig": "apps/flow-listener/jest.config.js",
+            "jestConfig": "libs/listings/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "logger": {
       "root": "libs/logger",
@@ -526,7 +585,31 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
+    },
+    "nfts": {
+      "root": "libs/nfts",
+      "sourceRoot": "libs/nfts/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/nfts/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/nfts"],
+          "options": {
+            "jestConfig": "libs/nfts/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": []
     },
     "rate-limiter": {
       "root": "libs/rate-limiter",
@@ -548,7 +631,31 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
+    },
+    "submissions": {
+      "root": "libs/submissions",
+      "sourceRoot": "libs/submissions/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/submissions/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/submissions"],
+          "options": {
+            "jestConfig": "libs/submissions/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": []
     },
     "utils": {
       "root": "libs/utils",
@@ -570,11 +677,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     }
-  },
-  "cli": {
-    "defaultCollection": "@nrwl/nest"
-  },
-  "defaultProject": "client-server"
+  }
 }

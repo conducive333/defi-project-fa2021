@@ -11,7 +11,7 @@ import {
   Unique,
 } from 'typeorm'
 import { User } from './User.entity'
-import { CryptoCreateFile } from './CryptoCreateFile.entity'
+import { UploadedFile } from './UploadedFile.entity'
 
 @Entity()
 @Unique(['drawingPoolId', 'creatorId']) // User can only make one submission per drawing pool
@@ -33,9 +33,11 @@ export class NftSubmission {
   @Column({ type: 'text', nullable: false })
   description: string
 
-  @OneToOne(() => CryptoCreateFile, (cryptoCreateFile) => cryptoCreateFile.id, { nullable: false })
+  @OneToOne(() => UploadedFile, (uploadedFile) => uploadedFile.id, {
+    nullable: false,
+  })
   @JoinColumn({ name: 'file_id' })
-  file: CryptoCreateFile
+  file: UploadedFile
 
   @Column({ name: 'file_id', type: 'uuid', nullable: false })
   fileId: string

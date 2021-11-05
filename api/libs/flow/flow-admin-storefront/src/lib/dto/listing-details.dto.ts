@@ -14,8 +14,11 @@ export class ListingDetailsDto {
   @ApiProperty({ type: 'boolean', example: false })
   readonly purchased: boolean
 
-  @ApiProperty({ type: NftMetadataDto })
-  readonly metadata: NftMetadataDto
+  @ApiProperty({ type: 'string', format: 'uuid' })
+  readonly packID: string
+
+  @ApiProperty({ type: NftMetadataDto, minLength: 1, maxLength: 1 })
+  readonly metadatas: NftMetadataDto[]
 
   @ApiProperty({
     type: 'string',

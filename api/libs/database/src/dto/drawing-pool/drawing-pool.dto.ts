@@ -24,7 +24,4 @@ export class DrawingPoolDto
 
   @ApiProperty({ type: 'string', format: 'date-time' })
   readonly endDate: Date
-
-  @ApiProperty({ type: 'integer' })
-  readonly maxSize: number
 }
