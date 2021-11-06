@@ -1,9 +1,8 @@
 import React from 'react';
+import { MainPage } from './pages';
 
 export const App = () => {
   return (
-    <div className="App">
-      Best Defi Project Ever
-    </div>
+    <MainPage />
   );
 }
