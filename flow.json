@@ -1,0 +1,79 @@
+{
+	"emulators": {
+		"default": {
+			"port": 3569,
+			"serviceAccount": "emulator-account"
+		}
+	},
+  "contracts": {
+		"FUSD": {
+      "source": "./cadence/contracts/standard/FUSD.cdc",
+      "aliases": {
+        "testnet": "0xe223d8a629e49c68"
+      }
+    },
+		"NonFungibleToken": {
+      "source": "./cadence/contracts/standard/NonFungibleToken.cdc",
+      "aliases": {
+        "emulator": "0x631e88ae7f1d7c20",
+        "testnet": "0x631e88ae7f1d7c20"
+      }
+    },
+		"FlowFees": {
+      "source": "./cadence/contracts/standard/FlowFees.cdc",
+      "aliases": {
+        "emulator": "0xe5a8b7f23e8b548f",
+        "testnet": "0x912d5440f7e3769e"
+      }
+    },
+		"FlowToken": {
+      "source": "./cadence/contracts/standard/FlowToken.cdc",
+      "aliases": {
+        "emulator": "0x0ae53cb6e3f42a79",
+        "testnet": "0x7e60df042a9c0868"
+      }
+    },
+		"FungibleToken": {
+      "source": "./cadence/contracts/standard/FungibleToken.cdc",
+      "aliases": {
+        "emulator": "0xee82856bf20e2aa6",
+        "testnet": "0x9a0766d93b6608b7"
+      }
+    },
+		"NFTStorefront": {
+			"source": "./cadence/contracts/standard/NFTStorefront.cdc",
+      "aliases": {
+        "emulator": "0x94b06cfca1d8a476",
+        "testnet": "0x94b06cfca1d8a476"
+      }
+		}
+  },
+	"networks": {
+		"emulator": "127.0.0.1:3569",
+		"mainnet": "access.mainnet.nodes.onflow.org:9000",
+		"testnet": "access.devnet.nodes.onflow.org:9000"
+	},
+	"accounts": {
+    "testnet-account": {
+			"address": "0x63a7b62e508e32b9",
+			"key": "7aa3de0f9648607b620bcd618eeb93c4bdc2e08619c097fee12108003dfb72ff"
+		},
+		"emulator-account": {
+			"address": "f8d6e0586b0a20c7",
+			"key": "8cf33250d2cbc691dfd1c544042b3a108e7683122c52fa83c7dbbf035935050e"
+		},
+    "local-account": {
+			"address": "01cf0e2f2f715450",
+			"key": "d30728757a139fcbb33d28fe922c27e3febaf969272bdafde5f0a86291aec25c"
+		}
+	},
+	"deployments": {
+    "emulator": {
+      "emulator-account": [
+        "NonFungibleToken",
+				"NFTStorefront",
+				"FUSD"
+      ]
+    }
+  }
+}
