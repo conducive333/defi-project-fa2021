@@ -82,9 +82,14 @@ export class ClientDrawingPoolController {
   }
 
   @ApiOperation({
-    summary: 'Fetches multiple listings for a particular drawing pool from the primary storefront.',
+    summary:
+      'Fetches multiple listings for a particular drawing pool from the primary storefront.',
   })
-  @ApiResponse({ status: 200, type: OpenSpaceItemWithSubmissionAndFileDto, isArray: true })
+  @ApiResponse({
+    status: 200,
+    type: OpenSpaceItemWithSubmissionAndFileDto,
+    isArray: true,
+  })
   @Get(':id/listings')
   async getAdminListings(
     @Param() { id }: UUIDv4Dto,

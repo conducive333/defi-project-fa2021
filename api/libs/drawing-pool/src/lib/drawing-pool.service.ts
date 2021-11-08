@@ -52,11 +52,7 @@ export class DrawingPoolService {
         .execute()
       const drawingPool = result.generatedMaps[0] as DrawingPool
       if (size !== 0) {
-        await this.addRandomUsersToPool(
-          tx,
-          drawingPool.id,
-          size
-        )
+        await this.addRandomUsersToPool(tx, drawingPool.id, size)
       }
       return {
         ...drawingPool,
@@ -70,18 +66,20 @@ export class DrawingPoolService {
     drawingPoolId: string,
     poolSize: number
   ) {
-    const userTable = tx.getRepository(User).metadata.tableName
-    return await tx
-      .createQueryBuilder()
-      .insert()
-      .into(UserToDrawingPool)
-      .values({
-        user: () =>
-          `(SELECT "${userTable}".id FROM "${userTable}" ORDER BY RANDOM() LIMIT :limit)`,
-        drawingPoolId: drawingPoolId,
-      })
-      .setParameter('limit', poolSize)
-      .execute()
+    const userToDP = tx.getRepository(UserToDrawingPool).metadata.tableName
+    const user = tx.getRepository(User).metadata.tableName
+    return await tx.query(
+      `
+      INSERT INTO "${userToDP}" ("user_id", "drawing_pool_id")
+      SELECT
+        "${user}".id AS "user_id",
+        $1 AS "drawing_pool_id"
+      FROM "${user}"
+      ORDER BY RANDOM()
+      LIMIT $2
+    `,
+      [drawingPoolId, poolSize]
+    )
   }
 
   async findAll(

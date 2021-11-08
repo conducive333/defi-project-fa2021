@@ -9,7 +9,6 @@ NORMAL=$(tput sgr0)
 
 # Ensures that this script is run from the same directory as flow.json
 cd "$(dirname "$0")" && \
-cd .. && \
 
 # Deploy core contracts to emulator
 printf "\n\n${BLUE}Deploying contracts...\n${NORMAL}" && \

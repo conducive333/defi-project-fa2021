@@ -11,13 +11,13 @@ export class createTables1627860201306 implements MigrationInterface {
       `CREATE TABLE "uploaded_file" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "key" text NOT NULL, "name" text NOT NULL, "url" text NOT NULL, "mimetype" text NOT NULL, "category" "public"."uploaded_file_category_enum" NOT NULL, "size" integer NOT NULL, CONSTRAINT "UQ_9790bf46c4d0ec737e2c869abb1" UNIQUE ("key"), CONSTRAINT "PK_e2aa19a0c9b98da779d8eb571fa" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
-      `CREATE TABLE "user_to_drawing_pool" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "drawing_pool_id" uuid NOT NULL, "user_id" uuid NOT NULL, "drawingPoolId" uuid NOT NULL, "userId" text NOT NULL, CONSTRAINT "UQ_aa8f0e64ff30306cc38eede049f" UNIQUE ("drawingPoolId", "userId"), CONSTRAINT "PK_f4445f50f92ff49fe1d082119d8" PRIMARY KEY ("id"))`
+      `CREATE TABLE "user_to_drawing_pool" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "drawing_pool_id" uuid NOT NULL, "user_id" text NOT NULL, CONSTRAINT "UQ_74d3a632c3ac8f80b6d2d2d8553" UNIQUE ("drawing_pool_id", "user_id"), CONSTRAINT "PK_f4445f50f92ff49fe1d082119d8" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
       `CREATE TABLE "user" ("id" text NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "email" text NOT NULL, "username" text NOT NULL, CONSTRAINT "UQ_e12875dfb3b1d92d7d7c5377e22" UNIQUE ("email"), CONSTRAINT "UQ_78a916df40e02a9deb1c4b75edb" UNIQUE ("username"), CONSTRAINT "PK_cace4a159ff9f2512dd42373760" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
-      `CREATE TABLE "nft_submission" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "name" text NOT NULL, "description" text NOT NULL, "file_id" uuid NOT NULL, "address" text NOT NULL, "drawing_pool_id" uuid NOT NULL, "creator_id" uuid NOT NULL, "drawingPoolId" uuid, "creatorId" text, CONSTRAINT "UQ_dab6fbdb53ea35f777ced7c1f1f" UNIQUE ("drawing_pool_id", "creator_id"), CONSTRAINT "REL_4db8dc75ba1c6b429cfb230821" UNIQUE ("file_id"), CONSTRAINT "CHK_906599a110828be59b8bba5930" CHECK ("address" ~ '^0x[a-z0-9]{16}$'), CONSTRAINT "PK_c00c01dddbba44df97e70080028" PRIMARY KEY ("id"))`
+      `CREATE TABLE "nft_submission" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "name" text NOT NULL, "description" text NOT NULL, "file_id" uuid NOT NULL, "address" text NOT NULL, "drawing_pool_id" uuid NOT NULL, "creator_id" text NOT NULL, CONSTRAINT "UQ_dab6fbdb53ea35f777ced7c1f1f" UNIQUE ("drawing_pool_id", "creator_id"), CONSTRAINT "CHK_906599a110828be59b8bba5930" CHECK ("address" ~ '^0x[a-z0-9]{16}$'), CONSTRAINT "PK_c00c01dddbba44df97e70080028" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
       `CREATE TABLE "drawing_pool" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "name" text NOT NULL, "description" text NOT NULL, "file_id" uuid NOT NULL, "release_date" TIMESTAMP WITH TIME ZONE NOT NULL, "end_date" TIMESTAMP WITH TIME ZONE NOT NULL, CONSTRAINT "REL_ee5548c1a3d0c8db43009a955a" UNIQUE ("file_id"), CONSTRAINT "PK_f57d44f8372a1c26aa0c32d74fa" PRIMARY KEY ("id"))`
@@ -35,19 +35,19 @@ export class createTables1627860201306 implements MigrationInterface {
       `CREATE TABLE "user_session" ("id" character varying NOT NULL, "expires_at" integer NOT NULL, "data" character varying NOT NULL, CONSTRAINT "PK_adf3b49590842ac3cf54cac451a" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
-      `ALTER TABLE "user_to_drawing_pool" ADD CONSTRAINT "FK_af19afca104206a0b281b3f00a4" FOREIGN KEY ("drawingPoolId") REFERENCES "drawing_pool"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
+      `ALTER TABLE "user_to_drawing_pool" ADD CONSTRAINT "FK_1209ab6e2629855f5e36a35fafe" FOREIGN KEY ("drawing_pool_id") REFERENCES "drawing_pool"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
     )
     await queryRunner.query(
-      `ALTER TABLE "user_to_drawing_pool" ADD CONSTRAINT "FK_eb55b8b79c8b40f37a93105a892" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
+      `ALTER TABLE "user_to_drawing_pool" ADD CONSTRAINT "FK_0b81b65a0b8030c561a7c69fb47" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
     )
     await queryRunner.query(
       `ALTER TABLE "nft_submission" ADD CONSTRAINT "FK_4db8dc75ba1c6b429cfb2308215" FOREIGN KEY ("file_id") REFERENCES "uploaded_file"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
     )
     await queryRunner.query(
-      `ALTER TABLE "nft_submission" ADD CONSTRAINT "FK_0c526fa40b2407b75de4a930f6f" FOREIGN KEY ("drawingPoolId") REFERENCES "drawing_pool"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
+      `ALTER TABLE "nft_submission" ADD CONSTRAINT "FK_4d51ea042fe80295e0159002841" FOREIGN KEY ("drawing_pool_id") REFERENCES "drawing_pool"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
     )
     await queryRunner.query(
-      `ALTER TABLE "nft_submission" ADD CONSTRAINT "FK_8f8ef0e4336b8227b95dae2a2fd" FOREIGN KEY ("creatorId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
+      `ALTER TABLE "nft_submission" ADD CONSTRAINT "FK_9136b5fe577389094313f1b7e26" FOREIGN KEY ("creator_id") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
     )
     await queryRunner.query(
       `ALTER TABLE "drawing_pool" ADD CONSTRAINT "FK_ee5548c1a3d0c8db43009a955aa" FOREIGN KEY ("file_id") REFERENCES "uploaded_file"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
@@ -65,19 +65,19 @@ export class createTables1627860201306 implements MigrationInterface {
       `ALTER TABLE "drawing_pool" DROP CONSTRAINT "FK_ee5548c1a3d0c8db43009a955aa"`
     )
     await queryRunner.query(
-      `ALTER TABLE "nft_submission" DROP CONSTRAINT "FK_8f8ef0e4336b8227b95dae2a2fd"`
+      `ALTER TABLE "nft_submission" DROP CONSTRAINT "FK_9136b5fe577389094313f1b7e26"`
     )
     await queryRunner.query(
-      `ALTER TABLE "nft_submission" DROP CONSTRAINT "FK_0c526fa40b2407b75de4a930f6f"`
+      `ALTER TABLE "nft_submission" DROP CONSTRAINT "FK_4d51ea042fe80295e0159002841"`
     )
     await queryRunner.query(
       `ALTER TABLE "nft_submission" DROP CONSTRAINT "FK_4db8dc75ba1c6b429cfb2308215"`
     )
     await queryRunner.query(
-      `ALTER TABLE "user_to_drawing_pool" DROP CONSTRAINT "FK_eb55b8b79c8b40f37a93105a892"`
+      `ALTER TABLE "user_to_drawing_pool" DROP CONSTRAINT "FK_0b81b65a0b8030c561a7c69fb47"`
     )
     await queryRunner.query(
-      `ALTER TABLE "user_to_drawing_pool" DROP CONSTRAINT "FK_af19afca104206a0b281b3f00a4"`
+      `ALTER TABLE "user_to_drawing_pool" DROP CONSTRAINT "FK_1209ab6e2629855f5e36a35fafe"`
     )
     await queryRunner.query(`DROP TABLE "user_session"`)
     await queryRunner.query(`DROP TABLE "rate_limit_record"`)

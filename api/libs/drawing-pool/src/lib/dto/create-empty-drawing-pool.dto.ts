@@ -1,4 +1,4 @@
-import { IsDate, IsNotEmpty, MaxLength, MinLength } from 'class-validator'
+import { IsDateString, IsNotEmpty, MaxLength, MinLength } from 'class-validator'
 import { DrawingPoolDto } from '@api/database'
 import { ApiProperty } from '@nestjs/swagger'
 
@@ -27,7 +27,7 @@ export class CreateEmptyDrawingPoolDto
   readonly description!: string
 
   @IsNotEmpty()
-  @IsDate()
+  @IsDateString()
   @ApiProperty({
     type: 'string',
     format: 'date-time',
@@ -35,11 +35,10 @@ export class CreateEmptyDrawingPoolDto
   readonly releaseDate!: Date
 
   @IsNotEmpty()
-  @IsDate()
+  @IsDateString()
   @ApiProperty({
     type: 'string',
     format: 'date-time',
   })
   readonly endDate!: Date
-
 }
