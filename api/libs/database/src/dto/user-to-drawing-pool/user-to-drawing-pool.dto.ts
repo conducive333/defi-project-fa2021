@@ -13,6 +13,6 @@ export class UserToDrawingPoolDto
   @ApiProperty({ type: 'string', format: 'uuid' })
   readonly drawingPoolId: string
 
-  @ApiProperty({ type: 'string', format: 'uuid' })
+  @ApiProperty({ type: 'string' })
   readonly userId: string
 }

@@ -25,6 +25,6 @@ export class NftSubmissionDto
   @ApiProperty({ type: 'string', format: 'uuid' })
   readonly drawingPoolId: string
 
-  @ApiProperty({ type: 'string', format: 'uuid' })
+  @ApiProperty({ type: 'string' })
   readonly creatorId: string
 }
