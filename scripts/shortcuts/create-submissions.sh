@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# https://stackoverflow.com/questions/821396/aborting-a-shell-script-if-any-command-returns-a-non-zero-value
+set -e
+
 # $1 = drawing pool ID
 if [ "$#" -ne 1 ]; then
   printf "\nIllegal number of parameters. Expected one argument (the drawing pool ID).\n\n"
@@ -47,8 +50,8 @@ SQL="
 "
 
 # Navigate to the correct directory and run the query
-cd "$(dirname "$0")" && \
-cd .. && \
-cd .. && \
-cd api && \
+cd "$(dirname "$0")"
+cd ..
+cd ..
+cd api
 npm run query:dev "$(echo $SQL)"
