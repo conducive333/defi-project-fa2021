@@ -1,6 +1,6 @@
-import NonFungibleToken from ${nftAddress}
-import FungibleToken from ${ftAddress}
-import OpenSpaceItems from ${devAddress}
+import NonFungibleToken from "../standard/NonFungibleToken.cdc"
+import FungibleToken from "../standard/FungibleToken.cdc"
+import OpenSpaceItems from "./OpenSpaceItems.cdc"
 
 // OpenSpaceAdminNFTStorefront
 //

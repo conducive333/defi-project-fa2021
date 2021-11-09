@@ -1,6 +1,6 @@
-import NonFungibleToken from 0x03
-import FungibleToken from 0x04
-import OpenSpaceItems from 0x02
+import NonFungibleToken from "../standard/NonFungibleToken.cdc"
+import FungibleToken from "../standard/FungibleToken.cdc"
+import OpenSpaceItems from "./OpenSpaceItems.cdc"
 
 // What's the difference between this contract and the general-purpose 
 // NFTStorefront contract?

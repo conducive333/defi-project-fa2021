@@ -12,7 +12,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 **/
-import NonFungibleToken from 0x03
+import NonFungibleToken from "../standard/NonFungibleToken.cdc"
 
 // OpenSpaceItems
 // NFT items for OpenSpaceItems!
