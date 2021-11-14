@@ -7,22 +7,20 @@ import OpenSpaceItems from "./OpenSpaceItems.cdc"
 //
 //  1. Listings can now have a price of 0.
 //
-//  2. Only OpenSpaceItems NFTs can be sold on the marketplace.
+//  2. Only OpenSpaceItem NFTs can be sold on the marketplace.
 //
-//  3. A OpenSpaceItems can only be apart of ONE listing. Creating 
-//     multiple listings for the same OpenSpaceItem is not allowed.
+//  3. A OpenSpaceItem can only be apart of ONE listing. Creating multiple 
+//     listings for the same OpenSpaceItem is not allowed. However, each 
+//     listing consists of an array of payment options which specifies 
+//     the fungible tokens that can be used to purchase the NFT along 
+//     with other data such as the price and sale cut distribution.
 //
-//  4. Listing resource IDs have been replaced with OpenSpaceItem IDs
-//     for simplicity.
+//  4. Listing resource IDs have been replaced with OpenSpaceItem IDs (this
+//     makes it a lot easier to refer to a listing for a specific NFT).
 //
-// Besides that, this contract is mostly the same. Each account that wants
-// to list NFTs for sale installs a Storefront, and lists individual sales 
-// within that Storefront as Listings. There is one Storefront per account, 
-// it handles sales of OpenSpaceItems NFTs ONLY for that account.
-//
-// Each Listing can have one or more "cut"s of the sale price that
-// goes to one or more addresses. Cuts can be used to pay listing fees
-// or other considerations.
+// Besides that, this contract is mostly the same. Each Listing can have
+// one or more "cut"s of the sale price that goes to one or more addresses. 
+// Cuts can be used to pay listing fees or other considerations.
 // 
 // Purchasers can watch for Listing events and check the NFT type and
 // ID to see if they wish to buy the listed item.
@@ -66,8 +64,8 @@ pub contract OpenSpaceNFTStorefront {
   pub event ListingAvailable(
     storefrontAddress: Address,
     nftID: UInt64,
-    ftVaultType: Type,
-    price: UFix64
+    ftVaultTypes: [Type],
+    prices: [UFix64]
   )
 
   // ListingCompleted
@@ -108,6 +106,53 @@ pub contract OpenSpaceNFTStorefront {
     }
   }
 
+  // PaymentOption
+  // A struct that stores payment information about a listing. One listing
+  // can have many payment options. When a user purchases a listing, they 
+  // must provide a payment vault that can be used to satisfy exactly one 
+  // of the payment options for the listing.
+  //
+  pub struct PaymentOption {
+
+    // The Type of the FungibleToken that payments must be made in.
+    pub let salePaymentVaultType: Type
+
+    // The amount that must be paid in the specified FungibleToken.
+    pub let salePrice: UFix64
+
+    // This specifies the division of payment between recipients.
+    pub let saleCuts: [SaleCut]
+
+    // initializer
+    //
+    init(
+      salePaymentVaultType: Type,
+      saleCuts: [SaleCut]
+    ) {
+
+      self.salePaymentVaultType = salePaymentVaultType
+
+      // Store the cuts
+      assert(saleCuts.length > 0, message: "Listing must have at least one payment cut recipient")
+      self.saleCuts = saleCuts
+
+      // Calculate the total price from the cuts
+      var salePrice = 0.0
+      // Perform initial check on capabilities, and calculate sale price from cut amounts.
+      for cut in self.saleCuts {
+        // Make sure we can borrow the receiver.
+        // We will check this again when the token is sold.
+        cut.receiver.borrow() ?? panic("Cannot borrow receiver")
+        // Add the cut amount to the total price
+        salePrice = salePrice + cut.amount
+      }
+      assert(salePrice >= 0.0, message: "Listing must have nonnegative price")
+
+      // Store the calculated sale price
+      self.salePrice = salePrice
+
+    }
+  }
 
   // ListingDetails
   // A struct containing a Listing's data.
@@ -122,12 +167,8 @@ pub contract OpenSpaceNFTStorefront {
     pub var purchased: Bool
     // The ID of the NFT within that type.
     pub let nftID: UInt64
-    // The Type of the FungibleToken that payments must be made in.
-    pub let salePaymentVaultType: Type
-    // The amount that must be paid in the specified FungibleToken.
-    pub let salePrice: UFix64
-    // This specifies the division of payment between recipients.
-    pub let saleCuts: [SaleCut]
+    // An array of valid payment methods.
+    pub let paymentOptions: [PaymentOption]
 
     // setToPurchased
     // Irreversibly set this listing as purchased.
@@ -140,38 +181,17 @@ pub contract OpenSpaceNFTStorefront {
     //
     init(
       nftID: UInt64,
-      salePaymentVaultType: Type,
-      saleCuts: [SaleCut],
+      paymentOptions: [PaymentOption],
       storefrontID: UInt64
     ) {
       self.storefrontID = storefrontID
       self.purchased = false
       self.nftID = nftID
-      self.salePaymentVaultType = salePaymentVaultType
-
-      // Store the cuts
-      assert(saleCuts.length > 0, message: "Listing must have at least one payment cut recipient")
-      self.saleCuts = saleCuts
-
-      // Calculate the total price from the cuts
-      var salePrice = 0.0
-      // Perform initial check on capabilities, and calculate sale price from cut amounts.
-      for cut in self.saleCuts {
-        // Make sure we can borrow the receiver.
-        // We will check this again when the token is sold.
-        cut.receiver.borrow() ??
-          panic("Cannot borrow receiver")
-        // Add the cut amount to the total price
-        salePrice = salePrice + cut.amount
-      }
-      assert(salePrice > 0.0, message: "Listing must have non-zero price")
-
-      // Store the calculated sale price
-      self.salePrice = salePrice
+      self.paymentOptions = paymentOptions
     }
   }
 
-  
+
   // ListingPublic
   // An interface providing a useful public interface to a Listing.
   //
@@ -208,6 +228,19 @@ pub contract OpenSpaceNFTStorefront {
     // way that it claims.
     access(contract) let nftProviderCapability: Capability<&{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>
 
+    // findValidPaymentOption
+    // Finds a payment option that matches the given type and balance.
+    access(self) fun findValidPaymentOption(vaultType: Type, balance: UFix64): PaymentOption? {
+      for paymentOption in self.details.paymentOptions {
+        if (
+          vaultType == paymentOption.salePaymentVaultType && balance == paymentOption.salePrice
+        ) {
+          return paymentOption
+        }
+      }
+      return nil
+    }
+
     // borrowNFT
     // This will assert in the same way as the NFT standard borrowNFT()
     // if the NFT is absent, for example if it has been sold via another listing.
@@ -237,8 +270,12 @@ pub contract OpenSpaceNFTStorefront {
     pub fun purchase(payment: @FungibleToken.Vault): @NonFungibleToken.NFT {
       pre {
         self.details.purchased == false: "listing has already been purchased"
-        payment.isInstance(self.details.salePaymentVaultType): "payment vault is not requested fungible token"
-        payment.balance == self.details.salePrice: "payment vault does not contain requested price"
+      }
+
+      // Find a valid payment option
+      let option = self.findValidPaymentOption(vaultType: payment.getType(), balance: payment.balance)
+      if option == nil {
+        panic("Could not find a valid payment option")
       }
 
       // Make sure the listing cannot be purchased again.
@@ -261,7 +298,7 @@ pub contract OpenSpaceNFTStorefront {
       var residualReceiver: &{FungibleToken.Receiver}? = nil
 
       // Pay each beneficiary their amount of the payment.
-      for cut in self.details.saleCuts {
+      for cut in option!.saleCuts {
         if let receiver = cut.receiver.borrow() {
           let paymentCut <-payment.withdraw(amount: cut.amount)
           receiver.deposit(from: <-paymentCut)
@@ -310,15 +347,13 @@ pub contract OpenSpaceNFTStorefront {
     init(
       nftProviderCapability: Capability<&{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>,
       nftID: UInt64,
-      salePaymentVaultType: Type,
-      saleCuts: [SaleCut],
+      paymentOptions: [PaymentOption],
       storefrontID: UInt64
     ) {
       // Store the sale information
       self.details = ListingDetails(
         nftID: nftID,
-        salePaymentVaultType: salePaymentVaultType,
-        saleCuts: saleCuts,
+        paymentOptions: paymentOptions,
         storefrontID: storefrontID
       )
 
@@ -349,8 +384,7 @@ pub contract OpenSpaceNFTStorefront {
     pub fun createListing(
       nftProviderCapability: Capability<&{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>,
       nftID: UInt64,
-      salePaymentVaultType: Type,
-      saleCuts: [SaleCut]
+      paymentOptions: [PaymentOption],
     ): UInt64
     // removeListing
     // Allows the Storefront owner to remove any sale listing, acepted or not.
@@ -382,8 +416,7 @@ pub contract OpenSpaceNFTStorefront {
     pub fun createListing(
       nftProviderCapability: Capability<&{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>,
       nftID: UInt64,
-      salePaymentVaultType: Type,
-      saleCuts: [SaleCut]
+      paymentOptions: [PaymentOption],
     ): UInt64 {
       pre {
         !self.listings.containsKey(nftID): "NFT is already listed for sale."
@@ -392,23 +425,28 @@ pub contract OpenSpaceNFTStorefront {
       let listing <-create Listing(
         nftProviderCapability: nftProviderCapability,
         nftID: nftID,
-        salePaymentVaultType: salePaymentVaultType,
-        saleCuts: saleCuts,
+        paymentOptions: paymentOptions,
         storefrontID: self.uuid
       )
-
-      let listingPrice = listing.getDetails().salePrice
 
       // Add the new listing to the dictionary.
       let oldListing <-self.listings[nftID] <-listing
       // Note that oldListing will always be nil, but we have to handle it.
       destroy oldListing
 
+      // Collect vault types and their corresponding prices
+      let vaultTypes: [Type] = []
+      let prices: [UFix64] = []
+      for paymentOption in paymentOptions {
+        vaultTypes.append(paymentOption.salePaymentVaultType)
+        prices.append(paymentOption.salePrice)
+      }
+
       emit ListingAvailable(
         storefrontAddress: self.owner?.address!,
         nftID: nftID,
-        ftVaultType: salePaymentVaultType,
-        price: listingPrice
+        ftVaultTypes: vaultTypes,
+        prices: prices
       )
 
       return nftID
@@ -491,11 +529,3 @@ pub contract OpenSpaceNFTStorefront {
     emit NFTStorefrontInitialized()
   }
 }
-
-
-  // createStorefront
-  // Make creating a Storefront publicly accessible.
-  //
-  pub fun createStorefront(): @Storefront {
-    return <-create Storefront()
-  }
