@@ -1,0 +1,23 @@
+{
+  "root": "packages/flow-testing-utils",
+  "sourceRoot": "packages/flow-testing-utils/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/flow-testing-utils/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/flow-testing-utils"],
+      "options": {
+        "jestConfig": "packages/flow-testing-utils/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

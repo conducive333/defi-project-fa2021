@@ -1,7 +1,10 @@
-import NonFungibleToken from "../standard/NonFungibleToken.cdc"
-import FungibleToken from "../standard/FungibleToken.cdc"
-import OpenSpaceItems from "./OpenSpaceVoucher.cdc"
-import OpenSpaceVoucher from "./OpenSpaceItems.cdc"
+import { CONSTANTS } from '@flow-testing/flow-testing-utils'
+
+export const OpenSpaceAdminNFTStorefront = (adminAddress: string) => `
+import NonFungibleToken from ${CONSTANTS.NON_FUNGIBLE_TOKEN_ADDRESS}
+import FungibleToken from ${CONSTANTS.FUNGIBLE_TOKEN_ADDRESS}
+import OpenSpaceItems from ${adminAddress}
+import OpenSpaceVoucher from ${adminAddress}
 
 // OpenSpaceAdminNFTStorefront
 //
@@ -603,3 +606,4 @@ pub contract OpenSpaceAdminNFTStorefront {
     emit NFTStorefrontInitialized()
   }
 }
+`

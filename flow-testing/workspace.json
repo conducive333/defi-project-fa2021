@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "projects": {
+    "flow-testing-utils": "packages/flow-testing-utils",
+    "open-space": "packages/open-space"
+  }
+}

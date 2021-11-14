@@ -485,8 +485,8 @@ pub contract OpenSpaceNFTStorefront {
   }
 
   init() {
-    self.StorefrontStoragePath = /storage/NFTStorefront
-    self.StorefrontPublicPath = /public/NFTStorefront
+    self.StorefrontStoragePath = /storage/OpenSpaceNFTStorefront
+    self.StorefrontPublicPath = /public/OpenSpaceNFTStorefront
 
     emit NFTStorefrontInitialized()
   }
