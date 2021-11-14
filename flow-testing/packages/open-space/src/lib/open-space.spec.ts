@@ -90,7 +90,7 @@ describe('OpenSpaceItems', () => {
   })
 
   describe('OpenSpaceAdminNFTStorefront', () => {
-    it('#borrowListing()', async () => {
+    it('#borrowAdminListing()', async () => {
       const admin = await createAdmin()
       const sid = '0'
       const pid = '0'
@@ -101,10 +101,10 @@ describe('OpenSpaceItems', () => {
         transactions.sellOpenSpaceItem(admin, admin, sid, pid, 1.0, 0.5, [{}])
       ).resolves.toBeTruthy()
       await expect(
-        scripts.borrowListing(admin, sid, pid)
+        scripts.borrowAdminListing(admin, sid, pid)
       ).resolves.toHaveProperty('uuid')
     })
-    it('#removeListing()', async () => {
+    it('#removeAdminListing()', async () => {
       const admin = await createAdmin()
       const sid = '0'
       const pid = '0'
@@ -117,7 +117,7 @@ describe('OpenSpaceItems', () => {
       ).resolves.toBeTruthy()
       await expect(scripts.countSetListings(admin, sid)).resolves.toEqual(1)
       await expect(
-        transactions.removeListing(admin, sid, pid)
+        transactions.removeAdminListing(admin, sid, pid)
       ).resolves.toBeTruthy()
       await expect(scripts.countSetListings(admin, sid)).resolves.toEqual(0)
     })
@@ -150,7 +150,7 @@ describe('OpenSpaceItems', () => {
       ).resolves.toBeTruthy()
       await expect(scripts.countSetListings(admin, setId)).resolves.toEqual(1)
       await expect(
-        transactions.buyOpenSpaceItemWithFlow(admin, alice, setId)
+        transactions.buyAdminListingWithFlow(admin, alice, setId)
       ).resolves.toBeTruthy()
       await expect(
         scripts.getOpenSpaceVoucherCollectionLen(admin, alice)

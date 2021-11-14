@@ -4,7 +4,7 @@ import {
   wrapString,
 } from '@flow-testing/flow-testing-utils'
 
-const BORROW_LISTING = (adminAddress: string) => `
+const BORROW_ADMIN_LISTING = (adminAddress: string) => `
 import OpenSpaceAdminNFTStorefront from ${adminAddress}
   
 pub fun main(account: Address, setID: String, packID: String): &OpenSpaceAdminNFTStorefront.Listing{OpenSpaceAdminNFTStorefront.ListingPublic}? {
@@ -19,7 +19,7 @@ pub fun main(account: Address, setID: String, packID: String): &OpenSpaceAdminNF
 }
 `
 
-export const borrowListing = async (
+export const borrowAdminListing = async (
   admin: FlowAccount,
   setId: string,
   packId: string
@@ -28,7 +28,7 @@ export const borrowListing = async (
   details: unknown
 }> => {
   return await sendScript({
-    script: BORROW_LISTING(admin.getAddress()),
+    script: BORROW_ADMIN_LISTING(admin.getAddress()),
     args: [admin.getAddress(true), wrapString(setId), wrapString(packId)],
   })
 }

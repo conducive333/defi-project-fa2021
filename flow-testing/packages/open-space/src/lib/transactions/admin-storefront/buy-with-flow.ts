@@ -5,7 +5,7 @@ import {
   wrapUInt64,
 } from '@flow-testing/flow-testing-utils'
 
-const BUY_OPEN_SPACE_ITEM_WITH_FLOW = (adminAddress: string) => `
+const BUY_ADMIN_LISTING_WITH_FLOW = (adminAddress: string) => `
 import FungibleToken from ${CONSTANTS.FUNGIBLE_TOKEN_ADDRESS}
 import NonFungibleToken from ${CONSTANTS.NON_FUNGIBLE_TOKEN_ADDRESS}
 import FlowToken from ${CONSTANTS.FLOW_TOKEN_ADDRESS}
@@ -93,13 +93,13 @@ transaction(adminAddress: Address, setID: String) {
 }
 `
 
-export const buyOpenSpaceItemWithFlow = async (
+export const buyAdminListingWithFlow = async (
   admin: FlowAccount,
   purchaser: FlowAccount,
   setId: string
 ) => {
   return await purchaser.sendTx({
-    transaction: BUY_OPEN_SPACE_ITEM_WITH_FLOW(admin.getAddress()),
+    transaction: BUY_ADMIN_LISTING_WITH_FLOW(admin.getAddress()),
     args: [admin.getAddress(true), wrapString(setId)],
   })
 }
