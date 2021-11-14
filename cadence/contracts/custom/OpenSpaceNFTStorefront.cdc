@@ -491,3 +491,11 @@ pub contract OpenSpaceNFTStorefront {
     emit NFTStorefrontInitialized()
   }
 }
+
+
+  // createStorefront
+  // Make creating a Storefront publicly accessible.
+  //
+  pub fun createStorefront(): @Storefront {
+    return <-create Storefront()
+  }

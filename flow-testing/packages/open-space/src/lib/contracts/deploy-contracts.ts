@@ -1,7 +1,9 @@
-import { OpenSpaceAdminNFTStorefront } from './OpenSpaceAdminNFTStorefront'
+import {
+  OpenSpaceAdminNFTStorefront,
+  OpenSpaceItems,
+  OpenSpaceVoucher,
+} from './contracts'
 import { FlowAccount } from '@flow-testing/flow-testing-utils'
-import { OpenSpaceVoucher } from './OpenSpaceVoucher'
-import { OpenSpaceItems } from './OpenSpaceItems'
 
 export const deployContracts = async (admin: FlowAccount) => {
   await admin.deployContract('OpenSpaceItems', OpenSpaceItems)

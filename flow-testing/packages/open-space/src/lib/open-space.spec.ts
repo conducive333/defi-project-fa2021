@@ -42,9 +42,6 @@ describe('OpenSpaceItems', () => {
       await expect(
         scripts.hasOpenSpaceVoucherCollection(admin, alice)
       ).resolves.toEqual(true)
-      await expect(
-        scripts.hasOpenSpaceAdminNFTStorefront(admin, alice)
-      ).resolves.toEqual(false)
     })
   })
 

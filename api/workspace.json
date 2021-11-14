@@ -542,6 +542,29 @@
       },
       "tags": []
     },
+    "flow-flow-voucher": {
+      "root": "libs/flow/flow-voucher",
+      "sourceRoot": "libs/flow/flow-voucher/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/flow/flow-voucher/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/flow/flow-voucher"],
+          "options": {
+            "jestConfig": "libs/flow/flow-voucher/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": []
+    },
     "listings": {
       "root": "libs/listings",
       "sourceRoot": "libs/listings/src",
