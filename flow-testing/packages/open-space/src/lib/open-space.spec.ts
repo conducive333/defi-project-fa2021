@@ -30,7 +30,7 @@ describe('OpenSpaceItems', () => {
       await transactions.setupOpenSpaceAccount(admin, admin)
     })
 
-    it('can install an OpenSpace NFT collection, an OpenSpaceVoucher collection, and FUSD vault', async () => {
+    it('#setup()', async () => {
       const alice = await createUser()
       await expect(
         transactions.setupOpenSpaceAccount(admin, alice)
@@ -49,7 +49,7 @@ describe('OpenSpaceItems', () => {
   })
 
   describe('OpenSpaceItems', () => {
-    it('can mint OpenSpaceItems', async () => {
+    it('#mint()', async () => {
       const admin = await createAdmin()
       await expect(
         transactions.setupOpenSpaceAccount(admin, admin)
@@ -72,7 +72,7 @@ describe('OpenSpaceItems', () => {
       admin = await createAdmin()
       await transactions.setupOpenSpaceAccount(admin, admin)
     })
-    it('can mint vouchers to an account', async () => {
+    it('#mint()', async () => {
       const alice = await createUser()
       await expect(
         transactions.setupOpenSpaceAccount(admin, alice)
@@ -90,7 +90,21 @@ describe('OpenSpaceItems', () => {
   })
 
   describe('OpenSpaceAdminNFTStorefront', () => {
-    it('removes listings', async () => {
+    it('#borrowListing()', async () => {
+      const admin = await createAdmin()
+      const sid = '0'
+      const pid = '0'
+      await expect(
+        transactions.setupOpenSpaceAccount(admin, admin)
+      ).resolves.toBeTruthy()
+      await expect(
+        transactions.sellOpenSpaceItem(admin, admin, sid, pid, 1.0, 0.5, [{}])
+      ).resolves.toBeTruthy()
+      await expect(
+        scripts.borrowListing(admin, sid, pid)
+      ).resolves.toHaveProperty('uuid')
+    })
+    it('#removeListing()', async () => {
       const admin = await createAdmin()
       const sid = '0'
       const pid = '0'
@@ -106,8 +120,8 @@ describe('OpenSpaceItems', () => {
         transactions.removeListing(admin, sid, pid)
       ).resolves.toBeTruthy()
       await expect(scripts.countSetListings(admin, sid)).resolves.toEqual(0)
-    }, 10000)
-    it('consumes a voucher when a listing is bought', async () => {
+    })
+    it('#purchase()', async () => {
       const admin = await createAdmin()
       const alice = await createUser()
       const setId = '0'

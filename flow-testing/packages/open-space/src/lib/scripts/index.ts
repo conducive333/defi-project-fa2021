@@ -4,3 +4,4 @@ export { hasOpenSpaceAdminNFTStorefront } from './admin-storefront/is-initialize
 export { getOpenSpaceCollectionLen } from './open-space-items/get-collection-len'
 export { hasOpenSpaceCollection } from './open-space-items/is-initialized'
 export { countSetListings } from './admin-storefront/count-set-listings'
+export { borrowListing } from './admin-storefront/borrow-listing'
