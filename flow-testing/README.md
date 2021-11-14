@@ -2,26 +2,20 @@
 
 1. Make sure you have the [Flow CLI](https://docs.onflow.org/flow-cli/install/) installed.
 
-2. Start the emulator:
-
+2. Start the emulator **in a separate terminal**:
    ```sh
    flow emulator -v
    ```
 
-3. Setup the emulator:
+3. Navigate to the `flow-testing` folder using the current terminal.
 
+
+4. Setup the emulator:
    ```sh
-   bash ./setup-emulator.sh
-   ```
-
-4. Navigate to the `flow-testing` folder.
-
-   ```sh
-   cd flow-testing
+   bash ../setup-emulator.sh
    ```
 
 5. Install dependencies:
-
    ```sh
    npm install
    ```
