@@ -90,6 +90,23 @@ describe('OpenSpaceItems', () => {
   })
 
   describe('OpenSpaceAdminNFTStorefront', () => {
+    it('removes listings', async () => {
+      const admin = await createAdmin()
+      const sid = '0'
+      const pid = '0'
+      await expect(
+        transactions.setupOpenSpaceAccount(admin, admin)
+      ).resolves.toBeTruthy()
+      await expect(scripts.countSetListings(admin, sid)).resolves.toEqual(0)
+      await expect(
+        transactions.sellOpenSpaceItem(admin, admin, sid, pid, 1.0, 0.5, [{}])
+      ).resolves.toBeTruthy()
+      await expect(scripts.countSetListings(admin, sid)).resolves.toEqual(1)
+      await expect(
+        transactions.removeListing(admin, sid, pid)
+      ).resolves.toBeTruthy()
+      await expect(scripts.countSetListings(admin, sid)).resolves.toEqual(0)
+    }, 10000)
     it('consumes a voucher when a listing is bought', async () => {
       const admin = await createAdmin()
       const alice = await createUser()

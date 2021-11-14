@@ -1,13 +1,13 @@
 import { FlowTypes, FlowService } from '@api/flow/flow-service'
+import { AdminListingDto } from './dto/admin-listing.dto'
 import { FlowAuthService } from '@api/flow/flow-auth'
+import { NftMetadata } from '@api/flow/flow-nft'
+import * as transactions from './transactions'
 import { ConfigService } from '@nestjs/config'
 import { Injectable } from '@nestjs/common'
-import { AdminListingDto } from './dto/admin-listing.dto'
-import * as transactions from './transactions'
-import * as scripts from './scripts'
 import * as cdcTypes from '@onflow/types'
+import * as scripts from './scripts'
 import * as fcl from '@onflow/fcl'
-import { NftMetadata } from '@api/flow/flow-nft'
 
 @Injectable()
 export class AdminStorefrontService {
@@ -15,7 +15,6 @@ export class AdminStorefrontService {
   protected readonly fungibleTokenAddress: string
   protected readonly storefrontAddress: string
   protected readonly flowTokenAddress: string
-  protected readonly contractName: string
   protected readonly devAddress: string
 
   constructor(
@@ -23,10 +22,6 @@ export class AdminStorefrontService {
     private readonly configService: ConfigService
   ) {
     this.devAddress = this.configService.get<string>('FLOW_DEV_ADDRESS')
-    this.contractName = this.configService.get<string>('FLOW_NFT_CONTRACT')
-    this.storefrontAddress = this.configService.get<string>(
-      'FLOW_STOREFRONT_ADDRESS'
-    )
     this.fungibleTokenAddress =
       this.configService.get<string>('FLOW_FT_ADDRESS')
     this.nonFungibleTokenAddress =
@@ -40,17 +35,15 @@ export class AdminStorefrontService {
     saleItemPrice: number,
     beneficiaryAddress: string,
     beneficiaryPercent: number,
-    metadatas: FlowTypes.SimpleDictionary[]
+    metadatas: NftMetadata[]
   ): Promise<FlowTypes.TransactionStatus> {
     const devAuth = await this.flowAuthorizer.developerAuthenticate(0)
     const trsAuth = await this.flowAuthorizer.treasuryAuthenticate()
     const cadenceCode = transactions.sell(
-      this.contractName,
       this.devAddress,
       this.nonFungibleTokenAddress,
       this.fungibleTokenAddress,
       this.flowTokenAddress,
-      this.devAddress
     )
     const [meta, metaTypes] = FlowService.convertObjects(metadatas)
     const transaction = await FlowService.sendTx({
@@ -80,28 +73,6 @@ export class AdminStorefrontService {
     const transaction = await FlowService.sendTx({
       transaction: cadenceCode,
       args: [fcl.arg(setId, cdcTypes.String), fcl.arg(packId, cdcTypes.String)],
-      authorizations: [devAuth],
-      payer: trsAuth,
-      proposer: devAuth,
-    })
-    return transaction
-  }
-
-  async clean(
-    setId: string,
-    packId: string,
-    storefrontAddress: string
-  ): Promise<FlowTypes.TransactionStatus> {
-    const devAuth = await this.flowAuthorizer.developerAuthenticate(0)
-    const trsAuth = await this.flowAuthorizer.treasuryAuthenticate()
-    const cadenceCode = transactions.clean(this.devAddress)
-    const transaction = await FlowService.sendTx({
-      transaction: cadenceCode,
-      args: [
-        fcl.arg(setId, cdcTypes.String),
-        fcl.arg(packId, cdcTypes.String),
-        fcl.arg(storefrontAddress, cdcTypes.Address),
-      ],
       authorizations: [devAuth],
       payer: trsAuth,
       proposer: devAuth,

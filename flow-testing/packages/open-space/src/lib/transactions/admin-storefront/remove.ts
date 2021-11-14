@@ -1,5 +1,7 @@
-export default (devAddress: string) => `
-import OpenSpaceAdminNFTStorefront from ${devAddress}
+import { FlowAccount, wrapString } from '@flow-testing/flow-testing-utils'
+
+const REMOVE_LISTING = (adminAddress: string) => `
+import OpenSpaceAdminNFTStorefront from ${adminAddress}
 
 transaction(setID: String, packID: String) {
   let storefront: &OpenSpaceAdminNFTStorefront.Storefront{OpenSpaceAdminNFTStorefront.StorefrontManager}
@@ -14,3 +16,14 @@ transaction(setID: String, packID: String) {
   }
 }
 `
+
+export const removeListing = async (
+  admin: FlowAccount,
+  setId: string,
+  packId: string
+) => {
+  return await admin.sendTx({
+    transaction: REMOVE_LISTING(admin.getAddress()),
+    args: [wrapString(setId), wrapString(packId)],
+  })
+}
