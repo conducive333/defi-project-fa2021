@@ -78,7 +78,7 @@ describe('OpenSpaceItems', () => {
         scripts.getOpenSpaceVoucherCollectionLen(admin, alice)
       ).resolves.toEqual(0)
       await expect(
-        transactions.mintOpenSpaceVouchers(admin, alice, [{}])
+        transactions.mintOpenSpaceVouchers(admin, alice, 1)
       ).resolves.toBeTruthy()
       await expect(
         scripts.getOpenSpaceVoucherCollectionLen(admin, alice)
@@ -129,7 +129,7 @@ describe('OpenSpaceItems', () => {
         transactions.setupOpenSpaceAccount(admin, admin)
       ).resolves.toBeTruthy()
       await expect(
-        transactions.mintOpenSpaceVouchers(admin, alice, [{}])
+        transactions.mintOpenSpaceVouchers(admin, alice, 1)
       ).resolves.toBeTruthy()
       await expect(
         scripts.getOpenSpaceVoucherCollectionLen(admin, alice)

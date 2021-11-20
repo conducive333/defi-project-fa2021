@@ -1,13 +1,12 @@
+import { EntityManager, getConnection, LessThanOrEqual } from 'typeorm'
+import { FlowAccountService } from '@api/flow/flow-utils'
+import { FlowKey } from '@api/database'
 import {
   Injectable,
   Logger,
   OnApplicationBootstrap,
   ServiceUnavailableException,
 } from '@nestjs/common'
-import { FlowService } from '@api/flow/flow-service'
-import { ConfigService } from '@nestjs/config'
-import { FlowKey } from '@api/database'
-import { EntityManager, getConnection, LessThanOrEqual } from 'typeorm'
 
 @Injectable()
 export class FlowKeyCyclerService implements OnApplicationBootstrap {
@@ -18,12 +17,10 @@ export class FlowKeyCyclerService implements OnApplicationBootstrap {
   // Max number of milliseconds a key can remain in use
   private static readonly MAX_IN_USE_TIME_MS = 5 * (60 * 1000)
 
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly flowAccountService: FlowAccountService) {}
 
   async onApplicationBootstrap() {
-    const numKeys = await FlowService.countKeys(
-      this.configService.get<string>('FLOW_DEV_ADDRESS')
-    )
+    const numKeys = await this.flowAccountService.countKeys()
     if (numKeys <= 1) {
       Logger.error(
         '[KeyCyclerService] Developer account does not have enough keys. Some services will be unavailable.'

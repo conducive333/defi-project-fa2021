@@ -45,19 +45,3 @@ export const OpenSpaceAdminNFTStorefront = (adminAddress: string) =>
     )
     .replace('"./OpenSpaceVoucher.cdc"', adminAddress)
     .replace('"./OpenSpaceItems.cdc"', adminAddress)
-
-export const OpenSpaceNFTStorefront = (adminAddress: string) =>
-  fs
-    .readFileSync(
-      path.resolve(CONTRACTS_PATH, 'OpenSpaceNFTStorefront.cdc'),
-      'utf8'
-    )
-    .replace(
-      '"../standard/NonFungibleToken.cdc"',
-      CONSTANTS.NON_FUNGIBLE_TOKEN_ADDRESS
-    )
-    .replace(
-      '"../standard/FungibleToken.cdc"',
-      CONSTANTS.FUNGIBLE_TOKEN_ADDRESS
-    )
-    .replace('"./OpenSpaceItems.cdc"', adminAddress)

@@ -1,6 +1,6 @@
-import { FlowTypes } from '@api/flow/flow-service'
+import { SimpleDictionary } from '@api/flow/flow-utils'
 
-export interface NftMetadata extends FlowTypes.SimpleDictionary {
+export interface NftMetadata extends SimpleDictionary {
   openSpaceItemId: string
 }
 

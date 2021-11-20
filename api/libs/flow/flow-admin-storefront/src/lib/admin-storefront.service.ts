@@ -1,32 +1,31 @@
-import { FlowTypes, FlowService } from '@api/flow/flow-service'
+import {
+  FlowAccountService,
+  FlowService,
+  TransactionStatus,
+  wrapAddress,
+  wrapObjects,
+  wrapString,
+  wrapUFix64,
+} from '@api/flow/flow-utils'
 import { AdminListingDto } from './dto/admin-listing.dto'
-import { FlowAuthService } from '@api/flow/flow-auth'
 import { NftMetadata } from '@api/flow/flow-nft'
 import * as transactions from './transactions'
-import { ConfigService } from '@nestjs/config'
 import { Injectable } from '@nestjs/common'
-import * as cdcTypes from '@onflow/types'
 import * as scripts from './scripts'
-import * as fcl from '@onflow/fcl'
 
 @Injectable()
 export class AdminStorefrontService {
-  protected readonly nonFungibleTokenAddress: string
   protected readonly fungibleTokenAddress: string
   protected readonly storefrontAddress: string
   protected readonly flowTokenAddress: string
   protected readonly devAddress: string
+  protected readonly nftAddress: string
 
-  constructor(
-    private readonly flowAuthorizer: FlowAuthService,
-    private readonly configService: ConfigService
-  ) {
-    this.devAddress = this.configService.get<string>('FLOW_DEV_ADDRESS')
-    this.fungibleTokenAddress =
-      this.configService.get<string>('FLOW_FT_ADDRESS')
-    this.nonFungibleTokenAddress =
-      this.configService.get<string>('FLOW_NFT_ADDRESS')
-    this.flowTokenAddress = this.configService.get<string>('FLOW_TOKEN_ADDRESS')
+  constructor(private readonly flowAccountService: FlowAccountService) {
+    this.devAddress = this.flowAccountService.config.FLOW_DEV_ADDRESS
+    this.nftAddress = this.flowAccountService.config.FLOW_NFT_ADDRESS
+    this.fungibleTokenAddress = this.flowAccountService.config.FLOW_FT_ADDRESS
+    this.flowTokenAddress = this.flowAccountService.config.FLOW_TOKEN_ADDRESS
   }
 
   async sell(
@@ -36,59 +35,40 @@ export class AdminStorefrontService {
     beneficiaryAddress: string,
     beneficiaryPercent: number,
     metadatas: NftMetadata[]
-  ): Promise<FlowTypes.TransactionStatus> {
-    const devAuth = await this.flowAuthorizer.developerAuthenticate(0)
-    const trsAuth = await this.flowAuthorizer.treasuryAuthenticate()
-    const cadenceCode = transactions.sell(
-      this.devAddress,
-      this.nonFungibleTokenAddress,
-      this.fungibleTokenAddress,
-      this.flowTokenAddress,
-    )
-    const [meta, metaTypes] = FlowService.convertObjects(metadatas)
-    const transaction = await FlowService.sendTx({
-      transaction: cadenceCode,
+  ): Promise<TransactionStatus> {
+    return await this.flowAccountService.sendTx({
+      transaction: transactions.sell(
+        this.devAddress,
+        this.nftAddress,
+        this.fungibleTokenAddress,
+        this.flowTokenAddress
+      ),
       args: [
-        fcl.arg(setId, cdcTypes.String),
-        fcl.arg(packId, cdcTypes.String),
-        fcl.arg(saleItemPrice.toFixed(8).toString(), cdcTypes.UFix64),
-        fcl.arg(meta, metaTypes),
-        fcl.arg(fcl.withPrefix(beneficiaryAddress), cdcTypes.Address),
-        fcl.arg(beneficiaryPercent.toFixed(8).toString(), cdcTypes.UFix64),
+        wrapString(setId),
+        wrapString(packId),
+        wrapUFix64(saleItemPrice),
+        wrapObjects(metadatas),
+        wrapAddress(beneficiaryAddress),
+        wrapUFix64(beneficiaryPercent),
       ],
-      authorizations: [devAuth],
-      payer: trsAuth,
-      proposer: devAuth,
     })
-    return transaction
   }
 
-  async remove(
-    setId: string,
-    packId: string
-  ): Promise<FlowTypes.TransactionStatus> {
-    const devAuth = await this.flowAuthorizer.developerAuthenticate(0)
-    const trsAuth = await this.flowAuthorizer.treasuryAuthenticate()
-    const cadenceCode = transactions.remove(this.devAddress)
-    const transaction = await FlowService.sendTx({
-      transaction: cadenceCode,
-      args: [fcl.arg(setId, cdcTypes.String), fcl.arg(packId, cdcTypes.String)],
-      authorizations: [devAuth],
-      payer: trsAuth,
-      proposer: devAuth,
+  async remove(setId: string, packId: string): Promise<TransactionStatus> {
+    return await this.flowAccountService.sendTx({
+      transaction: transactions.remove(this.devAddress),
+      args: [wrapString(setId), wrapString(packId)],
     })
-    return transaction
   }
 
   async borrowListing(setId: string, packId: string): Promise<AdminListingDto> {
-    return await FlowService.executeScript({
+    return await FlowService.sendScript({
       script: scripts.borrowListing(this.devAddress),
       args: [
-        fcl.arg(this.devAddress, cdcTypes.Address),
-        fcl.arg(setId, cdcTypes.String),
-        fcl.arg(packId, cdcTypes.String),
+        wrapAddress(this.devAddress),
+        wrapString(setId),
+        wrapString(packId),
       ],
     })
   }
-
 }

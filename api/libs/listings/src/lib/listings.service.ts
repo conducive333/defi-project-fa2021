@@ -1,11 +1,8 @@
 import { AdminStorefrontService } from '@api/flow/flow-admin-storefront'
-import { FlowStorefrontService } from '@api/flow/flow-storefront'
 import { NftWithAdminListingDto } from './dto/nft-with-admin-listing.dto'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { LimitOffsetOrderQueryDto } from '@api/utils'
-import { NftWithUserListingDto } from './dto/nft-with-user-listing.dto'
 import { NftsService } from '@api/nfts'
-import { In } from 'typeorm'
 
 @Injectable()
 export class ListingsService {
@@ -14,7 +11,6 @@ export class ListingsService {
 
   constructor(
     private readonly adminStorefrontService: AdminStorefrontService,
-    private readonly flowStorefrontService: FlowStorefrontService,
     private readonly nftsService: NftsService
   ) {}
 
@@ -48,20 +44,6 @@ export class ListingsService {
     })
   }
 
-  async findAllUserListings(
-    address: string,
-    filterOpts: LimitOffsetOrderQueryDto
-  ) {
-    const ids = await this.flowStorefrontService.getSaleOffers(
-      address,
-      filterOpts.limit,
-      filterOpts.offset
-    )
-    return await this.nftsService.findAll(filterOpts, {
-      id: In(ids),
-    })
-  }
-
   async findOneAdminListing(
     openSpaceItemId: string
   ): Promise<NftWithAdminListingDto> {
@@ -69,29 +51,6 @@ export class ListingsService {
     if (openSpaceItem) {
       const listing = await this.adminStorefrontService.borrowListing(
         openSpaceItem.nftSubmission.drawingPoolId,
-        openSpaceItemId
-      )
-      if (listing) {
-        return {
-          ...openSpaceItem,
-          listing,
-        }
-      }
-      throw new NotFoundException(
-        'Listing does not exist on the primary storefront.'
-      )
-    }
-    throw new NotFoundException('Could not find listing.')
-  }
-
-  async findOneUserListing(
-    address: string,
-    openSpaceItemId: string
-  ): Promise<NftWithUserListingDto> {
-    const openSpaceItem = await this.nftsService.findOne(openSpaceItemId)
-    if (openSpaceItem) {
-      const listing = await this.flowStorefrontService.getSaleOffer(
-        address,
         openSpaceItemId
       )
       if (listing) {

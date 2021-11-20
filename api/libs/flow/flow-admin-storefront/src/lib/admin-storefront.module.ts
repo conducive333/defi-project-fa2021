@@ -1,9 +1,9 @@
 import { AdminStorefrontService } from './admin-storefront.service'
-import { FlowAuthModule } from '@api/flow/flow-auth'
+import { FlowAccountModule } from '@api/flow/flow-utils'
 import { Module } from '@nestjs/common'
 
 @Module({
-  imports: [FlowAuthModule],
+  imports: [FlowAccountModule],
   providers: [AdminStorefrontService],
   exports: [AdminStorefrontService],
 })

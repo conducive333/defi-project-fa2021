@@ -1,9 +1,9 @@
+import { FlowAccountModule } from '@api/flow/flow-utils'
 import { NftService } from './nft.service'
-import { FlowAuthModule } from '@api/flow/flow-auth'
 import { Module } from '@nestjs/common'
 
 @Module({
-  imports: [FlowAuthModule],
+  imports: [FlowAccountModule],
   providers: [NftService],
   exports: [NftService],
 })

@@ -1,12 +1,5 @@
-import {
-  CONSTANTS,
-  FlowAccount,
-  wrapObjects,
-  wrapUInt64,
-} from '@flow-testing/flow-testing-utils'
-
-const MINT_OPEN_SPACE_VOUCHER = (adminAddress: string) => `
-import NonFungibleToken from ${CONSTANTS.NON_FUNGIBLE_TOKEN_ADDRESS}
+export default (adminAddress: string, nftAddress: string) => `
+import NonFungibleToken from ${nftAddress}
 import OpenSpaceVoucher from ${adminAddress}
 
 // This transction uses the NFTMinter resource to mint a new NFT.
@@ -44,14 +37,3 @@ transaction(recipient: Address, count: UInt64) {
     }
 }
 `
-
-export const mintOpenSpaceVouchers = async (
-  admin: FlowAccount,
-  user: FlowAccount,
-  count: number
-) => {
-  return await admin.sendTx({
-    transaction: MINT_OPEN_SPACE_VOUCHER(admin.getAddress()),
-    args: [user.getAddress(true), wrapUInt64(count)],
-  })
-}

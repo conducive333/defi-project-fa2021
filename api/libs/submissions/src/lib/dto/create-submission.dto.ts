@@ -1,4 +1,4 @@
-import { FlowAddressDto } from '@api/flow/flow-service'
+import { FlowAddressDto } from '@api/flow/flow-utils'
 import { NftSubmissionDto } from '@api/database'
 import { ApiProperty } from '@nestjs/swagger'
 import { IsNotEmpty, MaxLength, MinLength } from 'class-validator'

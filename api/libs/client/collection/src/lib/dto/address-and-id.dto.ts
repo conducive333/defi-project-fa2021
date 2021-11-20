@@ -1,4 +1,4 @@
-import { FlowAddressDto } from '@api/flow/flow-service'
+import { FlowAddressDto } from '@api/flow/flow-utils'
 import { IsNotEmpty, IsUUID } from 'class-validator'
 import { ApiProperty } from '@nestjs/swagger'
 

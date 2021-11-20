@@ -1,6 +1,6 @@
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { Controller, UseGuards, Query, Get, Param } from '@nestjs/common'
-import { FlowAddressDto, IsValidFlowAddressGuard } from '@api/flow/flow-service'
+import { FlowAddressDto, IsValidFlowAddressGuard } from '@api/flow/flow-utils'
 import { OpenSpaceItemWithSubmissionAndFileDto } from '@api/database'
 import { FlowAddressAndNftIdDto } from './dto/address-and-id.dto'
 import { HasCollectionGuard } from '@api/flow/flow-nft'
