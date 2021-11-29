@@ -1,11 +1,11 @@
-import { Controller, Get, UseGuards } from '@nestjs/common'
+import { Controller, Get, Param, UseGuards } from '@nestjs/common'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { RateLimiterGuard } from '@api/rate-limiter'
 import {
-  DrawingPoolIdWithNftId,
   ListingsService,
   NftWithAdminListingDto,
 } from '@api/listings'
+import { UUIDv4Dto } from '@api/utils'
 
 @UseGuards(RateLimiterGuard)
 @ApiTags('Listings')
@@ -19,9 +19,7 @@ export class ClientListingsController {
   })
   @ApiResponse({ status: 200, type: NftWithAdminListingDto })
   @Get(':id')
-  async getAdminListing({
-    id,
-  }: DrawingPoolIdWithNftId): Promise<NftWithAdminListingDto> {
+  async getAdminListing(@Param() { id }: UUIDv4Dto): Promise<NftWithAdminListingDto> {
     return await this.listingsService.findOneAdminListing(id)
   }
 }
