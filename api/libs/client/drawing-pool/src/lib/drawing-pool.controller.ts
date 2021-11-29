@@ -22,7 +22,6 @@ import {
   DrawingPoolWithFileDto,
   FileType,
   NftSubmissionWithFileDto,
-  OpenSpaceItemDto,
   OpenSpaceItemWithSubmissionAndFileDto,
   User,
 } from '@api/database'

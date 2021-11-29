@@ -26,7 +26,11 @@ export class FlowAccountService {
     { transaction, args }: TxArgs,
     keyIndex = FlowAccountService.MASTER_KEY_INDEX
   ) {
-    const devAuth = await this.flowAuthService.authz(this.devAddr, keyIndex)
+    const prpAuth = await this.flowAuthService.authz(this.devAddr, keyIndex)
+    const devAuth = await this.flowAuthService.authz(
+      this.devAddr,
+      FlowAccountService.MASTER_KEY_INDEX
+    )
     const trsAuth = await this.flowAuthService.authz(
       this.trsAddr,
       FlowAccountService.MASTER_KEY_INDEX
@@ -36,7 +40,7 @@ export class FlowAccountService {
       args,
       authorizations: [devAuth],
       payer: trsAuth,
-      proposer: devAuth,
+      proposer: prpAuth,
     })
   }
 
