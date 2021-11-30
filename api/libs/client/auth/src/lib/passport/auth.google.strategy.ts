@@ -1,8 +1,8 @@
+import { Injectable, InternalServerErrorException } from '@nestjs/common'
 import { Strategy, VerifyCallback } from 'passport-google-oauth20'
+import { GoogleProfile } from '../dto/google-profile.dto'
 import { PassportStrategy } from '@nestjs/passport'
 import { ConfigService } from '@nestjs/config'
-import { Injectable, InternalServerErrorException } from '@nestjs/common'
-import { GoogleProfile } from '../dto/google-profile.dto'
 import { UserService } from '@api/client/user'
 import { randomBytes } from 'crypto'
 

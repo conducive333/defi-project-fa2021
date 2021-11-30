@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsUUID } from 'class-validator'
+import { IsNotEmpty, IsString, IsUUID, Length, Matches, MinLength } from 'class-validator'
 import { ApiProperty } from '@nestjs/swagger'
 
 export class DrawingPoolIdUserIdDto {
@@ -8,7 +8,8 @@ export class DrawingPoolIdUserIdDto {
   readonly id: string
 
   @IsNotEmpty()
-  @IsUUID(4)
-  @ApiProperty({ type: 'string', format: 'uuid' })
+  @IsString()
+  @Length(21, 21)
+  @ApiProperty({ type: 'string', example: '118336225259807388658' })
   readonly userId: string
 }
