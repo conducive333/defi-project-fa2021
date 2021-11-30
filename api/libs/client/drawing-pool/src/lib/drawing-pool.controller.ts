@@ -105,7 +105,7 @@ export class ClientDrawingPoolController {
   @ApiBody({ type: CreateFileSubmissionDto })
   @ApiResponse({ status: 200, type: NftSubmissionWithFileDto })
   @UseGuards(AuthenticatedGuard)
-  @UseInterceptors(FileInterceptor('image', FileService.imgOpts()))
+  @UseInterceptors(FileInterceptor('file', FileService.imgOpts()))
   @Post(':id/submission/image')
   async createImageSubmission(
     @ApiUser() user: User,
