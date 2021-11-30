@@ -34,7 +34,6 @@
       "@api/flow/flow-key-cycler": ["libs/flow/flow-key-cycler/src/index.ts"],
       "@api/flow/flow-nft": ["libs/flow/flow-nft/src/index.ts"],
       "@api/flow/flow-utils": ["libs/flow/flow-utils/src/index.ts"],
-      "@api/flow/flow-voucher": ["libs/flow/flow-voucher/src/index.ts"],
       "@api/listings": ["libs/listings/src/index.ts"],
       "@api/nfts": ["libs/nfts/src/index.ts"],
       "@api/rate-limiter": ["libs/rate-limiter/src/index.ts"],

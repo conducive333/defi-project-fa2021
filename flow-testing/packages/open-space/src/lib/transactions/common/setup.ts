@@ -1,10 +1,9 @@
 import { CONSTANTS, FlowAccount } from '@flow-testing/flow-testing-utils'
 
-const SETUP_OPEN_SPACE_ACCOUNT = (adminAddress: string) => `
+const CODE = (adminAddress: string) => `
 import NonFungibleToken from ${CONSTANTS.NON_FUNGIBLE_TOKEN_ADDRESS}
 import FungibleToken from ${CONSTANTS.FUNGIBLE_TOKEN_ADDRESS}
 import FUSD from ${CONSTANTS.FUSD_ADDRESS}
-import OpenSpaceVoucher from ${adminAddress}
 import OpenSpaceItems from ${adminAddress}
 
 transaction {
@@ -20,19 +19,6 @@ transaction {
 
             // create a public capability for the collection
             signer.link<&OpenSpaceItems.Collection{NonFungibleToken.CollectionPublic, OpenSpaceItems.OpenSpaceItemsCollectionPublic}>(OpenSpaceItems.CollectionPublicPath, target: OpenSpaceItems.CollectionStoragePath)
-        }
-
-        // If the account doesn't already have a voucher collection
-        if signer.borrow<&OpenSpaceVoucher.Collection>(from: OpenSpaceVoucher.CollectionStoragePath) == nil {
-
-            // create a new empty collection
-            let collection <- OpenSpaceVoucher.createEmptyCollection()
-            
-            // save it to the account
-            signer.save(<-collection, to: OpenSpaceVoucher.CollectionStoragePath)
-
-            // create a public capability for the collection
-            signer.link<&OpenSpaceVoucher.Collection{NonFungibleToken.CollectionPublic, OpenSpaceVoucher.OpenSpaceVoucherCollectionPublic}>(OpenSpaceVoucher.CollectionPublicPath, target: OpenSpaceVoucher.CollectionStoragePath)
         }
 
         // It's OK if the account already has a Vault, but we don't want to replace it
@@ -65,7 +51,7 @@ export const setupOpenSpaceAccount = async (
   user: FlowAccount
 ) => {
   return await user.sendTx({
-    transaction: SETUP_OPEN_SPACE_ACCOUNT(admin.getAddress()),
+    transaction: CODE(admin.getAddress()),
     args: [],
   })
 }

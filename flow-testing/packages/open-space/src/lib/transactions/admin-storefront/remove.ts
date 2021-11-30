@@ -1,6 +1,6 @@
 import { FlowAccount, wrapString } from '@flow-testing/flow-testing-utils'
 
-const REMOVE_ADMIN_LISTING = (adminAddress: string) => `
+const CODE = (adminAddress: string) => `
 import OpenSpaceAdminNFTStorefront from ${adminAddress}
 
 transaction(setID: String, packID: String) {
@@ -23,7 +23,7 @@ export const removeAdminListing = async (
   packId: string
 ) => {
   return await admin.sendTx({
-    transaction: REMOVE_ADMIN_LISTING(admin.getAddress()),
+    transaction: CODE(admin.getAddress()),
     args: [wrapString(setId), wrapString(packId)],
   })
 }

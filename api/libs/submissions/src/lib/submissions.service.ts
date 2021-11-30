@@ -7,7 +7,6 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common'
 
 @Injectable()
@@ -50,6 +49,12 @@ export class SubmissionsService {
       if (now < dp.releaseDate || now >= dp.endDate) {
         throw new BadRequestException('Drawing pool is not available.')
       }
+
+      // Add the user to the drawing pool
+      await tx.save(UserToDrawingPool, {
+        drawingPoolId: nftSubmission.drawingPoolId,
+        userId: nftSubmission.creatorId,
+      })
 
       // Check that the user does not have a submission for this drawing pool
       const hasSubmission = await tx.findOne(NftSubmission, {

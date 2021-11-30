@@ -6,7 +6,7 @@ import {
   wrapObjects,
 } from '@flow-testing/flow-testing-utils'
 
-const SELL_OPEN_SPACE_ITEM = (adminAddress: string) => `
+const CODE = (adminAddress: string) => `
 import FungibleToken from ${CONSTANTS.FUNGIBLE_TOKEN_ADDRESS}
 import NonFungibleToken from ${CONSTANTS.NON_FUNGIBLE_TOKEN_ADDRESS}
 import FlowToken from ${CONSTANTS.FLOW_TOKEN_ADDRESS}
@@ -73,7 +73,7 @@ export const sellOpenSpaceItem = async (
   metadatas: Record<string, string>[]
 ) => {
   return await admin.sendTx({
-    transaction: SELL_OPEN_SPACE_ITEM(admin.getAddress()),
+    transaction: CODE(admin.getAddress()),
     args: [
       wrapString(setId),
       wrapString(packId),
