@@ -4,7 +4,7 @@ import {
   wrapObjects,
 } from '@flow-testing/flow-testing-utils'
 
-const MINT_OPEN_SPACE_ITEM = (adminAddress: string) => `
+const CODE = (adminAddress: string) => `
 import NonFungibleToken from ${CONSTANTS.NON_FUNGIBLE_TOKEN_ADDRESS}
 import OpenSpaceItems from ${adminAddress}
 
@@ -51,7 +51,7 @@ export const mintOpenSpaceItem = async (
   metadata: Record<string, string>[]
 ) => {
   return await admin.sendTx({
-    transaction: MINT_OPEN_SPACE_ITEM(admin.getAddress()),
+    transaction: CODE(admin.getAddress()),
     args: [user.getAddress(true), wrapObjects(metadata)],
   })
 }

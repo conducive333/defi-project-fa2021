@@ -1,6 +1,6 @@
 import NonFungibleToken from "../standard/NonFungibleToken.cdc"
 import FungibleToken from "../standard/FungibleToken.cdc"
-import OpenSpaceItems from "./OpenSpaceVoucher.cdc"
+import OpenSpaceItems from "./OpenSpaceItems.cdc"
 
 // OpenSpaceAdminNFTStorefront
 //

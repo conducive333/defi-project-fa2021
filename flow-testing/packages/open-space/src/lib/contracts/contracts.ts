@@ -22,13 +22,6 @@ export const OpenSpaceItems = fs
     CONSTANTS.NON_FUNGIBLE_TOKEN_ADDRESS
   )
 
-export const OpenSpaceVoucher = fs
-  .readFileSync(path.resolve(CONTRACTS_PATH, 'OpenSpaceVoucher.cdc'), 'utf8')
-  .replace(
-    '"../standard/NonFungibleToken.cdc"',
-    CONSTANTS.NON_FUNGIBLE_TOKEN_ADDRESS
-  )
-
 export const OpenSpaceAdminNFTStorefront = (adminAddress: string) =>
   fs
     .readFileSync(

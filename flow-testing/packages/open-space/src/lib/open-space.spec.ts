@@ -39,9 +39,6 @@ describe('OpenSpaceItems', () => {
       await expect(
         scripts.hasOpenSpaceCollection(admin, alice)
       ).resolves.toEqual(true)
-      await expect(
-        scripts.hasOpenSpaceVoucherCollection(admin, alice)
-      ).resolves.toEqual(true)
     })
   })
 
@@ -59,29 +56,6 @@ describe('OpenSpaceItems', () => {
       ).resolves.toBeTruthy()
       await expect(
         scripts.getOpenSpaceCollectionLen(admin, admin)
-      ).resolves.toEqual(1)
-    })
-  })
-
-  describe('OpenSpaceVoucher', () => {
-    let admin: FlowAccount
-    beforeAll(async () => {
-      admin = await createAdmin()
-      await transactions.setupOpenSpaceAccount(admin, admin)
-    })
-    it('#mint()', async () => {
-      const alice = await createUser()
-      await expect(
-        transactions.setupOpenSpaceAccount(admin, alice)
-      ).resolves.toBeTruthy()
-      await expect(
-        scripts.getOpenSpaceVoucherCollectionLen(admin, alice)
-      ).resolves.toEqual(0)
-      await expect(
-        transactions.mintOpenSpaceVouchers(admin, alice, 1)
-      ).resolves.toBeTruthy()
-      await expect(
-        scripts.getOpenSpaceVoucherCollectionLen(admin, alice)
       ).resolves.toEqual(1)
     })
   })
@@ -129,12 +103,6 @@ describe('OpenSpaceItems', () => {
         transactions.setupOpenSpaceAccount(admin, admin)
       ).resolves.toBeTruthy()
       await expect(
-        transactions.mintOpenSpaceVouchers(admin, alice, 1)
-      ).resolves.toBeTruthy()
-      await expect(
-        scripts.getOpenSpaceVoucherCollectionLen(admin, alice)
-      ).resolves.toEqual(1)
-      await expect(
         transactions.sellOpenSpaceItem(
           admin,
           alice,
@@ -149,9 +117,6 @@ describe('OpenSpaceItems', () => {
       await expect(
         transactions.buyAdminListingWithFlow(admin, alice, setId)
       ).resolves.toBeTruthy()
-      await expect(
-        scripts.getOpenSpaceVoucherCollectionLen(admin, alice)
-      ).resolves.toEqual(0)
       await expect(scripts.countSetListings(admin, setId)).resolves.toEqual(0)
       await expect(
         scripts.getOpenSpaceCollectionLen(admin, alice)
