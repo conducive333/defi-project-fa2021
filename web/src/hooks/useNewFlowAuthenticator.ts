@@ -17,20 +17,23 @@ export const useNewFlowAuthenticator = () => {
     () => fcl.currentUser.subscribe(setUser), []
   );
 
-  const logIn = fcl.logIn();
+  const isAuthenticated = user.loggedIn !== null;
+
+  const logIn = () => fcl.logIn();
 
   useEffect(() => {
-    const isAuthenticated = user.loggedIn !== null;
+    const createCollectionIfNecessary = async () => {
+      if (isAuthenticated) {
+        const _isCollectionCreated = await isCollectionCreated(user.addr);
 
-    if (isAuthenticated) {
-      isCollectionCreated(user.addr).then((_isCollectionCreated: boolean) => {
-        console.log('**_isCollectionCreated', _isCollectionCreated);
         if (!_isCollectionCreated) {
           initializeCollection();
         }
-      });
+      }
     }
-  }, [user])
+
+    createCollectionIfNecessary();
+  }, [isAuthenticated, user])
 
   const signUp = () => fcl.signUp();
 
