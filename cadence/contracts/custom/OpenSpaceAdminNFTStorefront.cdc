@@ -1,7 +1,6 @@
 import NonFungibleToken from "../standard/NonFungibleToken.cdc"
 import FungibleToken from "../standard/FungibleToken.cdc"
 import OpenSpaceItems from "./OpenSpaceVoucher.cdc"
-import OpenSpaceVoucher from "./OpenSpaceItems.cdc"
 
 // OpenSpaceAdminNFTStorefront
 //
@@ -38,8 +37,6 @@ import OpenSpaceVoucher from "./OpenSpaceItems.cdc"
 //  8. A pack of NFTs can only be linked to one listing. However, each listing consists of an 
 //     array of payment options which specifies the fungible tokens that can be used to purchase
 //     the pack of NFTs along with other data such as the price and sale cut distribution.
-//
-//  9. Vouchers have been included in the purchase() function.
 //
 // Besides that, this contract is mostly the same. Each Listing can have one or more "cut"s of 
 // the sale price that goes to one or more addresses. Cuts can be used to pay listing fees or 
@@ -239,7 +236,6 @@ pub contract OpenSpaceAdminNFTStorefront {
     //
     pub fun purchase(
       payment: @FungibleToken.Vault,
-      voucher: @NonFungibleToken.NFT,
       nftCollectionCapability: Capability<&{NonFungibleToken.CollectionPublic}>,
     )
     
@@ -284,13 +280,11 @@ pub contract OpenSpaceAdminNFTStorefront {
     //
     pub fun purchase(
       payment: @FungibleToken.Vault,
-      voucher: @NonFungibleToken.NFT,
       nftCollectionCapability: Capability<&{NonFungibleToken.CollectionPublic}>,
     ) {
       pre {
         nftCollectionCapability.borrow() != nil: "Cannot borrow nftCollectionCapability"
         self.details.purchased == false: "listing has already been purchased"
-        voucher.isInstance(Type<@OpenSpaceVoucher.NFT>()): "voucher has incorrect type"
       }
 
       // Find a valid payment option
@@ -298,9 +292,6 @@ pub contract OpenSpaceAdminNFTStorefront {
       if option == nil {
         panic("Could not find a valid payment option")
       }
-
-      // Consume the voucher
-      destroy voucher
 
       // Make sure the listing cannot be purchased again
       self.details.setToPurchased()
@@ -593,7 +584,7 @@ pub contract OpenSpaceAdminNFTStorefront {
 
     // Create a new empty Storefront
     let storefront <- create Storefront()
-
+    
     // Save it to the admin account
     self.account.save(<- storefront, to: self.StorefrontStoragePath)
 
