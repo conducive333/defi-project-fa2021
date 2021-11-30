@@ -51,17 +51,6 @@ export class SubmissionsService {
         throw new BadRequestException('Drawing pool is not available.')
       }
 
-      // Check that the user is not in the drawing pool
-      const userIsInPool = await tx.findOne(UserToDrawingPool, {
-        where: {
-          drawingPoolId: nftSubmission.drawingPoolId,
-          userId: nftSubmission.creatorId,
-        },
-      })
-      if (!userIsInPool) {
-        throw new UnauthorizedException('Cannot submit to this drawing pool.')
-      }
-
       // Check that the user does not have a submission for this drawing pool
       const hasSubmission = await tx.findOne(NftSubmission, {
         where: {
