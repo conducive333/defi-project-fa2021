@@ -13,7 +13,7 @@ const NFT_CARD_ROW_BATCH_SIZE = 3;
 export const MainPage = () => {
   return (
     <div className="App" style={{ alignItems: 'center' }}>
-      <Navbar />
+      <Navbar withSearchBar={true} />
       <Flex alignItems="center" justifyContent="center" width="100%" height="50%" marginTop="40px" padding="0px 36px">
         <MarketplaceHeader />
       </Flex>
