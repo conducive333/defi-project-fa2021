@@ -19,7 +19,7 @@ export const DrawingPoolsSection = () => {
 
 const ImageWithSideText = ({ drawingPool }: { drawingPool: SingleDrawingPoolDetails }) => {
   const drawingPoolExpirationDate = DateTime.fromISO(drawingPool.endDate).toJSDate();
-  const shouldShowActiveDrawingPoolElems = new Date() < drawingPoolExpirationDate;
+  const [shouldShowActiveDrawingPoolElems, setShouldShowActiveDrawingPoolElems] = useState(new Date() < drawingPoolExpirationDate);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -31,7 +31,7 @@ const ImageWithSideText = ({ drawingPool }: { drawingPool: SingleDrawingPoolDeta
         <Text fontSize="xl">{drawingPool.description}</Text>
         <br />
         {shouldShowActiveDrawingPoolElems ? 
-          <Countdown date={DateTime.fromISO(drawingPool.endDate).toJSDate()} renderer={({ days, hours, minutes, seconds }) => 
+          <Countdown date={DateTime.fromISO(drawingPool.endDate).toJSDate()} onComplete={() => setShouldShowActiveDrawingPoolElems(!shouldShowActiveDrawingPoolElems)} renderer={({ days, hours, minutes, seconds }) => 
             <Text fontSize="lg">Time remaining: {enforceTwoDigits(hours)}:{enforceTwoDigits(minutes)}:{enforceTwoDigits(seconds)}</Text>
           } /> 
         : 
@@ -58,7 +58,7 @@ const DrawingPoolSubmissionModal = ({ drawingPool, isOpen, onClose }: { drawingP
   const [nftDescription, setNftDescription] = useState('');
   const flowAuthenticator = useNewFlowAuthenticator();
   const toast = useToast();
-  const user = useCurrentUser();
+  console.log('drawingPool.id', drawingPool.id);
 
   const onSubmit = async () => {
     const wasSubmissionSuccessful = await drawingPoolService.submitDrawingPoolImage({ 
