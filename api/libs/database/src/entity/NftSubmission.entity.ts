@@ -1,20 +1,17 @@
 import { DrawingPool } from './DrawingPool.entity'
 import {
-  Check,
-  Column,
+  PrimaryGeneratedColumn,
   CreateDateColumn,
-  Entity,
   JoinColumn,
   ManyToOne,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  Unique,
+  Column,
+  Entity,
+  Check,
 } from 'typeorm'
 import { User } from './User.entity'
 import { UploadedFile } from './UploadedFile.entity'
 
 @Entity()
-@Unique(['drawingPoolId', 'creatorId']) // User can only make one submission per drawing pool
 @Check(`"address" ~ '^0x[a-z0-9]{16}$'`)
 export class NftSubmission {
   @PrimaryGeneratedColumn('uuid')
@@ -33,7 +30,7 @@ export class NftSubmission {
   @Column({ type: 'text', nullable: false })
   description: string
 
-  @OneToOne(() => UploadedFile, (uploadedFile) => uploadedFile.id, {
+  @ManyToOne(() => UploadedFile, (uploadedFile) => uploadedFile.id, {
     nullable: false,
   })
   @JoinColumn({ name: 'file_id' })

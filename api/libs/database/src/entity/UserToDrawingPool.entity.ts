@@ -11,7 +11,6 @@ import { DrawingPool } from './DrawingPool.entity'
 import { User } from './User.entity'
 
 @Entity()
-@Unique(['drawingPoolId', 'userId']) // User can only join a drawing pool once
 export class UserToDrawingPool {
   @PrimaryGeneratedColumn('uuid')
   id: string
