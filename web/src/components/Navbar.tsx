@@ -1,6 +1,7 @@
 import * as assets from '../assets';
 import { SearchButton } from './SearchBar';
 import React from 'react';
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Flex,
@@ -21,6 +22,7 @@ import {
 } from '@chakra-ui/react';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { useNewFlowAuthenticator } from '../hooks';
+import { routes } from '../consts';
 
 const useStyles = (theme: Theme) => ({
   menuButton: {
@@ -31,10 +33,28 @@ const useStyles = (theme: Theme) => ({
   }
 })
 
-export const Navbar = () => {
+interface NavbarProps {
+  withSearchBar?: boolean;
+}
+
+export const Navbar = ({ withSearchBar = false }: NavbarProps) => {
   const { colorMode, toggleColorMode } = useColorMode();
   const flowAuthenticator = useNewFlowAuthenticator();
   const styles = useStyles(theme);
+  const navigate = useNavigate();
+
+  const logIn = async () => {
+    // const res = await fetch('http://localhost:3001/v1/auth', {
+    //   method: 'GET',
+    //   redirect: 'follow',
+    //   mode: 'no-cors'
+    // });
+    // console.log('**res', res);
+    window.location.href = 'http://localhost:3001/v1/auth/redirect';
+
+    // console.log('**login res', res);
+    flowAuthenticator.logIn()
+  }
 
   const NeedAuthenticationView = () => {
     return (
@@ -50,8 +70,18 @@ export const Navbar = () => {
           _hover={{
             color: 'blue.400',
           }}
+          onClick={logIn}>
+          Google Sign In
+        </Button>
+        <Button
+          fontSize={'sm'}
+          fontWeight={400}
+          variant="link"
+          _hover={{
+            color: 'blue.400',
+          }}
           onClick={flowAuthenticator.logIn}>
-          Sign In
+          Blocto Sign In
         </Button>
         <Button
           display={{ base: 'none', md: 'inline-flex' }}
@@ -97,7 +127,7 @@ export const Navbar = () => {
                   </Center>
                   <br />
                   <MenuDivider />
-                  <MenuItem>Profile</MenuItem>
+                  <MenuItem onClick={() => navigate(routes.profile)}>Profile</MenuItem>
                   <MenuItem>Account Settings</MenuItem>
                   <MenuItem onClick={flowAuthenticator.signOut}>Logout</MenuItem>
                 </MenuList>
@@ -114,7 +144,7 @@ export const Navbar = () => {
             <Text fontSize="2xl" fontWeight="bold">OpenSpace</Text>
           </Flex>
 
-          <SearchButton />
+          {withSearchBar ? <SearchButton /> : null}
 
           <Flex alignItems={'center'}>
             <Stack direction={'row'} spacing={7}>
