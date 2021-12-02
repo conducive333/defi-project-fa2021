@@ -14,7 +14,7 @@ pub fun main(address: Address, uuid: String): UInt64? {
     ?? panic("Could not borrow capability from public collection")
   
   for id in collection.getIDs() {
-    let item = collection.borrowDooverseItem(id: id)
+    let item = collection.borrowItem(id: id)
     if item != nil {
       let metadata = item!.getMetadata()
       if metadata.containsKey("openSpaceItemsId") && metadata["openSpaceItemsId"] == uuid {
