@@ -3,6 +3,7 @@ import { NftWithAdminListingDto } from './dto/nft-with-admin-listing.dto'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { LimitOffsetOrderQueryDto } from '@api/utils'
 import { NftsService } from '@api/nfts'
+import { In } from 'typeorm'
 
 @Injectable()
 export class ListingsService {
@@ -37,11 +38,19 @@ export class ListingsService {
     drawingPoolId: string,
     filterOpts: LimitOffsetOrderQueryDto
   ) {
-    return await this.nftsService.findAll(filterOpts, {
-      nftSubmission: {
-        drawingPoolId,
-      },
-    })
+    // TODO: may be good to apply limit and offset to this call
+    const nftIds = await this.adminStorefrontService.borrowListings(
+      drawingPoolId
+    )
+    if (nftIds.length !== 0) {
+      return await this.nftsService.findAll(filterOpts, {
+        id: In(nftIds),
+        nftSubmission: {
+          drawingPoolId,
+        },
+      })
+    }
+    return []
   }
 
   async findOneAdminListing(

@@ -71,4 +71,11 @@ export class AdminStorefrontService {
       ],
     })
   }
+
+  async borrowListings(setId: string): Promise<string[]> {
+    return await FlowService.sendScript({
+      script: scripts.borrowListings(this.devAddress),
+      args: [wrapAddress(this.devAddress), wrapString(setId)],
+    })
+  }
 }
